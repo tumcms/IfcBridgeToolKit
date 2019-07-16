@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xbim.Ifc;
-using Xbim.Ifc4.GeometricConstraintResource;
+using Xbim.IfcRail.GeometricConstraintResource;
 
 namespace IfcAlignmentCreator.VerticalSegments
 {

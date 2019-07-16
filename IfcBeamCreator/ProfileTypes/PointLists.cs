@@ -1,18 +1,6 @@
 ﻿using Xbim.Ifc;
-using Xbim.Ifc4.GeometryResource;
-using Xbim.Ifc4.Interfaces;
-using Xbim.Ifc4.GeometricModelResource;
-using Xbim.Ifc4.ProfileResource;
-using System.Linq;
-using Xbim.Common.Step21;
-
-using Xbim.Ifc4.GeometricConstraintResource;
-
-using Xbim.Ifc4.Kernel;
-using Xbim.Ifc4.MeasureResource;
-using Xbim.Ifc4.ProductExtension;
-using Xbim.Ifc4.RepresentationResource;
-using Xbim.IO;
+using Xbim.IfcRail.GeometryResource;
+using Xbim.IfcRail.GeometricModelResource;
 
 namespace ElementCreator.ProfileTypes
 {

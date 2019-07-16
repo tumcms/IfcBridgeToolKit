@@ -1,6 +1,6 @@
 ﻿
 using Xbim.Ifc;
-using Xbim.Ifc4.RepresentationResource;
+using Xbim.IfcRail.RepresentationResource;
 
 
 namespace ElementRepresentation

@@ -1,8 +1,7 @@
 ﻿using Xbim.Ifc;
-using Xbim.Ifc4.GeometryResource;
-using Xbim.Ifc4.Interfaces;
-using Xbim.Ifc4.GeometricModelResource;
-using Xbim.Ifc4.ProfileResource;
+using Xbim.IfcRail.GeometryResource;
+using Xbim.IfcRail.GeometricModelResource;
+using Xbim.IfcRail.ProfileResource;
 
 
 namespace ElementCreator.ProfileTypes

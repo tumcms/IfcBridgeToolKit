@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xbim.Ifc;
-using Xbim.Ifc4.GeometricConstraintResource;
-using Xbim.Ifc4.GeometryResource;
-using Xbim.Ifc4.Interfaces;
+﻿using Xbim.Ifc;
+using Xbim.IfcRail.GeometricConstraintResource;
+using Xbim.IfcRail.GeometryResource;
 
 namespace IfcAlignmentCreator.HorizontalSegments 
 {

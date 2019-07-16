@@ -1,4 +1,4 @@
-﻿using Xbim.Ifc4.GeometricConstraintResource;
+﻿using Xbim.IfcRail.GeometricConstraintResource;
 
 namespace IfcAlignmentCreator.HorizontalSegments
 {

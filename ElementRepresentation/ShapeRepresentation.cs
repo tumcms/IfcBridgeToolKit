@@ -1,10 +1,10 @@
 ﻿using Xbim.Ifc;
-using Xbim.Ifc4.GeometryResource;
-using Xbim.Ifc4.RepresentationResource;
+using Xbim.IfcRail.GeometryResource;
+using Xbim.IfcRail.RepresentationResource;
 using System.Linq;
-using Xbim.Ifc4.ProductExtension;
+using Xbim.IfcRail.ProductExtension;
 using System;
-using Xbim.Ifc4.MeasureResource;
+using Xbim.IfcRail.MeasureResource;
 
 namespace ElementRepresentation
 {

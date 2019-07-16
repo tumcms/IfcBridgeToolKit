@@ -1,5 +1,5 @@
 ﻿using Xbim.Ifc;
-using Xbim.Ifc4.GeometryResource;
+using Xbim.IfcRail.GeometryResource;
 
 
 namespace ElementRepresentation
