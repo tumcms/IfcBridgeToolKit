@@ -1,14 +1,14 @@
 ﻿using System.Linq;
 using Xbim.Common.Step21;
 using Xbim.Ifc;
-using Xbim.Ifc4.GeometricConstraintResource;
-using Xbim.Ifc4.GeometryResource;
-using Xbim.Ifc4.Interfaces;
-using Xbim.Ifc4.Kernel;
-using Xbim.Ifc4.MeasureResource;
-using Xbim.Ifc4.ProductExtension;
-using Xbim.Ifc4.RepresentationResource;
+using Xbim.IfcRail.GeometricConstraintResource;
+using Xbim.IfcRail.GeometryResource;
+using Xbim.IfcRail.Kernel;
+using Xbim.IfcRail.MeasureResource;
+using Xbim.IfcRail.ProductExtension;
+using Xbim.IfcRail.RepresentationResource;
 using Xbim.IO;
+
 
 namespace IfcBridgeToolKit
 {/// <summary>
@@ -37,7 +37,7 @@ namespace IfcBridgeToolKit
 
             //now we can create an IfcStore, it is in Ifc4 format and will be held in memory rather than in a database
             //database is normally better in performance terms if the model is large >50MB of Ifc or if robust transactions are required
-            var model = IfcStore.Create(credentials, XbimSchemaVersion.Ifc4x1, XbimStoreType.InMemoryModel);
+            var model = IfcStore.Create(credentials, XbimSchemaVersion.IfcRail, XbimStoreType.InMemoryModel);
 
             //Begin a transaction as all changes to a model are ACID
             using (var txt = model.BeginTransaction("Initialize Model"))

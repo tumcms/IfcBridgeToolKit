@@ -2,13 +2,13 @@
 using System.Linq;
 using Xbim.Common.Step21;
 using Xbim.Ifc;
-using Xbim.Ifc4.GeometricConstraintResource;
-using Xbim.Ifc4.GeometryResource;
-using Xbim.Ifc4.Interfaces;
-using Xbim.Ifc4.Kernel;
-using Xbim.Ifc4.MeasureResource;
-using Xbim.Ifc4.ProductExtension;
-using Xbim.Ifc4.RepresentationResource;
+using Xbim.IfcRail;
+using Xbim.IfcRail.GeometricConstraintResource;
+using Xbim.IfcRail.GeometryResource;
+using Xbim.IfcRail.Kernel;
+using Xbim.IfcRail.MeasureResource;
+using Xbim.IfcRail.ProductExtension;
+using Xbim.IfcRail.RepresentationResource;
 using Xbim.IO;
 
 namespace IfcAlignmentCreator
