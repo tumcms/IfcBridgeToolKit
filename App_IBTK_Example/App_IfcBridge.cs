@@ -23,7 +23,6 @@ using Xbim.Ifc4.ExternalReferenceResource;
 using Xbim.Ifc4.PresentationOrganizationResource;
 using Xbim.Ifc4.GeometricModelResource;
 using Xbim.Ifc4.ProfileResource;
-using IBTK_Basics;
 using IfcAlignmentCreator;
 using IfcAlignmentCreator.HorizontalSegments;
 using IfcAlignmentCreator.VerticalSegments;
@@ -31,6 +30,7 @@ using ElementRepresentation;
 using ElementRepresentation.RepresentationMethode;
 using ElementCreator.ProfileTypes;
 using ElementCreator.FaceBasedSurfaceTypes;
+using IfcBridgeToolKit;
 
 namespace App_IBTK_Example
 {

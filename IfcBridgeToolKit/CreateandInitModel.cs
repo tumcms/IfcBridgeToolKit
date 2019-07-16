@@ -10,7 +10,7 @@ using Xbim.Ifc4.ProductExtension;
 using Xbim.Ifc4.RepresentationResource;
 using Xbim.IO;
 
-namespace IBTK_Basics
+namespace IfcBridgeToolKit
 {/// <summary>
 /// Provides basic methods to create a new IfcModel and sets up units, siteContext, ...
 /// </summary>

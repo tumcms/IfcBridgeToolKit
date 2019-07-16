@@ -144,9 +144,9 @@
       <Project>{8ee1dc26-505c-4944-ba44-79fabcd61a70}</Project>
       <Name>ElementCreator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\IfcBridgeToolKit\IBTK_Basics.csproj">
+    <ProjectReference Include="..\IfcBridgeToolKit\IfcBridgeToolKit.csproj">
       <Project>{e5744ff2-ea36-4381-bae3-8308d443814f}</Project>
-      <Name>IBTK_Basics</Name>
+      <Name>IfcBridgeToolKit</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

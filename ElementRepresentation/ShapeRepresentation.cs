@@ -1,7 +1,6 @@
 ﻿using Xbim.Ifc;
 using Xbim.Ifc4.GeometryResource;
 using Xbim.Ifc4.RepresentationResource;
-using IBTK_Basics;
 using System.Linq;
 using Xbim.Ifc4.ProductExtension;
 using System;

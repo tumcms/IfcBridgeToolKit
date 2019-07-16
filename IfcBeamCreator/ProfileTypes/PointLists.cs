@@ -13,7 +13,6 @@ using Xbim.Ifc4.MeasureResource;
 using Xbim.Ifc4.ProductExtension;
 using Xbim.Ifc4.RepresentationResource;
 using Xbim.IO;
-using IBTK_Basics;
 
 namespace ElementCreator.ProfileTypes
 {
