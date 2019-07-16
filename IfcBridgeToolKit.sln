@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.539
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBTK_Basics", "IfcBridgeToolKit\IBTK_Basics.csproj", "{E5744FF2-EA36-4381-BAE3-8308D443814F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App_IBTK_Example", "App_IBTK_Example\App_IBTK_Example.csproj", "{95951488-3C06-4D8B-9DE6-C7465104C3F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IfcAlignmentCreator", "IfcAlignment\IfcAlignmentCreator.csproj", "{AF18A05E-E08D-4464-80EA-29B33DF5E8D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElementCreator", "IfcBeamCreator\ElementCreator.csproj", "{8EE1DC26-505C-4944-BA44-79FABCD61A70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElementRepresentation", "ElementRepresentation\ElementRepresentation.csproj", "{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E5744FF2-EA36-4381-BAE3-8308D443814F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5744FF2-EA36-4381-BAE3-8308D443814F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5744FF2-EA36-4381-BAE3-8308D443814F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5744FF2-EA36-4381-BAE3-8308D443814F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95951488-3C06-4D8B-9DE6-C7465104C3F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95951488-3C06-4D8B-9DE6-C7465104C3F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95951488-3C06-4D8B-9DE6-C7465104C3F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95951488-3C06-4D8B-9DE6-C7465104C3F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF18A05E-E08D-4464-80EA-29B33DF5E8D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF18A05E-E08D-4464-80EA-29B33DF5E8D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF18A05E-E08D-4464-80EA-29B33DF5E8D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF18A05E-E08D-4464-80EA-29B33DF5E8D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EE1DC26-505C-4944-BA44-79FABCD61A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EE1DC26-505C-4944-BA44-79FABCD61A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EE1DC26-505C-4944-BA44-79FABCD61A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EE1DC26-505C-4944-BA44-79FABCD61A70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3C00506F-C234-477F-8A9A-52FD4D299189}
+	EndGlobalSection
+EndGlobal
