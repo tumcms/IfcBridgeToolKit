@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElementCreator", "IfcBeamCr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElementRepresentation", "ElementRepresentation\ElementRepresentation.csproj", "{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IfcBridge_DynPackage", "IfcBridge_DynPackage\IfcBridge_DynPackage.csproj", "{F32E652B-AC33-4909-B79E-DCDC2081D7C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F32E652B-AC33-4909-B79E-DCDC2081D7C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F32E652B-AC33-4909-B79E-DCDC2081D7C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F32E652B-AC33-4909-B79E-DCDC2081D7C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F32E652B-AC33-4909-B79E-DCDC2081D7C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
