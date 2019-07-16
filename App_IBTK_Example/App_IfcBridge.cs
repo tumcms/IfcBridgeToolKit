@@ -148,6 +148,8 @@ namespace App_IBTK_Example
                 ifcBearingA1.PredefinedType = IfcBuildingElementProxyTypeEnum.ELEMENT;
                 ifcRelContainedInSpartialStructure.RelatedElements.Add(ifcBearingA1);
                 //
+
+                // neuer Kommentar
                 txn.Commit();
             }
 
