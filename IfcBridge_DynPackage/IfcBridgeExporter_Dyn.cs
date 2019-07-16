@@ -14,7 +14,7 @@ namespace IfcBridge_DynPackage
         {
             try
             {
-                var modelCreator = new CreateAndInitModel();
+                var modelCreator = new CreateAndInitModel();    //ToDo: Correct Header -> IfcVersion 
                 var model = modelCreator.CreateModel(projectName);
 
                 using (var txn = model.BeginTransaction("add a bridge item"))
