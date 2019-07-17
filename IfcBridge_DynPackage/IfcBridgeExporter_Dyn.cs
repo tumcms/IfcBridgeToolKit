@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using IfcBridgeToolKit;
 using Xbim.IfcRail.RailwayDomain;
 
@@ -37,5 +38,31 @@ namespace IfcBridge_DynPackage
 
             return true; // everything went well - otherwise receive a false
         }
+
+        // ToDo: weitere Funktionen definieren, die von Dynamo aus aufrufbar sein sollen
+
+        /// <summary>
+        /// Fügt einen Brückenträger zu einem bestehenden IfcModel hinzu
+        /// </summary>
+        /// <returns></returns>
+        public static bool AddGirdersFromRevit(List<int> girders)
+        {
+            foreach (var girder in girders)
+            {
+                // Datenaufbereitung des internen Revit-Datentyps auf int, double, strings, ... ODER DataLayer (eigene Klasse!)
+
+                //      var aufbereiteteGeometrie = new VonRevitMesh2IfcFacetedBRep();      // Klassendefinition ist in DataLayer.dll zu finden
+                //      VonRevitMesh2IfcFacetedBRep.Schwerpunkt = x, y, z ( schon umgerechnet)
+                //      VonRevitMesh2IfcFacetedBRep.MeshPunkte.Add(new Point3D(x,y,z));
+
+
+                // rufe eine passende Funktion aus dem IfcBridgeToolkit auf (eigene dll, die die Bearbeitung des IFC Models vornimmt)
+                // > IfcBridgeToolKit.addGirderToIfc(VonRevitMesh2IfcFacetedBRep); 
+
+                // füge Relation zu entsprechender spatial Structure hinzu
+            }
+            return true; 
+        }
+
     }
 }

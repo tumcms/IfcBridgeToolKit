@@ -143,12 +143,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddAlignment.cs" />
+    <Compile Include="AddComponents.cs" />
     <Compile Include="CreateandInitModel.cs" />
+    <Compile Include="InitSpatialStructure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IfcBridgeToolKit_DataLayer\IfcBridgeToolKit_DataLayer.csproj">
+      <Project>{15FDAF29-DFE3-40A4-83E3-3B3E4FED5064}</Project>
+      <Name>IfcBridgeToolKit_DataLayer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
