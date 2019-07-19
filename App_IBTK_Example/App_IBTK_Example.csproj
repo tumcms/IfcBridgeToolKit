@@ -148,18 +148,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ElementRepresentation\ElementRepresentation.csproj">
-      <Project>{cf2afa71-7bd6-4674-8f70-788756c3aca3}</Project>
-      <Name>ElementRepresentation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IfcAlignment\IfcAlignmentCreator.csproj">
-      <Project>{af18a05e-e08d-4464-80ea-29b33df5e8d5}</Project>
-      <Name>IfcAlignmentCreator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IfcBeamCreator\ElementCreator.csproj">
-      <Project>{8ee1dc26-505c-4944-ba44-79fabcd61a70}</Project>
-      <Name>ElementCreator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\IfcBridgeToolKit\IfcBridgeToolKit.csproj">
       <Project>{e5744ff2-ea36-4381-bae3-8308d443814f}</Project>
       <Name>IfcBridgeToolKit</Name>

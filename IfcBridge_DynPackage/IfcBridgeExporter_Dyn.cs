@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using IfcBridgeToolKit;
 using Xbim.IfcRail.RailwayDomain;
+using System.Linq.Expressions;
 
 namespace IfcBridge_DynPackage
 {
@@ -17,18 +18,23 @@ namespace IfcBridge_DynPackage
             {
                 var modelCreator = new CreateAndInitModel();    //ToDo: Correct Header -> IfcVersion 
                 var model = modelCreator.CreateModel(projectName);
+              
+                
+               // using (var txn = model.BeginTransaction("add a bridge item"))
+               // {
+               //     var bridge = model.Instances.New<IfcBridge>();
+               //     bridge.Name = "IfcBridge001";
+               //     bridge.Description = "I'm a fancy hello-world bridge";
+               //     bridge.PredefinedType = IfcBridgeTypeEnum.GIRDER;
 
-                using (var txn = model.BeginTransaction("add a bridge item"))
-                {
-                    var bridge = model.Instances.New<IfcBridge>();
-                    bridge.Name = "IfcBridge001";
-                    bridge.Description = "I'm a fancy hello-world bridge";
-                    bridge.PredefinedType = IfcBridgeTypeEnum.GIRDER;
+               //    txn.Commit();
+               //}
 
-                    txn.Commit();
-                }
+                //var bridgeCreator = new InitSpatialStructure();
+                //bridgeCreator.AddIfcBridge(ref model, name, description);
 
-                model.SaveAs(@"C:\Users\Sebastian Esser\Desktop\TestModel001.ifc"); // dont do it that way...
+                //model.SaveAs(@"C:\Users\Korbi\OneDrive\Desktop\TestModel001.ifc"); // dont do it that way...
+                
             }
             catch (Exception e)
             {

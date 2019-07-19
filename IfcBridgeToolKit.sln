@@ -7,12 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IfcBridgeToolKit", "IfcBrid
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App_IBTK_Example", "App_IBTK_Example\App_IBTK_Example.csproj", "{95951488-3C06-4D8B-9DE6-C7465104C3F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IfcAlignmentCreator", "IfcAlignment\IfcAlignmentCreator.csproj", "{AF18A05E-E08D-4464-80EA-29B33DF5E8D5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElementCreator", "IfcBeamCreator\ElementCreator.csproj", "{8EE1DC26-505C-4944-BA44-79FABCD61A70}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElementRepresentation", "ElementRepresentation\ElementRepresentation.csproj", "{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IfcBridge_DynPackage", "IfcBridge_DynPackage\IfcBridge_DynPackage.csproj", "{F32E652B-AC33-4909-B79E-DCDC2081D7C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IfcBridgeToolKit_DataLayer", "IfcBridgeToolKit_DataLayer\IfcBridgeToolKit_DataLayer.csproj", "{15FDAF29-DFE3-40A4-83E3-3B3E4FED5064}"
@@ -31,18 +25,6 @@ Global
 		{95951488-3C06-4D8B-9DE6-C7465104C3F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95951488-3C06-4D8B-9DE6-C7465104C3F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95951488-3C06-4D8B-9DE6-C7465104C3F8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AF18A05E-E08D-4464-80EA-29B33DF5E8D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AF18A05E-E08D-4464-80EA-29B33DF5E8D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AF18A05E-E08D-4464-80EA-29B33DF5E8D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AF18A05E-E08D-4464-80EA-29B33DF5E8D5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8EE1DC26-505C-4944-BA44-79FABCD61A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8EE1DC26-505C-4944-BA44-79FABCD61A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8EE1DC26-505C-4944-BA44-79FABCD61A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8EE1DC26-505C-4944-BA44-79FABCD61A70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF2AFA71-7BD6-4674-8F70-788756C3ACA3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F32E652B-AC33-4909-B79E-DCDC2081D7C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F32E652B-AC33-4909-B79E-DCDC2081D7C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F32E652B-AC33-4909-B79E-DCDC2081D7C7}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -96,9 +96,11 @@ namespace IfcBridgeToolKit
                 //now commit the changes, else they will be rolled back at the end of the scope of the using statement
                 txt.Commit();
             }
-
+            // Speicherpfad
+            var path = @"C:\Benutzer\korbi\OneDrive\Dokumente\IfcBridge001";
+            model.SaveAs(path,StorageType.Ifc, null);
             return model;
-            
+           
         }
 
         /// <summary>

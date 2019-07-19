@@ -3,13 +3,6 @@ using Xbim.IO;
 using Xbim.IfcRail.SharedBldgElements;
 using Xbim.IfcRail.GeometryResource;
 using Xbim.IfcRail.ProductExtension;
-using IfcAlignmentCreator;
-using IfcAlignmentCreator.HorizontalSegments;
-using IfcAlignmentCreator.VerticalSegments;
-using ElementRepresentation;
-using ElementRepresentation.RepresentationMethode;
-using ElementCreator.ProfileTypes;
-using ElementCreator.FaceBasedSurfaceTypes;
 using IfcBridgeToolKit;
 using Xbim.IfcRail.GeometricConstraintResource;
 
@@ -21,13 +14,13 @@ namespace App_IBTK_Example
         {
             //Inizialisiere bestehenden Baukasten 
             var ModelCreator = new CreateAndInitModel();
-            var alignmentDesigner = new InitIfcAlignment("myCurve", "myDescription");            
-            var SSH = new SectionSolidHorizontal();
-            var CFS = new ConnectedFaceSet();
-            var FBSM = new FaceBasedSurfaceModel();
-            var PDS = new ProductShapeRepresentation();
-            var PL = new PointLists();            
-            var ACPD = new ArbitrayClosedProfileDef();
+            //var alignmentDesigner = new InitIfcAlignment("myCurve", "myDescription");            
+            //var SSH = new SectionSolidHorizontal();
+            //var CFS = new ConnectedFaceSet();
+            //var FBSM = new FaceBasedSurfaceModel();
+            //var PDS = new ProductShapeRepresentation();
+            //var PL = new PointLists();            
+            //var ACPD = new ArbitrayClosedProfileDef();
             //
             //
             //

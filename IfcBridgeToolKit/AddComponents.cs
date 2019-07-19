@@ -10,6 +10,8 @@ using Xbim.IfcRail.SharedBldgElements;
 using Xbim.IfcRail.GeometricConstraintResource;
 using Xbim.IfcRail.GeometricModelResource;
 using Xbim.IfcRail.RepresentationResource;
+using Xbim.IfcRail.TopologyResource;
+using Xbim.IfcRail.GeometryResource;
 
 namespace IfcBridgeToolKit
 {
@@ -27,7 +29,7 @@ namespace IfcBridgeToolKit
             {
                 var beam = model.Instances.New<IfcBeam>();
                 beam.Name = "HelloBeam";
-                beam.Representation = ConvertMyMeshToIfcFacetedBRep();
+                //beam.Representation = ConvertMyMeshToIfcFacetedBRep();
                 beam.ObjectPlacement = addMyLocalPlacement();
             }
 
@@ -45,7 +47,7 @@ namespace IfcBridgeToolKit
             //meineAufbreiteteGeometrie.MeshPunkte.Add(new Point3D(1,2,3));
             //meineAufbreiteteGeometrie.M
             //    // füge Geometrie in IfcModel ein
-            ConvertMyMeshToIfcFacetedBRep();
+          //  ConvertMyMeshToIfcFacetedBRep();
             //    // beende Transaktion
 
         }
@@ -113,10 +115,10 @@ namespace IfcBridgeToolKit
         /// <summary>
         /// 
         /// </summary>
-        private IfcProductDefinitionShape ConvertMyMeshToIfcFacetedBRep()
+        public static IfcProductDefinitionShape ConvertMyMeshToIfcFacetedBRep(ref IfcStore model)
         {
             // lege ein IfcFacetedBRep an
-            
+
             // lege ShapeRepresentation an
 
             // voids...
@@ -125,8 +127,21 @@ namespace IfcBridgeToolKit
             // CartesianPointList
             // Edges
 
-          //  return new IfcFacetedBrep(); // oder anderes "Level"
-          return null;
+            //  return new IfcFacetedBrep(); // oder anderes "Level"
+           
+            {
+               // var points = Point3D;
+                var ifcProductdefinitonShape = model.Instances.New<IfcProductDefinitionShape>();
+
+                var ifcShapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
+                var ifcFacetedBRep = model.Instances.New<IfcFacetedBrep>();
+                var ifcFace = model.Instances.New<IfcFace>();
+                var ifcFaceOuterBound = model.Instances.New<IfcFaceOuterBound>();
+                var polyloob = model.Instances.New<IfcPolyLoop>();
+                var Points = model.Instances.New<IfcCartesianPoint>();
+
+                return ifcProductdefinitonShape;
+            }
         }
 
         /// <summary>
