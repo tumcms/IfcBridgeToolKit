@@ -4,7 +4,11 @@ using Xbim.IfcRail.SharedBldgElements;
 using Xbim.IfcRail.GeometryResource;
 using Xbim.IfcRail.ProductExtension;
 using IfcBridgeToolKit;
+using IfcBridgeToolKit_DataLayer;
 using Xbim.IfcRail.GeometricConstraintResource;
+using System.Collections.Generic;
+using Xbim.Ifc;
+using Xbim.Common;
 
 namespace App_IBTK_Example
 {
@@ -12,123 +16,112 @@ namespace App_IBTK_Example
     {
         private static void Main(string[] args)
         {
-            //Inizialisiere bestehenden Baukasten 
+            //Erstellt Variabele, die CreateAndInitModel abruft 
             var ModelCreator = new CreateAndInitModel();
-            //var alignmentDesigner = new InitIfcAlignment("myCurve", "myDescription");            
-            //var SSH = new SectionSolidHorizontal();
-            //var CFS = new ConnectedFaceSet();
-            //var FBSM = new FaceBasedSurfaceModel();
-            //var PDS = new ProductShapeRepresentation();
-            //var PL = new PointLists();            
-            //var ACPD = new ArbitrayClosedProfileDef();
-            //
-            //
-            //
-
-            //Grundeigenschaften der Ifc-Datei werden erstellt 
+            //Fügt Grundstrucktur der Ifc-Datei hinzu 
             var model = ModelCreator.CreateModel("IfcBridgeTest_01");
             ModelCreator.CreateRequiredInstances(ref model, "project Site");
-           
+
+
+         
             using (var txn = model.BeginTransaction("add an IfcAlignment"))
-            {
-
-                // Grundwerte des Alignments  
-                alignmentDesigner.CreateAlignmentBaseData(ref model, out var ifcAlignment);
-                var ifcAlignmentCurve = ifcAlignment.Axis as IfcAlignmentCurve;
-                //Horizontaler Anteil des Alignments 
-                HorizontalSegmentFactory factory_H = new LineSegmentFactory(0, 455, 301.162,0);
-                var line1 = factory_H.CreateSegment(ref model);
-                ifcAlignmentCurve.Horizontal.Segments.Add(line1);
-                // Vertikaler Anteil des Alignments
-                VerticalSegmentFactory factory_V = new VerSeqLineFactory(0, 301.162, 455, 0);
-                var Verseq1 = factory_V.CreateSegment(ref model);
-                ifcAlignmentCurve.Vertical.Segments.Add(Verseq1);
-
-               
-                                          
-
-                //SpartialStructure erweitern erstellen
-                var ifcRelContainedInSpartialStructure = model.Instances.New<IfcRelContainedInSpatialStructure>();
-                
-                var ifcSite = model.Instances.OfType<IfcSite>().First();
-                if (ifcSite == null)
-                {
-                    // error handle
-                }
-
-                ifcRelContainedInSpartialStructure.RelatingStructure = ifcSite;
-                //Füge ifcAlignment der SpartialStructure hinzu 
-                ifcRelContainedInSpartialStructure.RelatedElements.Add(ifcAlignment);
-
-
-
-                // TestBeam 
-                var StartDisExp = DistExp.CreateDistanceExpression(ref model, 0.4, -2.611940299, -1.2649);
-                var EndDisExp = DistExp.CreateDistanceExpression(ref model, 61.19658962, -2.611940299, -1.2649);
-
-                var a = PL.PointListAASHTO_TypeVI(ref model);
-                ACPD.CreateArbitraryClosedProfileDef(ref model,a, out var test);
-           
-                SSH.CreateSectionedSolidHorizontal(ref model, ifcAlignmentCurve, test,test, StartDisExp, EndDisExp,true,out var Beamshape);
-                var Beam = ShapeRepresentation.CreateIfcShapeRepresentation(ref model, "Body", "AdvancedSweptSolid", Beamshape);
-                PDS.CreateIfcProductDefinitionShape(ref model, "AAHTO", "TypeVI", Beam,out var Element01);
-                
-                var Beam01 = model.Instances.New<IfcBeam>();
-                Beam01.Name = "Girder A2";
-                Beam01.Description = "Test";
-                
-                Beam01.Representation = Element01;
-                
-                var LocalPlacment = model.Instances.New<IfcLocalPlacement>();
-                var Point = model.Instances.New<IfcCartesianPoint>(p => p.SetXYZ(0, 0, 0));
-                //var Place = model.Instances.New<IfcAxis2Placement3D>();
-                //Place.Location = Point;
-                //var Placement = model.Instances.New<IfcLocalPlacement>();
-                var Direction1 = model.Instances.New<IfcDirection>();
-                Direction1.SetXYZ(0, 0, 1);
-                var Direction2 = model.Instances.New<IfcDirection>();
-                Direction2.SetXYZ(1, 0, 0);
-                //Placement.RelativePlacement = Place;
-                var Axis2Palcement3D = model.Instances.New<IfcAxis2Placement3D>();
-                Axis2Palcement3D.Location = Point;
-                Axis2Palcement3D.Axis = Direction1;
-                Axis2Palcement3D.RefDirection = Direction2;
-                LocalPlacment.RelativePlacement = Axis2Palcement3D;
-                Beam01.ObjectPlacement = LocalPlacment;
-                ifcRelContainedInSpartialStructure.RelatedElements.Add(Beam01);
-
-                //
-
-                //
-                var cfs = CFS.FaceBasedSurfaceModelBearing(ref model);
-                var assd = ShapeRepresentation.CreateIfcShapeRepresentation(ref model, "Test", "Test", cfs);
-                PDS.CreateIfcProductDefinitionShape(ref model, "Test", "Test", assd, out var Element0101);
-
-                var BearingPlacement_A1 = model.Instances.New<IfcLocalPlacement>();
-                var BearingA2P3_A1 = model.Instances.New<IfcAxis2Placement3D>();
-                var PointBearingA1 = model.Instances.New<IfcCartesianPoint>();
-
-                PointBearingA1.SetXYZ(0.65, 452.3880597, 452.7307);
-                BearingA2P3_A1.Location = PointBearingA1;
-                BearingA2P3_A1.Axis = Direction1;
-                BearingA2P3_A1.RefDirection = Direction2;
-                BearingPlacement_A1.RelativePlacement = BearingA2P3_A1;
-
-                var ifcBearingA1 = model.Instances.New<IfcBuildingElementProxy>();
-                ifcBearingA1.Name = "BearingA1";
-                ifcBearingA1.ObjectType = "Bearing";
-                ifcBearingA1.ObjectPlacement = BearingPlacement_A1;
-                ifcBearingA1.Representation = Element0101;
-                ifcBearingA1.PredefinedType = IfcBuildingElementProxyTypeEnum.ELEMENT;
-                ifcRelContainedInSpartialStructure.RelatedElements.Add(ifcBearingA1);
-                //
-
-                // neuer Kommentar
+            {                               
+                AddComponents.ConvertMyMeshToIfcFacetedBRep(ref model, "Testprodukt", CartesianPoints(ref model ));                                                
                 txn.Commit();
             }
-
-
-                model.SaveAs("IfcBridgeToolKitExample_01", StorageType.Ifc, null);
+            
+            model.SaveAs("IfcBridgeToolKitExample_03.ifc");
         }
+
+
+        /// <summary>
+        /// Testkoordinaten 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private static List<IfcCartesianPoint> ifcCartesianPoints(ref IfcStore model)
+        {
+            
+                List<IfcCartesianPoint> ifcCartesianPoints = new List<IfcCartesianPoint>();
+                var Point1 = model.Instances.New<IfcCartesianPoint>(p1 => p1.SetXYZ(0, 0, 0));
+                ifcCartesianPoints.Add(Point1);
+                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p2 => p2.SetXYZ(1, 0, 0)));
+                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p3 => p3.SetXYZ(1, 1, 0)));
+                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p4 => p4.SetXYZ(0, 1, 0)));
+                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p5 => p5.SetXYZ(0, 1, 1)));
+                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p6 => p6.SetXYZ(0, 0, 1)));
+                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p7 => p7.SetXYZ(1, 0, 1)));
+                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p8 => p8.SetXYZ(1, 1, 1)));
+                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p1 => p1.SetXYZ(0, 0, 0)));
+                return ifcCartesianPoints;
+            
+        }
+
+
+        /// <summary>
+        /// Testtransformation, die an einigen Stellen noch Fehlerhast ist.
+        /// Zeile 91: System.NullReferenceExeption --> Der Objectverweis wurde nicht auf eine Objektinstanz festgelegt  
+        /// Minimum ist definitiv flasch.. da jedes mal  ein neuer erzeugt wird
+        /// Todo: foreach schleife für die Korrekte plazierung aus den schleifen nehmen und im nachhinein abändern --> Neue Funktion in DataLayer eventuell sinnvoller 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private static List<IfcCartesianPoint> CartesianPoints(ref IfcStore model)
+        {
+            // Liste die von Funktion abgerufen werden soll 
+            List<IfcCartesianPoint> cartesianPoints = new List<IfcCartesianPoint>();
+            // Erstellt Variable, die VonRevitMesh2IfcFacetedBRep abruft 
+            var aufbereiteteGeometrie = new VonRevitMesh2IfcFacetedBRep();
+            // Übergebe neuer Variabele die Test Koordinaten 
+            var Punktliste = ifcCartesianPoints(ref model);
+
+            // Loop übergibt Input-Geometrie 
+                foreach (var punkt in Punktliste)
+                {
+                    
+                 var _X = aufbereiteteGeometrie.PlacementX;
+                 var _Y = aufbereiteteGeometrie.PlacementY;
+                 var _Z = aufbereiteteGeometrie.PlacementZ;
+                 _X = punkt.X;
+                 _Y = punkt.Y;
+                 _Z = punkt.Z;
+
+                    var Point = new Point3D(_X, _Y, _Z);
+
+                    aufbereiteteGeometrie.MeshPunkte.Add(Point);
+                    var meshPunkte = aufbereiteteGeometrie.MeshPunkte;
+                    var Minimum = meshPunkte.Min();
+                // Loop transformiert geometrie im Bezug auf einen Referenzpunkt 
+                    foreach (var meshPunkt in meshPunkte)
+                    {
+                        var n_X = aufbereiteteGeometrie.PlacementX;
+                        var n_Y = aufbereiteteGeometrie.PlacementY;
+                        var n_Z = aufbereiteteGeometrie.PlacementZ;
+                        n_X = Point.coordX - Minimum.coordX;
+                        n_Y = Point.coordY - Minimum.coordY;
+                        n_Z = Point.coordZ - Minimum.coordZ;
+                        var transformedPoint = new Point3D(n_X, n_Y, n_Z);
+                        aufbereiteteGeometrie.MeshPunkte.Add(Point);
+                        var transformendPoints = aufbereiteteGeometrie.MeshPunkte;
+
+
+                // Loop transformiert doubles in verwendbare IfcPunkte 
+                        foreach (var tPoints in transformendPoints)
+                        {
+                            var ifcPoint = model.Instances.New<IfcCartesianPoint>();
+                            ifcPoint.X = tPoints.coordX;
+                            ifcPoint.Y = tPoints.coordY;
+                            ifcPoint.Z = tPoints.coordZ;
+                            cartesianPoints.Add(ifcPoint);
+
+
+                        }
+                    }
+
+                   
+                }
+            return cartesianPoints;
+        }
+
     }
 }

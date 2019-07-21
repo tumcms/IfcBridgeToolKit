@@ -85,23 +85,25 @@ namespace IfcBridgeToolKit
                 axis2Placement3D.Location = point;
 
                 // IfcGeometricRepresentationContext -- necessary for TIN usw
-                var context = model.Instances.New<IfcGeometricRepresentationContext>();
-                context.ContextType = "Model";
-                context.CoordinateSpaceDimension = 3;
-                context.WorldCoordinateSystem = axis2Placement3D;
+                //var context = model.Instances.New<IfcGeometricRepresentationContext>();
+                //context.ContextType = "Model";
+                //context.CoordinateSpaceDimension = 3;
+                //context.WorldCoordinateSystem = axis2Placement3D;
 
                 // link representationContext with project
+                var context = GetIfcGeometricPresentationContext(ref model);
                 project.RepresentationContexts.Add(context);
 
                 //now commit the changes, else they will be rolled back at the end of the scope of the using statement
                 txt.Commit();
             }
             // Speicherpfad
-            var path = @"C:\Benutzer\korbi\OneDrive\Dokumente\IfcBridge001";
-            model.SaveAs(path,StorageType.Ifc, null);
+            //var path = @"C:\Benutzer\korbi\OneDrive\Dokumente\IfcBridge001";
+            //model.SaveAs(path,StorageType.Ifc, null);
             return model;
            
         }
+
 
         /// <summary>
         ///     Creates IfcSite,
@@ -141,6 +143,39 @@ namespace IfcBridgeToolKit
                 // Coordinate Reference System
                 txn.Commit();
             }
+
+        }
+        public  IfcGeometricRepresentationContext GetIfcGeometricPresentationContext(ref IfcStore model)
+        {
+            var geometricRepresentationContext = model.Instances.New<IfcGeometricRepresentationContext>();
+            geometricRepresentationContext.ContextType = "Model";
+            geometricRepresentationContext.CoordinateSpaceDimension = 3;
+            geometricRepresentationContext.Precision = (1e-05);
+
+
+            var locationPoint = model.Instances.New<IfcCartesianPoint>();
+            locationPoint.X = 0;
+            locationPoint.Y = 0;
+            locationPoint.Z = 0;
+            //Grundlegende definition der Achsen und der referenzierten Richtung    
+            //Frage an Sebastian: Soll IfcDirection seperat erstellt werden --> Referenz auf Cambridge_4x2: Elemente habe unterschiedliche Directions 
+            var directionAxis = model.Instances.New<IfcDirection>(dA => dA.SetXYZ(0, 0, 1));
+            var directionRefDirection = model.Instances.New<IfcDirection>(dRD => dRD.SetXYZ(1, 0, 0));
+
+            //Fülle den Hauptoperatoren mit den Benötigten Inputs
+            var axis2Placement3D = model.Instances.New<IfcAxis2Placement3D>(a2P3D =>
+            {
+                a2P3D.Location = locationPoint;
+                a2P3D.Axis = directionAxis;
+                a2P3D.RefDirection = directionRefDirection;
+            });
+
+            geometricRepresentationContext.WorldCoordinateSystem = axis2Placement3D;
+
+            var direction = model.Instances.New<IfcDirection>(d => d.SetXY(0, 1));
+
+            geometricRepresentationContext.TrueNorth = direction;
+            return geometricRepresentationContext;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xbim.IfcRail.GeometryResource;
 
 namespace IfcBridgeToolKit_DataLayer
 {
@@ -23,11 +24,12 @@ namespace IfcBridgeToolKit_DataLayer
         public double coordY { get; set; }
         public double coordZ { get; set; }
 
-        public Point3D(double coordX, double coordY, double coordZ)
+        public  Point3D(double coordX, double coordY, double coordZ)
         {
             this.coordX = coordX;
             this.coordY = coordY;
             this.coordZ = coordZ;
+            
         }
     }
 

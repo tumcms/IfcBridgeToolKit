@@ -152,6 +152,10 @@
       <Project>{e5744ff2-ea36-4381-bae3-8308d443814f}</Project>
       <Name>IfcBridgeToolKit</Name>
     </ProjectReference>
+    <ProjectReference Include="..\IfcBridgeToolKit_DataLayer\IfcBridgeToolKit_DataLayer.csproj">
+      <Project>{15fdaf29-dfe3-40a4-83e3-3b3e4fed5064}</Project>
+      <Name>IfcBridgeToolKit_DataLayer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

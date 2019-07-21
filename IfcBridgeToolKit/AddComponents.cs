@@ -12,10 +12,11 @@ using Xbim.IfcRail.GeometricModelResource;
 using Xbim.IfcRail.RepresentationResource;
 using Xbim.IfcRail.TopologyResource;
 using Xbim.IfcRail.GeometryResource;
+using Xbim.IfcRail.MeasureResource;
 
 namespace IfcBridgeToolKit
 {
-    class AddComponents
+    public class AddComponents
     {
         // ToDo: implementieren
         /// <summary>
@@ -23,24 +24,26 @@ namespace IfcBridgeToolKit
         /// </summary>
         /// <param name="meineAufbreiteteGeometrie"></param>
         /// <param name="Bauteilname"></param>
-        public void addGirderToIfc(ref IfcStore model, VonRevitMesh2IfcFacetedBRep meineAufbreiteteGeometrie, string Bauteilname)
+        public void addGirderToIfc(ref IfcStore model, VonRevitMesh2IfcFacetedBRep meineAufbreiteteGeometrie, string Bauteilname, string NameRepräsentation)
         {
             using (var txn = model.BeginTransaction("ich füge einen Träger ein"))
             {
                 var beam = model.Instances.New<IfcBeam>();
-                beam.Name = "HelloBeam";
-                //beam.Representation = ConvertMyMeshToIfcFacetedBRep();
-                beam.ObjectPlacement = addMyLocalPlacement();
+               
+             
+                beam.Name = Bauteilname;
+                //beam.Representation = ConvertMyMeshToIfcFacetedBRep(ref model,NameRepräsentation, list );
+                //beam.ObjectPlacement = addMyLocalPlacement(refmodel,)
+               // beam.ObjectPlacement = addMyLocalPlacement();
             }
 
         //    // öffne Transaktion auf Ifc Model
 
         //    // füge ein IfcBeam-Entity hinzu
-        //    var beam = model.Instances.New<IfcBeam>();
-        //    beam.name = Bauteilname; 
+        
 
         //    // füge Placement ein - BEISPIEL!! noch nicht fertig implementiert
-            addMyLocalPlacement();
+            //addMyLocalPlacement();
         
         //var localPlacement = model.Instances.New<IfcLocalPlacement>();
             //localPlacement.X = meineAufbreiteteGeometrie.PlacementX;
@@ -115,37 +118,67 @@ namespace IfcBridgeToolKit
         /// <summary>
         /// 
         /// </summary>
-        public static IfcProductDefinitionShape ConvertMyMeshToIfcFacetedBRep(ref IfcStore model)
+        public static IfcProductDefinitionShape ConvertMyMeshToIfcFacetedBRep(ref IfcStore model, string name, List<IfcCartesianPoint> ifcCartesianPoints)
         {
-            // lege ein IfcFacetedBRep an
-
-            // lege ShapeRepresentation an
-
-            // voids...
-
-            // übersetze empfangene Daten in Ifc Sprache
-            // CartesianPointList
-            // Edges
-
-            //  return new IfcFacetedBrep(); // oder anderes "Level"
+                   
+           //ToDo: Liste mit allen Eckpunkten einer Geometrie implementieren --> foreach schleife muss darauf ansprechen!
+           //Frage an Sebastian: Herangehensweise ähneld deiner schreibweise. Es wird allerdings nur ein Facegeneriert, dass kann doch dann nicht die gesamte Geometrie beschreiben 
            
-            {
-               // var points = Point3D;
-                var ifcProductdefinitonShape = model.Instances.New<IfcProductDefinitionShape>();
-
-                var ifcShapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
+                
                 var ifcFacetedBRep = model.Instances.New<IfcFacetedBrep>();
-                var ifcFace = model.Instances.New<IfcFace>();
-                var ifcFaceOuterBound = model.Instances.New<IfcFaceOuterBound>();
-                var polyloob = model.Instances.New<IfcPolyLoop>();
-                var Points = model.Instances.New<IfcCartesianPoint>();
+                              
+            var polyloob = model.Instances.New<IfcPolyLoop>();
+            //Frage an Sebastian: Es werden CaresianPoints generiert die ich nicht möchte --> Generiere Punkte in der ConsoleAppanwendung ... diese Übergebe ich zu ConvertMyMeshtoIfcFacetedBRep
+            //Erstelle Liste die für den Zweiten foreach-loop verwendet werden kann 
+            foreach (IfcCartesianPoint Point in ifcCartesianPoints)
+            {
+                List<IfcCartesianPoint> Eckpunkte = new List<IfcCartesianPoint> 
+                { };
+            Eckpunkte.Add(Point);
+           
+            
+            // Übergibt Eckpunkte in den Polyloob 
+            foreach (var Eckpunkt in Eckpunkte)
+                {
+                    var ifcCartesianPoint = model.Instances.New<IfcCartesianPoint>(iCP =>
+                    {
+                        iCP.X = Eckpunkt.X;
+                        iCP.Y = Eckpunkt.Y;
+                        iCP.Z = Eckpunkt.Z;
 
-                return ifcProductdefinitonShape;
+                    });
+                    polyloob.Polygon.Add(ifcCartesianPoint);
+                }
             }
+            var ifcFaceOuterBound = model.Instances.New<IfcFaceOuterBound>(iFOB => iFOB.Bound = polyloob);
+                
+            var ifcFace = model.Instances.New<IfcFace>(iF => iF.Bounds.Add(ifcFaceOuterBound));
+
+            var ifcClosedShell = model.Instances.New<IfcClosedShell>(iCS => iCS.CfsFaces.Add(ifcFace));
+            //Erstellt Repräsentationsart "FacetedBRep" 
+            ifcFacetedBRep.Outer = ifcClosedShell;
+            //Erstellt IfcShapeRepresentation 
+            var ifcShapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
+            //Iniziiere GeometricPresentationContext 
+            var CreateModel = new CreateAndInitModel();
+            var context = CreateModel.GetIfcGeometricPresentationContext(ref model);
+            ifcShapeRepresentation.ContextOfItems = context;
+            ifcShapeRepresentation.RepresentationIdentifier = "Body";
+            ifcShapeRepresentation.RepresentationIdentifier = "FacetedbRep";
+            ifcShapeRepresentation.Items.Add(ifcFacetedBRep);
+            //Erstellt IfcProductDefinitionShape 
+            var ifcProductDefinitonShape = model.Instances.New<IfcProductDefinitionShape>();
+            ifcProductDefinitonShape.Name = name;
+            ifcProductDefinitonShape.Representations.Add(ifcShapeRepresentation);
+
+            //  return ProductDefinitionShape
+            return ifcProductDefinitonShape;
+            
         }
 
         /// <summary>
-        /// 
+        /// SectionedSolidHorizontal kann Ideal verwendet werden, sobald in Dynamo die geometrische Repräsentation für Ifc verbessert wird 
+        /// Es werden Solids, mit Informationen über die Oberfläche die gesweept wird, benötigt
         /// </summary>
         ///
       
@@ -154,20 +187,80 @@ namespace IfcBridgeToolKit
             //not implemented yet
         }
 
-        private IfcLocalPlacement addMyLocalPlacement()
+       
+
+        /// <summary>
+        /// LocalPlacement plaziert Komponenten absolut in Bezug auf der geometrischen Representaion
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="Point"> Der Plazierungspunkt der afubereiteten Meshgeometrie muss verwendet werden, um eine korrekte Plazierung zu gewährleisten </param>
+        /// <returns></returns>
+        private IfcLocalPlacement addMyLocalPlacement(ref IfcStore model, IfcCartesianPoint Point )
         {
-            // IfcCartesianPoint
+             
+            var localPlacement = model.Instances.New<IfcLocalPlacement>();
+            //Axis3D
+            var axis2Placement3D = model.Instances.New<IfcAxis2Placement3D>();
 
-            // Axes2D/3D
+            // CartesianPoint has get the coordinates for the choosen Placement 
+            var locationPoint = model.Instances.New<IfcCartesianPoint>();
+            locationPoint.X = Point.X;
+            locationPoint.Y = Point.Y;
+            locationPoint.Z = Point.Z;
+            //Grundlegende definition der Achsen und der referenzierten Richtung    
+            //Frage an Sebastian: Soll IfcDirection seperat erstellt werden --> Referenz auf Cambridge_4x2: Elemente habe unterschiedliche Directions 
+            var directionAxis = model.Instances.New<IfcDirection>(dA => dA.SetXYZ(0, 0, 1));
+            var directionRefDirection = model.Instances.New<IfcDirection>(dRD => dRD.SetXYZ(1, 0, 0));
 
-            return null; 
+            //Fülle den Hauptoperatoren mit den Benötigten Inputs 
+            axis2Placement3D.Location = locationPoint;
+            axis2Placement3D.Axis = directionAxis;
+            axis2Placement3D.RefDirection = directionRefDirection;
+            //Erstelle LocalPlacement 
+            localPlacement.RelativePlacement = axis2Placement3D;
+
+            return localPlacement;          
+           
         }
-
-        private void addMyLinearPlacement()
+        /// <summary>
+        /// LinearPlacement wird verwendet, wenn ein Alignment verwendet wird 
+        /// Aktueller Status: AlignmentCurve wird nicht verwendet, da IW diese nicht nach Revit exportiert 
+        /// !!!Achtung: Wenn Alignment existiert, nutze LinearPlacement!!! 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="UseModelAlignmentCurve"> Die benötigte AlignmentCurve soll verwendet werden, um die Komponenten an die richtige Stelle zu platzieren </param>
+        /// <param name="distancealong">Abstand Start zu Plazierungspunkt muss angegeben werden</param>
+        /// <returns></returns>
+        private IfcLinearPlacement addMyLinearPlacement(ref IfcStore model, IfcCurve UseModelAlignmentCurve, IfcLengthMeasure distancealong)
         {
-            // IfcLinearPlacement()...
+            var linearPlacement = model.Instances.New<IfcLinearPlacement>();
 
-            // IfcDistanceExpressions
+            // Füge DistanceExpression hinzu 
+            var distanceExpression = model.Instances.New<IfcDistanceExpression>();
+            distanceExpression.DistanceAlong = distancealong;
+            distanceExpression.OffsetLateral = 1;
+            distanceExpression.OffsetVertical = 0;
+            distanceExpression.OffsetLongitudinal = 0;
+            distanceExpression.AlongHorizontal = true;
+
+            var orientationExpression = model.Instances.New<IfcOrientationExpression>();
+            // Füge Informationen für OrientationExpression hinzu 
+            var lateralAxisDirection = model.Instances.New<IfcDirection>(lAD => lAD.SetXYZ(1, 0, 0));
+            var verticalAxisDirection = model.Instances.New<IfcDirection>(vAD => vAD.SetXYZ(0, 0, 1));
+            //Fülle OrientationExpression 
+            orientationExpression.LateralAxisDirection = lateralAxisDirection;
+            orientationExpression.VerticalAxisDirection = verticalAxisDirection;
+
+            //Fülle den Hauptoperator mit den benötigten Inputs
+            linearPlacement.PlacementMeasuredAlong = UseModelAlignmentCurve;
+            linearPlacement.Distance = distanceExpression;
+            linearPlacement.Orientation = orientationExpression;
+
+            //Frage an Sebastian: Soll ein IfcAxis2Placement3D implementiert werden... Ist ja nur notwendig, wenn App linear Placement nicht unterstützt 
+            //linearPlacement.CartesianPosition = ;
+
+
+            return linearPlacement;
         }
 
     }
