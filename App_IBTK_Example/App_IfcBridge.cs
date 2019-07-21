@@ -19,7 +19,7 @@ namespace App_IBTK_Example
             //Erstellt Variabele, die CreateAndInitModel abruft 
             var ModelCreator = new CreateAndInitModel();
             //Fügt Grundstrucktur der Ifc-Datei hinzu 
-            var model = ModelCreator.CreateModel("IfcBridgeTest_01");
+            var model = ModelCreator.CreateModel("IfcBridgeTest_01", "Aicher", "Korbinian");
             ModelCreator.CreateRequiredInstances(ref model, "project Site");
 
 
