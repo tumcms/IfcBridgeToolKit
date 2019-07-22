@@ -72,6 +72,15 @@
     <Reference Include="ProtoGeometry, Version=2.2.1.5173, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamoVisualProgramming.ZeroTouchLibrary.2.2.1.5204\lib\net47\ProtoGeometry.dll</HintPath>
     </Reference>
+    <Reference Include="RevitAPI">
+      <HintPath>externalLibs_preCompiled\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitNodes">
+      <HintPath>externalLibs_preCompiled\RevitNodes.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitServices">
+      <HintPath>externalLibs_preCompiled\RevitServices.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>

@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Autodesk.DesignScript.Geometry;
+using Autodesk.Revit.DB;
 using IfcBridgeToolKit;
 using Xbim.Ifc;
 using Xbim.IO;
+using Revit.Elements;
+
 
 namespace IfcBridge_DynPackage
 {
@@ -51,7 +57,7 @@ namespace IfcBridge_DynPackage
             string fileName, string bridgeName = "unknown", string bridgeDescription = "unknown")
         {
             // build storage path of the model
-            var storeFilePath = directory + fileName;
+            var storeFilePath = directory + "/" +  fileName;
 
             try
             {
@@ -81,12 +87,31 @@ namespace IfcBridge_DynPackage
         /// </summary>
         /// <param name="storeFilePath">Path to the already existing IfcModel</param>
         /// <param name="credentials">Editor credits from Credentials Node</param>
+        /// <param name="girderMeshes">List of DirectShape geometries</param>
         /// <returns>File Path to the IfcModel</returns>
         /// <search>
         ///     girder, beam, IfcBridge
         /// </search>
-        public static string AddGirdersFromRevit(string storeFilePath, XbimEditorCredentials credentials)
+        public static string AddGirdersFromRevit(string storeFilePath, Xbim.Ifc.XbimEditorCredentials credentials, List<Revit.Elements.DirectShape> girderMeshes)
         {
+            foreach (var mesh in girderMeshes) // loop over all "elements" (basically it's only its geometry but we already know that these are the right entities for the individual class
+            {
+                // location
+                var location = mesh.GetLocation();
+               //  location.Transform()
+
+                // body geometry
+                var faces = mesh.Faces; // get all surfaces -> access all edges and start/end-vertices if required
+                foreach (var surface in faces)
+                {
+                    var myEdges = surface.Edges;
+                    var myVertices = surface.Vertices;
+                    var myFaces = surface.Faces;
+                }
+            }
+            
+           //  girderMeshes.First().
+
             // open Ifc model
             using (var model = IfcStore.Open(storeFilePath, credentials, null, null, XbimDBAccess.ReadWrite))
             {
@@ -109,8 +134,9 @@ namespace IfcBridge_DynPackage
         /// </summary>
         /// <param name="storeFilePath"></param>
         /// <param name="credentials"></param>
+        /// <param name="foundationMeshes"></param>
         /// <returns></returns>
-        public static string AddFoundationsFromRevit(string storeFilePath, XbimEditorCredentials credentials)
+        public static string AddFoundationsFromRevit(string storeFilePath, XbimEditorCredentials credentials, List<Revit.Elements.DirectShape> foundationMeshes)
         {
             return storeFilePath;
         }
@@ -119,8 +145,9 @@ namespace IfcBridge_DynPackage
         /// </summary>
         /// <param name="storeFilePath"></param>
         /// <param name="credentials"></param>
+        /// <param name="bridgeDeckMeshes"></param>
         /// <returns></returns>
-        public static string AddBridgeDecksFromRevit(string storeFilePath, XbimEditorCredentials credentials)
+        public static string AddBridgeDecksFromRevit(string storeFilePath, XbimEditorCredentials credentials, List<Revit.Elements.DirectShape> bridgeDeckMeshes)
         {
             return storeFilePath;
         }
@@ -129,8 +156,9 @@ namespace IfcBridge_DynPackage
         /// </summary>
         /// <param name="storeFilePath"></param>
         /// <param name="credentials"></param>
+        /// <param name="abutmentMeshes"></param>
         /// <returns></returns>
-        public static string AddAbutmentsFromRevit(string storeFilePath, XbimEditorCredentials credentials)
+        public static string AddAbutmentsFromRevit(string storeFilePath, XbimEditorCredentials credentials, List<Revit.Elements.DirectShape> abutmentMeshes)
         {
             return storeFilePath;
         }
@@ -139,8 +167,9 @@ namespace IfcBridge_DynPackage
         /// </summary>
         /// <param name="storeFilePath"></param>
         /// <param name="credentials"></param>
+        /// <param name="pierMeshes"></param>
         /// <returns></returns>
-        public static string AddPiersFromRevit(string storeFilePath, XbimEditorCredentials credentials)
+        public static string AddPiersFromRevit(string storeFilePath, XbimEditorCredentials credentials, List<Revit.Elements.DirectShape> pierMeshes)
         {
             return storeFilePath;
         }
@@ -149,8 +178,9 @@ namespace IfcBridge_DynPackage
         /// </summary>
         /// <param name="storeFilePath"></param>
         /// <param name="credentials"></param>
+        /// <param name="bearingMeshes"></param>
         /// <returns></returns>
-        public static string AddBearingsFromRevit(string storeFilePath, XbimEditorCredentials credentials)
+        public static string AddBearingsFromRevit(string storeFilePath, XbimEditorCredentials credentials, , List<Revit.Elements.DirectShape> bearingMeshes)
         {
             return storeFilePath;
         }
