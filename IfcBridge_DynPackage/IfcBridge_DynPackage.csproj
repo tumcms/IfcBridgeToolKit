@@ -152,6 +152,9 @@
     <Folder Include="Spatial Breakdown\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="externalLibs_preCompiled\RevitAPI.dll" />
+    <Content Include="externalLibs_preCompiled\RevitNodes.dll" />
+    <Content Include="externalLibs_preCompiled\RevitServices.dll" />
     <Content Include="externalLibs_preCompiled\Xbim.Common.dll" />
     <Content Include="externalLibs_preCompiled\Xbim.Ifc.dll" />
     <Content Include="externalLibs_preCompiled\Xbim.Ifc2x3.dll" />
