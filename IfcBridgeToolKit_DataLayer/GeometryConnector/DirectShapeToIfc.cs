@@ -20,6 +20,7 @@ namespace IfcBridgeToolKit_DataLayer.GeometryConnector
         /// </summary>
         public DirectShapeToIfc()
         {
+            Facets = new List<Facet>();
         }
 
         #region methods
@@ -30,11 +31,11 @@ namespace IfcBridgeToolKit_DataLayer.GeometryConnector
         /// <param name="path">FilePath to text file</param>
         public void SerializeToJson(string path)
         {
-            // serialize transporter item into a JSON
-            string json = JsonConvert.SerializeObject(this);
-            using (StreamWriter myFile = new StreamWriter(path))
+            using (StreamWriter file = File.CreateText(path))
             {
-                myFile.WriteLine(JsonConvert.SerializeObject(json));
+                JsonSerializer serializer = new JsonSerializer();
+                //serialize object directly into file stream
+                serializer.Serialize(file, this);
             }
         }
 

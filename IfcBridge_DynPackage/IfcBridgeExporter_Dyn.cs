@@ -101,7 +101,12 @@ namespace IfcBridge_DynPackage
                 foreach (var face in mesh.Faces)
                 {
                     var transporterFacet = new Facet(); // face in IfcToolKit understanding, contains several boundaryPoints
-                   
+
+                    if (face == null)
+                    {
+                        continue;
+                    }
+
                     // convert each vertexPt from Revit into an Pt3D of IfcToolKit definition
                     foreach (var revitVertex in face.Vertices)
                     {
@@ -116,17 +121,17 @@ namespace IfcBridge_DynPackage
                     // add face to transporter (remember: one shape has several faces
                     transporter.Facets.Add(transporterFacet);
                 }
-                
+
                 // --- PLACEMENT --- 
-                var revitLocation = mesh.GetLocation().ContextCoordinateSystem.Origin;
+                // var revitLocation = mesh.GetLocation().ContextCoordinateSystem.Origin;
                 // location.Transform() // -> possible method
 
                 // insert Revit coordinates into transporter
-                transporter.location.Position = new Point3D(revitLocation.X, revitLocation.Y, revitLocation.Z);
+                // transporter.location.Position = new Point3D(revitLocation.X, revitLocation.Y, revitLocation.Z);
 
                 // serialize to JSON to check the contained data
-              //  var myPath = @"C:\Users\Sebastian Esser\Desktop\meshJSON.json";
-                //transporter.SerializeToJson(myPath);
+                var myPath = @"C:\Users\Sebastian Esser\Desktop\meshJSON.json";
+                transporter.SerializeToJson(myPath);
             }
 
 
