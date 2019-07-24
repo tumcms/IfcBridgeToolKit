@@ -67,7 +67,7 @@ namespace IfcBridge_DynPackage
         /// <param name="storeFilePath">Path to the already existing IfcModel</param>
         /// <param name="credentials">Editor credits</param>
         /// <returns></returns>
-        public static string AddGirdersFromRevit(string storeFilePath, XbimEditorCredentials credentials)
+        public static string AddGirdersFromRevit(String storeFilePath, XbimEditorCredentials credentials)
         {
             // open Ifc model
             using (var model = IfcStore.Open(storeFilePath, credentials, null, null, XbimDBAccess.ReadWrite))

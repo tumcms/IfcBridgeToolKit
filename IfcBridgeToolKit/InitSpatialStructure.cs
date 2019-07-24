@@ -74,7 +74,7 @@ namespace IfcBridgeToolKit
         /// </summary>
         /// <param name="model"></param>
         /// <param name="BuildingElement"></param>
-
+        // eventuell zugriffs modifizierung 
         public void AddIfcRelContainedInSpartialStructure( ref IfcStore model, IfcBuildingElement BuildingElement)
             {
             using (var txn = model.BeginTransaction("Add IfcRelContainedInSpartialStructure"))
@@ -84,6 +84,8 @@ namespace IfcBridgeToolKit
                 RelContainedInSpartialStructure.RelatingStructure = myBridgePart;
 
                 RelContainedInSpartialStructure.RelatedElements.Add(BuildingElement);
+
+                txn.Commit();
             }
         }
 

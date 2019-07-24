@@ -23,11 +23,28 @@ namespace App_IBTK_Example
             ModelCreator.CreateRequiredInstances(ref model, "project Site");
 
 
-         
+            var TestListe = new List<Point3D>();
+            TestListe.Add(new Point3D(1, 1, 1));
+            TestListe.Add(new Point3D(2, 1, 1));
+            TestListe.Add(new Point3D(2, 2, 1));
+            TestListe.Add(new Point3D(1, 1, 2));
+
+
+            var ne = new GetPlacementPoint();
+            PointTransform ET = ne.PlacementPoint(TestListe);
+
             using (var txn = model.BeginTransaction("add an IfcAlignment"))
-            {                               
-                AddComponents.ConvertMyMeshToIfcFacetedBRep(ref model, "Testprodukt", CartesianPoints(ref model ));                                                
+            {
+                //AddComponents.ConvertMyMeshToIfcFacetedBRep(ref model, "Testprodukt", ifcCartesianPoints(ref model ));                                                
+                var Testpoint = model.Instances.New<IfcCartesianPoint>();
+                Testpoint.X = ET.coordX;
+                Testpoint.Y = ET.coordY;
+                Testpoint.Z = ET.coordZ;
+
                 txn.Commit();
+
+                
+
             }
             
             model.SaveAs("IfcBridgeToolKitExample_03.ifc");
@@ -66,62 +83,99 @@ namespace App_IBTK_Example
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        private static List<IfcCartesianPoint> CartesianPoints(ref IfcStore model)
-        {
-            // Liste die von Funktion abgerufen werden soll 
-            List<IfcCartesianPoint> cartesianPoints = new List<IfcCartesianPoint>();
-            // Erstellt Variable, die VonRevitMesh2IfcFacetedBRep abruft 
-            var aufbereiteteGeometrie = new VonRevitMesh2IfcFacetedBRep();
-            // Übergebe neuer Variabele die Test Koordinaten 
-            var Punktliste = ifcCartesianPoints(ref model);
+        //private static List<IfcCartesianPoint> CartesianPoints(ref IfcStore model)
+        //{
+        //    // Liste die von Funktion abgerufen werden soll 
+        //    List<IfcCartesianPoint> cartesianPoints = new List<IfcCartesianPoint>();
+        //    // Erstellt Variable, die VonRevitMesh2IfcFacetedBRep abruft 
+        //    var aufbereiteteGeometrie = new VonRevitMesh2IfcFacetedBRep();
+        //    // Übergebe neuer Variabele die Test Koordinaten 
+        //    var Punktliste = ifcCartesianPoints(ref model);
 
-            // Loop übergibt Input-Geometrie 
-                foreach (var punkt in Punktliste)
-                {
+        //    // Loop übergibt Input-Geometrie 
+        //        foreach (var punkt in Punktliste)
+        //        {
+        //        (aufbereiteteGeometrie.PlacementX)  = punkt.X;
+        //         var _X = aufbereiteteGeometrie.PlacementX;
+        //         var _Y = aufbereiteteGeometrie.PlacementY;
+        //         var _Z = aufbereiteteGeometrie.PlacementZ;
+        //         _X = punkt.X;
+        //         _Y = punkt.Y;
+        //         _Z = punkt.Z;
+
+        //            var Point = new Point3D(_X, _Y, _Z);
+                
+        //            aufbereiteteGeometrie.MeshPunkte.Add(Point);
+        //            var meshPunkte = aufbereiteteGeometrie.MeshPunkte;
+        //            var Minimum = meshPunkte.Min();
+        //        // Loop transformiert geometrie im Bezug auf einen Referenzpunkt 
+        //            foreach (var meshPunkt in meshPunkte)
+        //            {
+        //                var n_X = aufbereiteteGeometrie.PlacementX;
+        //                var n_Y = aufbereiteteGeometrie.PlacementY;
+        //                var n_Z = aufbereiteteGeometrie.PlacementZ;
+        //                n_X = Point.coordX - Minimum.coordX;
+        //                n_Y = Point.coordY - Minimum.coordY;
+        //                n_Z = Point.coordZ - Minimum.coordZ;
+        //                var transformedPoint = new Point3D(n_X, n_Y, n_Z);
+
+        //                aufbereiteteGeometrie.MeshPunkte.Add(Point);
+        //                var transformendPoints = aufbereiteteGeometrie.MeshPunkte;
+
                     
-                 var _X = aufbereiteteGeometrie.PlacementX;
-                 var _Y = aufbereiteteGeometrie.PlacementY;
-                 var _Z = aufbereiteteGeometrie.PlacementZ;
-                 _X = punkt.X;
-                 _Y = punkt.Y;
-                 _Z = punkt.Z;
-
-                    var Point = new Point3D(_X, _Y, _Z);
-
-                    aufbereiteteGeometrie.MeshPunkte.Add(Point);
-                    var meshPunkte = aufbereiteteGeometrie.MeshPunkte;
-                    var Minimum = meshPunkte.Min();
-                // Loop transformiert geometrie im Bezug auf einen Referenzpunkt 
-                    foreach (var meshPunkt in meshPunkte)
-                    {
-                        var n_X = aufbereiteteGeometrie.PlacementX;
-                        var n_Y = aufbereiteteGeometrie.PlacementY;
-                        var n_Z = aufbereiteteGeometrie.PlacementZ;
-                        n_X = Point.coordX - Minimum.coordX;
-                        n_Y = Point.coordY - Minimum.coordY;
-                        n_Z = Point.coordZ - Minimum.coordZ;
-                        var transformedPoint = new Point3D(n_X, n_Y, n_Z);
-                        aufbereiteteGeometrie.MeshPunkte.Add(Point);
-                        var transformendPoints = aufbereiteteGeometrie.MeshPunkte;
+                
+        //        // Loop transformiert doubles in verwendbare IfcPunkte 
+        //                foreach (var tPoints in transformendPoints)
+        //                {
+        //                    var ifcPoint = model.Instances.New<IfcCartesianPoint>();
+        //                    ifcPoint.X = tPoints.coordX;
+        //                    ifcPoint.Y = tPoints.coordY;
+        //                    ifcPoint.Z = tPoints.coordZ;
+        //                    cartesianPoints.Add(ifcPoint);
 
 
-                // Loop transformiert doubles in verwendbare IfcPunkte 
-                        foreach (var tPoints in transformendPoints)
-                        {
-                            var ifcPoint = model.Instances.New<IfcCartesianPoint>();
-                            ifcPoint.X = tPoints.coordX;
-                            ifcPoint.Y = tPoints.coordY;
-                            ifcPoint.Z = tPoints.coordZ;
-                            cartesianPoints.Add(ifcPoint);
-
-
-                        }
-                    }
+        //                }
+        //            }
 
                    
-                }
-            return cartesianPoints;
-        }
+        //        }
+        //    return cartesianPoints;
+        //}
+        //public class VonRevitApitoIfc
+        //{
+        //    public void GetList(List<(double x,double y, double z)> RevitApiPoints)
+        //    {
+        //        var ListforTransformation = new List<Point3D>();
+        //        foreach (var RevitPoint in RevitApiPoints)
+        //        {
+        //          var X = RevitPoint.x;
+        //          var Y = RevitPoint.y;
+        //          var Z = RevitPoint.z;
+        //          var Point  = new Point3D(X,Y,Z);
+        //          ListforTransformation.Add(Point);  
+        //        }               
+        //    }
 
-    }
+
+        //    public void GetPlacementPoint(List<Point3D> ListforTransformation)
+        //    {
+        //        var MinPoint = ListforTransformation.Min();                                
+        //    }
+
+        //    public GetTransformationVector(List<Point3D> ListforTransformation, Point3D MinPoint, Point3D PointofOrigin)
+        //    {
+        //        var X = MinPoint.coordX - PointofOrigin.coordX;
+        //        var Y = MinPoint.coordY - PointofOrigin.coordY;
+        //        var Z = MinPoint.coordZ - PointofOrigin.coordZ;
+        //        var VectorPoint = new Point3D(X, Y, Z);
+                
+        //    }
+
+
+
+        //}
+
+   }
+    
 }
+

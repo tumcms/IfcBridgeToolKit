@@ -13,6 +13,8 @@ using Xbim.IfcRail.RepresentationResource;
 using Xbim.IfcRail.TopologyResource;
 using Xbim.IfcRail.GeometryResource;
 using Xbim.IfcRail.MeasureResource;
+using Xbim.IfcRail.StructuralElementsDomain;
+using Xbim.IfcRail.RailwayDomain;
 
 namespace IfcBridgeToolKit
 {
@@ -58,45 +60,109 @@ namespace IfcBridgeToolKit
         /// <summary>
         /// 
         /// </summary>
-        public void addPileToIfc()
+        public void addPileToIfc(ref IfcStore model,string fileName, string Bauteilname, string Repräsentationsname, IfcCartesianPoint PlacementPoint, List<IfcCartesianPoint> PointList)
         {
+            string FileName = fileName;
+
+            using (IfcStore.Open(FileName))
+            { 
+            using (var txn = model.BeginTransaction("Füge einen Pfahl ein"))
+            {
+                    var pile = model.Instances.New<IfcPile>();
+                    pile.Name = Bauteilname;
+                    pile.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
+                    pile.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
+
+
+
+                txn.Commit();
+            }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void addAbutment(ref IfcStore model, string fileName, string Bauteilname, string Repräsentationsname, IfcCartesianPoint PlacementPoint, List<IfcCartesianPoint> PointList)
+        {
+            string FileName = fileName;
+            using (IfcStore.Open(FileName))
+            {
+                using (var txn = model.BeginTransaction("Füge einen Pfahl ein"))
+                {
+                    //var pile = model.Instances.New<>();
+                    //pile.Name = Bauteilname;
+                    //pile.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
+                    //pile.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
+
+
+
+                    txn.Commit();
+                }
+            }
 
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void addAbutment()
+        public void addBearing(ref IfcStore model, string fileName, string Bauteilname, string Repräsentationsname, IfcCartesianPoint PlacementPoint, List<IfcCartesianPoint> PointList)
         {
+            string FileName = fileName;
+            using (IfcStore.Open(FileName))
+            {
+                using (var txn = model.BeginTransaction("Füge ein Bearing ein"))
+                {
+                    var Bearing = model.Instances.New<IfcBearing>();
+                    Bearing.Name = Bauteilname;
+                    Bearing.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
+                    Bearing.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
 
-
+                    txn.Commit();
+                }
+            }
 
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void addBearing()
+        public void Covering(ref IfcStore model, string fileName, string Bauteilname, string Repräsentationsname, IfcCartesianPoint PlacementPoint, List<IfcCartesianPoint> PointList)
         {
+            string FileName = fileName;
+            using (IfcStore.Open(FileName))
+            {
+                using (var txn = model.BeginTransaction("Füge ein Covering ein"))
+                {
+                    var Covering = model.Instances.New<IfcCovering>();
+                    Covering.Name = Bauteilname;
+                    Covering.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
+                    Covering.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
 
+                    txn.Commit();
+                }
+            }
 
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void Covering()
+        public void addFoundation(ref IfcStore model, string fileName, string Bauteilname, string Repräsentationsname, IfcCartesianPoint PlacementPoint, List<IfcCartesianPoint> PointList)
         {
+            string FileName = fileName;
+            using (IfcStore.Open(FileName))
+            {
+                using (var txn = model.BeginTransaction("Füge ein Fundament ein"))
+                {
+                    var Foundation = model.Instances.New<IfcDeepFoundation>();
+                    Foundation.Name = Bauteilname;
+                    Foundation.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
+                    Foundation.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
 
-
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void addFoundation()
-        {
-
+                    txn.Commit();
+                }
+            }
         }
 
         /// <summary>
@@ -110,11 +176,22 @@ namespace IfcBridgeToolKit
         /// <summary>
         /// 
         /// </summary>
-        public void addProxyElement()
+        public void addProxyElement(ref IfcStore model, string fileName, string Bauteilname, string Repräsentationsname, IfcCartesianPoint PlacementPoint, List<IfcCartesianPoint> PointList)
         {
-           
-        }
+            string FileName = fileName;
+            using (IfcStore.Open(FileName))
+            {
+                using (var txn = model.BeginTransaction("Füge ein Fundament ein"))
+                {
+                    var buildingElementProxy = model.Instances.New<IfcBuildingElementProxy>();
+                    buildingElementProxy.Name = Bauteilname;
+                    buildingElementProxy.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
+                    buildingElementProxy.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
 
+                    txn.Commit();
+                }
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
