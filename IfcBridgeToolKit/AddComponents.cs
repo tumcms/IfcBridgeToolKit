@@ -12,8 +12,19 @@ using Xbim.IfcRail.MeasureResource;
 
 namespace IfcBridgeToolKit
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AddComponents
     {
+
+        /// <summary>
+        /// default constructor
+        /// </summary>
+        public AddComponents()
+        {
+        }
+
         // ToDo: implementieren
         /// <summary>
         /// 
