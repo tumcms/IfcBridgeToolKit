@@ -24,13 +24,12 @@ namespace App_IBTK_Example
             ModelCreator.CreateRequiredInstances(ref model, "project Site");
 
 
-         
             using (var txn = model.BeginTransaction("add an IfcAlignment"))
-            {                               
-                AddComponents.ConvertMyMeshToIfcFacetedBRep(ref model, "Testprodukt", CartesianPoints(ref model ));                                                
+            {
+                AddComponents.ConvertMyMeshToIfcFacetedBRep(ref model, "Testprodukt", CartesianPoints(ref model));
                 txn.Commit();
             }
-            
+
             model.SaveAs("IfcBridgeToolKitExample_03.ifc");
         }
 
@@ -42,20 +41,18 @@ namespace App_IBTK_Example
         /// <returns></returns>
         private static List<IfcCartesianPoint> ifcCartesianPoints(ref IfcStore model)
         {
-            
-                List<IfcCartesianPoint> ifcCartesianPoints = new List<IfcCartesianPoint>();
-                var Point1 = model.Instances.New<IfcCartesianPoint>(p1 => p1.SetXYZ(0, 0, 0));
-                ifcCartesianPoints.Add(Point1);
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p2 => p2.SetXYZ(1, 0, 0)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p3 => p3.SetXYZ(1, 1, 0)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p4 => p4.SetXYZ(0, 1, 0)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p5 => p5.SetXYZ(0, 1, 1)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p6 => p6.SetXYZ(0, 0, 1)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p7 => p7.SetXYZ(1, 0, 1)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p8 => p8.SetXYZ(1, 1, 1)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p1 => p1.SetXYZ(0, 0, 0)));
-                return ifcCartesianPoints;
-            
+            List<IfcCartesianPoint> ifcCartesianPoints = new List<IfcCartesianPoint>();
+            var Point1 = model.Instances.New<IfcCartesianPoint>(p1 => p1.SetXYZ(0, 0, 0));
+            ifcCartesianPoints.Add(Point1);
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p2 => p2.SetXYZ(1, 0, 0)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p3 => p3.SetXYZ(1, 1, 0)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p4 => p4.SetXYZ(0, 1, 0)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p5 => p5.SetXYZ(0, 1, 1)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p6 => p6.SetXYZ(0, 0, 1)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p7 => p7.SetXYZ(1, 0, 1)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p8 => p8.SetXYZ(1, 1, 1)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p1 => p1.SetXYZ(0, 0, 0)));
+            return ifcCartesianPoints;
         }
 
 
@@ -71,58 +68,24 @@ namespace App_IBTK_Example
         {
             // Liste die von Funktion abgerufen werden soll 
             List<IfcCartesianPoint> cartesianPoints = new List<IfcCartesianPoint>();
+
             // Erstellt Variable, die VonRevitMesh2IfcFacetedBRep abruft 
             var aufbereiteteGeometrie = new DirectShapeToIfc();
+
             // Übergebe neuer Variabele die Test Koordinaten 
-            var Punktliste = ifcCartesianPoints(ref model);
+            var ptList = ifcCartesianPoints(ref model);
 
-            // Loop übergibt Input-Geometrie 
-                foreach (var punkt in Punktliste)
-                {
-                   //  aufbereiteteGeometrie.Facets
-                 var _X = aufbereiteteGeometrie.PlacementX;
-                 var _Y = aufbereiteteGeometrie.PlacementY;
-                 var _Z = aufbereiteteGeometrie.PlacementZ;
-                 _X = punkt.X;
-                 _Y = punkt.Y;
-                 _Z = punkt.Z;
+            // --- Geometrische Repräsentation ---
+            foreach (var punkt in ptList)
+            {
+                // ToDo: Facetten bzw. PolyLoop Definition erstellen
+            }
 
-                    var Point = new Point3D(_X, _Y, _Z);
-
-                    aufbereiteteGeometrie.MeshPunkte.Add(Point);
-                    var meshPunkte = aufbereiteteGeometrie.MeshPunkte;
-                    var Minimum = meshPunkte.Min();
-                // Loop transformiert geometrie im Bezug auf einen Referenzpunkt 
-                    foreach (var meshPunkt in meshPunkte)
-                    {
-                        var n_X = aufbereiteteGeometrie.PlacementX;
-                        var n_Y = aufbereiteteGeometrie.PlacementY;
-                        var n_Z = aufbereiteteGeometrie.PlacementZ;
-                        n_X = Point.X - Minimum.X;
-                        n_Y = Point.CoordY - Minimum.CoordY;
-                        n_Z = Point.Z - Minimum.Z;
-                        var transformedPoint = new Point3D(n_X, n_Y, n_Z);
-                        aufbereiteteGeometrie.MeshPunkte.Add(Point);
-                        var transformendPoints = aufbereiteteGeometrie.MeshPunkte;
+            // --- Placement ---
+            aufbereiteteGeometrie.location.Position = new Point3D(0, 0, 0);
 
 
-                // Loop transformiert doubles in verwendbare IfcPunkte 
-                        foreach (var tPoints in transformendPoints)
-                        {
-                            var ifcPoint = model.Instances.New<IfcCartesianPoint>();
-                            ifcPoint.X = tPoints.X;
-                            ifcPoint.Y = tPoints.CoordY;
-                            ifcPoint.Z = tPoints.Z;
-                            cartesianPoints.Add(ifcPoint);
-
-
-                        }
-                    }
-
-                   
-                }
             return cartesianPoints;
         }
-
     }
 }
