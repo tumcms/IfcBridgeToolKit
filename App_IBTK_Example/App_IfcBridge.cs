@@ -7,6 +7,7 @@ using IfcBridgeToolKit;
 using IfcBridgeToolKit_DataLayer;
 using Xbim.IfcRail.GeometricConstraintResource;
 using System.Collections.Generic;
+using IfcBridgeToolKit_DataLayer.GeometryConnector;
 using Xbim.Ifc;
 using Xbim.Common;
 
@@ -71,14 +72,14 @@ namespace App_IBTK_Example
             // Liste die von Funktion abgerufen werden soll 
             List<IfcCartesianPoint> cartesianPoints = new List<IfcCartesianPoint>();
             // Erstellt Variable, die VonRevitMesh2IfcFacetedBRep abruft 
-            var aufbereiteteGeometrie = new VonRevitMesh2IfcFacetedBRep();
+            var aufbereiteteGeometrie = new DirectShapeToIfc();
             // Übergebe neuer Variabele die Test Koordinaten 
             var Punktliste = ifcCartesianPoints(ref model);
 
             // Loop übergibt Input-Geometrie 
                 foreach (var punkt in Punktliste)
                 {
-                    
+                   //  aufbereiteteGeometrie.Facets
                  var _X = aufbereiteteGeometrie.PlacementX;
                  var _Y = aufbereiteteGeometrie.PlacementY;
                  var _Z = aufbereiteteGeometrie.PlacementZ;
@@ -97,9 +98,9 @@ namespace App_IBTK_Example
                         var n_X = aufbereiteteGeometrie.PlacementX;
                         var n_Y = aufbereiteteGeometrie.PlacementY;
                         var n_Z = aufbereiteteGeometrie.PlacementZ;
-                        n_X = Point.coordX - Minimum.coordX;
-                        n_Y = Point.coordY - Minimum.coordY;
-                        n_Z = Point.coordZ - Minimum.coordZ;
+                        n_X = Point.X - Minimum.X;
+                        n_Y = Point.CoordY - Minimum.CoordY;
+                        n_Z = Point.Z - Minimum.Z;
                         var transformedPoint = new Point3D(n_X, n_Y, n_Z);
                         aufbereiteteGeometrie.MeshPunkte.Add(Point);
                         var transformendPoints = aufbereiteteGeometrie.MeshPunkte;
@@ -109,9 +110,9 @@ namespace App_IBTK_Example
                         foreach (var tPoints in transformendPoints)
                         {
                             var ifcPoint = model.Instances.New<IfcCartesianPoint>();
-                            ifcPoint.X = tPoints.coordX;
-                            ifcPoint.Y = tPoints.coordY;
-                            ifcPoint.Z = tPoints.coordZ;
+                            ifcPoint.X = tPoints.X;
+                            ifcPoint.Y = tPoints.CoordY;
+                            ifcPoint.Z = tPoints.Z;
                             cartesianPoints.Add(ifcPoint);
 
 
