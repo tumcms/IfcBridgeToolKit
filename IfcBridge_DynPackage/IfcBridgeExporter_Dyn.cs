@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Autodesk.DesignScript.Geometry;
+using Autodesk.Revit.DB;
 using IfcBridgeToolKit;
 using IfcBridgeToolKit_DataLayer.GeometryConnector;
-using Revit.Elements;
 using Xbim.Ifc;
 using Xbim.IO;
+using DirectShape = Revit.Elements.DirectShape;
 
 namespace IfcBridge_DynPackage
 {
@@ -91,6 +94,8 @@ namespace IfcBridge_DynPackage
         /// </search>
         public static string AddGirdersFromRevit(string storeFilePath, XbimEditorCredentials credentials, List<DirectShape> girderMeshes)
         {
+            var counter = 0; 
+
             foreach (var mesh in girderMeshes) // loop over all "elements" (basically it's only its geometry but we already know that these are the right entities for the individual class
             {
                 // init transporter for each girder
@@ -102,6 +107,7 @@ namespace IfcBridge_DynPackage
                 {
                     var transporterFacet = new Facet(); // face in IfcToolKit understanding, contains several boundaryPoints
 
+                    // error safety
                     if (face == null)
                     {
                         continue;
@@ -123,15 +129,20 @@ namespace IfcBridge_DynPackage
                 }
 
                 // --- PLACEMENT --- 
-                // var revitLocation = mesh.GetLocation().ContextCoordinateSystem.Origin;
-                // location.Transform() // -> possible method
-
+                var location = mesh.InternalElement.Location; 
+                // var revitLocation = mesh.InternalElement.Location.ToString(); // no sufficient result
+                 //var revitLocation = mesh.Solids.First().Centroid(); // no sufficient result
+                 var revitLocation = mesh.BoundingBox?.ContextCoordinateSystem?.Origin; // no sufficient result
+                
                 // insert Revit coordinates into transporter
-                // transporter.location.Position = new Point3D(revitLocation.X, revitLocation.Y, revitLocation.Z);
-
-                // serialize to JSON to check the contained data
-                var myPath = @"C:\Users\Sebastian Esser\Desktop\meshJSON.json";
+                if (revitLocation != null)
+                    transporter.location.Position = new Point3D(revitLocation.X, revitLocation.Y, revitLocation.Z);
+               
+                //// serialize to JSON to check the contained data
+                var myPath = @"C:\Users\Sebastian Esser\Desktop\tmpBridge\" + "meshJSON_girder_0" + counter.ToString() + ".json";
                 transporter.SerializeToJson(myPath);
+
+                counter++; 
             }
 
 
