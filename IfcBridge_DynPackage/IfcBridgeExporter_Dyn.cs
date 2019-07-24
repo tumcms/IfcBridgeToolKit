@@ -98,6 +98,9 @@ namespace IfcBridge_DynPackage
             string ifcElementType)
         {
             var counter = 0;
+            // open Ifc model globally
+            var model = IfcStore.Open(storeFilePath, credentials, null, null, XbimDBAccess.ReadWrite);
+            // Note: no transaction is required -> will be opened in the toolkit function
 
             foreach (var element in elements)
             {
@@ -123,12 +126,7 @@ namespace IfcBridge_DynPackage
                 // init class for interactions with IfcModel
                 var toolkit = new AddComponents();
 
-                // open Ifc model
-                var model = IfcStore.Open(storeFilePath, credentials, null, null, XbimDBAccess.ReadWrite);
-
-                // do fancy transactions
-                using (var txn = model.BeginTransaction("add a physical item"))
-                {
+               
                     switch (ifcElementType) // ToDo: make use of enum
                     {
                         case "IfcBearing":
@@ -171,18 +169,15 @@ namespace IfcBridge_DynPackage
                         default:
                             toolkit.addProxyElement();
                             break;
-                    }
-
-                    // commit changes
-                    txn.Commit();
+                  
                 }
 
-                // save model
-                model.SaveAs(storeFilePath);
-                model.Close();
+                
             }
 
-
+            // save model
+            model.SaveAs(storeFilePath);
+            model.Close();
             return storeFilePath;
         }
 
