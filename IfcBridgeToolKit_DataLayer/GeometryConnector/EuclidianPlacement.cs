@@ -21,5 +21,9 @@ namespace IfcBridgeToolKit_DataLayer.GeometryConnector
         {
             Position = position;
         }
+
+        public EuclidianPlacement()
+        {
+        }
     }
 }

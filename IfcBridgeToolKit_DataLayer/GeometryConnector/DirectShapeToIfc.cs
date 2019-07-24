@@ -21,6 +21,7 @@ namespace IfcBridgeToolKit_DataLayer.GeometryConnector
         public DirectShapeToIfc()
         {
             Facets = new List<Facet>();
+            location = new EuclidianPlacement();
         }
 
         #region methods
