@@ -57,6 +57,7 @@ namespace IfcBridgeToolKit
                 bridgePart.ObjectPlacement = GetIfcLocalPlacement(ref model);
                 bridgePart.CompositionType = IfcElementCompositionEnum.ELEMENT;
                 bridgePart.PredefinedType = NameOfElement;
+                
 
                 var myBridge = model.Instances.OfType<IfcBridge>().FirstOrDefault();
                             

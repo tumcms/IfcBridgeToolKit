@@ -6,6 +6,9 @@ using Xbim.IO;
 
 namespace IfcBridge_DynPackage
 {
+    /// <summary>
+    /// Compilation of IfcBridge related methods to create Ifc 4x2 models out of Dynamo
+    /// </summary>
     public class IfcBridgeExporter_Dyn
     {
         /// <summary>
@@ -35,20 +38,26 @@ namespace IfcBridge_DynPackage
         /// </summary>
         /// <param name="projectName">Project Name inside the IfcModel</param>
         /// <param name="credentials">Editor Credentials - use node</param>
-        /// <param name="directory">use 'directory path' node from Dynamo</param>
-        /// <param name="FileName">simple string in the form of *.ifc</param>
-        public static string InitIfcModel(string projectName, XbimEditorCredentials credentials, string directory, string FileName)
+        /// <param name="directory">use 'Directory Path' node from Dynamo</param>
+        /// <param name="fileName">simple string in the form of *.ifc</param>
+        /// <param name="bridgeName">Bridge Name - could be empty</param>
+        /// <param name="bridgeDescription">Bridge Description - could be empty</param>
+        /// <returns>File Path to the IfcModel</returns>
+        /// <search>
+        /// init, IfcBridge
+        /// </search>
+        public static string InitIfcModel(string projectName, XbimEditorCredentials credentials, string directory, string fileName, string bridgeName = "unknown", string bridgeDescription = "unknown")
         {
             // build storage path of the model
-            var storeFilePath = directory + "/" + FileName;
+            var storeFilePath = directory + fileName;
 
             try
             {
                 var modelCreator = new CreateAndInitModel(); //ToDo: Correct Header -> IfcVersion 
                 var model = modelCreator.CreateModel(projectName, credentials);
 
-                //var bridgeCreator = new InitSpatialStructure();
-                //bridgeCreator.AddIfcBridge(ref model, name, description);
+                var bridgeCreator = new InitSpatialStructure();
+                bridgeCreator.AddIfcBridge(ref model, bridgeName, bridgeDescription);
                 
                 model.SaveAs(storeFilePath); 
             }
@@ -60,14 +69,23 @@ namespace IfcBridge_DynPackage
 
             return storeFilePath; // return directory to Ifc Model
         }
-        
+
         /// <summary>
         /// Add girders to IfcModel
         /// </summary>
         /// <param name="storeFilePath">Path to the already existing IfcModel</param>
+<<<<<<< HEAD
         /// <param name="credentials">Editor credits</param>
         /// <returns></returns>
         public static string AddGirdersFromRevit(String storeFilePath, XbimEditorCredentials credentials)
+=======
+        /// <param name="credentials">Editor credits from Credentials Node</param>
+        /// <returns>File Path to the IfcModel</returns>
+        /// <search>
+        /// girder, beam, IfcBridge
+        /// </search>
+        public static string AddGirdersFromRevit(string storeFilePath, XbimEditorCredentials credentials)
+>>>>>>> 14d05084ce0cc044c67eb33e5fa592c424b6f92d
         {
             // open Ifc model
             using (var model = IfcStore.Open(storeFilePath, credentials, null, null, XbimDBAccess.ReadWrite))
@@ -75,11 +93,7 @@ namespace IfcBridge_DynPackage
                 // do fancy transactions
                 using (var txn = model.BeginTransaction("add a bridge item"))
                 {
-                    var bridge = model.Instances.New<IfcBridge>();
-                    bridge.Name = "IfcBridge001";
-                    bridge.Description = "I'm a fancy hello-world bridge";
-                    bridge.PredefinedType = IfcBridgeTypeEnum.GIRDER;
-
+                   
                     // commit changes
                     txn.Commit();
                 }
