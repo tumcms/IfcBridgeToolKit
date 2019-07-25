@@ -72,6 +72,15 @@
     <Reference Include="ProtoGeometry, Version=2.2.1.5173, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamoVisualProgramming.ZeroTouchLibrary.2.2.1.5204\lib\net47\ProtoGeometry.dll</HintPath>
     </Reference>
+    <Reference Include="RevitAPI">
+      <HintPath>externalLibs_preCompiled\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitNodes">
+      <HintPath>externalLibs_preCompiled\RevitNodes.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitServices">
+      <HintPath>externalLibs_preCompiled\RevitServices.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
@@ -143,6 +152,9 @@
     <Folder Include="Spatial Breakdown\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="externalLibs_preCompiled\RevitAPI.dll" />
+    <Content Include="externalLibs_preCompiled\RevitNodes.dll" />
+    <Content Include="externalLibs_preCompiled\RevitServices.dll" />
     <Content Include="externalLibs_preCompiled\Xbim.Common.dll" />
     <Content Include="externalLibs_preCompiled\Xbim.Ifc.dll" />
     <Content Include="externalLibs_preCompiled\Xbim.Ifc2x3.dll" />
@@ -151,6 +163,12 @@
     <Content Include="externalLibs_preCompiled\Xbim.IO.Esent.dll" />
     <Content Include="externalLibs_preCompiled\Xbim.IO.MemoryModel.dll" />
     <Content Include="externalLibs_preCompiled\Xbim.Tessellator.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IfcBridgeToolKit_DataLayer\IfcBridgeToolKit_DataLayer.csproj">
+      <Project>{15FDAF29-DFE3-40A4-83E3-3B3E4FED5064}</Project>
+      <Name>IfcBridgeToolKit_DataLayer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -7,6 +7,7 @@ using IfcBridgeToolKit;
 using IfcBridgeToolKit_DataLayer;
 using Xbim.IfcRail.GeometricConstraintResource;
 using System.Collections.Generic;
+using IfcBridgeToolKit_DataLayer.GeometryConnector;
 using Xbim.Ifc;
 using Xbim.Common;
 
@@ -23,30 +24,15 @@ namespace App_IBTK_Example
             ModelCreator.CreateRequiredInstances(ref model, "project Site");
 
 
-            var TestListe = new List<Point3D>();
-            TestListe.Add(new Point3D(1, 1, 1));
-            TestListe.Add(new Point3D(2, 1, 1));
-            TestListe.Add(new Point3D(2, 2, 1));
-            TestListe.Add(new Point3D(1, 1, 2));
-
-
-            var ne = new GetPlacementPoint();
-            PointTransform ET = ne.PlacementPoint(TestListe);
-
             using (var txn = model.BeginTransaction("add an IfcAlignment"))
             {
-                //AddComponents.ConvertMyMeshToIfcFacetedBRep(ref model, "Testprodukt", ifcCartesianPoints(ref model ));                                                
-                var Testpoint = model.Instances.New<IfcCartesianPoint>();
-                Testpoint.X = ET.coordX;
-                Testpoint.Y = ET.coordY;
-                Testpoint.Z = ET.coordZ;
-
+                AddComponents.ConvertMyMeshToIfcFacetedBRep(ref model, "Testprodukt", CartesianPoints(ref model));
                 txn.Commit();
 
                 
 
             }
-            
+
             model.SaveAs("IfcBridgeToolKitExample_03.ifc");
         }
 
@@ -58,20 +44,18 @@ namespace App_IBTK_Example
         /// <returns></returns>
         private static List<IfcCartesianPoint> ifcCartesianPoints(ref IfcStore model)
         {
-            
-                List<IfcCartesianPoint> ifcCartesianPoints = new List<IfcCartesianPoint>();
-                var Point1 = model.Instances.New<IfcCartesianPoint>(p1 => p1.SetXYZ(0, 0, 0));
-                ifcCartesianPoints.Add(Point1);
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p2 => p2.SetXYZ(1, 0, 0)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p3 => p3.SetXYZ(1, 1, 0)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p4 => p4.SetXYZ(0, 1, 0)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p5 => p5.SetXYZ(0, 1, 1)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p6 => p6.SetXYZ(0, 0, 1)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p7 => p7.SetXYZ(1, 0, 1)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p8 => p8.SetXYZ(1, 1, 1)));
-                ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p1 => p1.SetXYZ(0, 0, 0)));
-                return ifcCartesianPoints;
-            
+            List<IfcCartesianPoint> ifcCartesianPoints = new List<IfcCartesianPoint>();
+            var Point1 = model.Instances.New<IfcCartesianPoint>(p1 => p1.SetXYZ(0, 0, 0));
+            ifcCartesianPoints.Add(Point1);
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p2 => p2.SetXYZ(1, 0, 0)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p3 => p3.SetXYZ(1, 1, 0)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p4 => p4.SetXYZ(0, 1, 0)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p5 => p5.SetXYZ(0, 1, 1)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p6 => p6.SetXYZ(0, 0, 1)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p7 => p7.SetXYZ(1, 0, 1)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p8 => p8.SetXYZ(1, 1, 1)));
+            ifcCartesianPoints.Add(model.Instances.New<IfcCartesianPoint>(p1 => p1.SetXYZ(0, 0, 0)));
+            return ifcCartesianPoints;
         }
 
 
