@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using IfcBridgeToolKit;
 using IfcBridgeToolKit_DataLayer.GeometryConnector;
+using Revit.Elements;
 using Xbim.Ifc;
 using Xbim.IO;
-using DirectShape = Revit.Elements.DirectShape;
-using Element = Revit.Elements.Element;
-
-
 
 namespace IfcBridge_DynPackage
 {
@@ -94,182 +91,132 @@ namespace IfcBridge_DynPackage
 =======
         /// <param name="credentials">Editor credits from Credentials Node</param>
         /// <param name="elements">List of DirectShape geometries</param>
+        /// <param name="ifcElementType">Defines the target IfcClass -> use dropdown menu</param>
         /// <returns>File Path to the IfcModel</returns>
         /// <search>
         ///     girder, beam, IfcBridge
         /// </search>
-        public static string AddGirdersFromRevit(
+        public static string AddDirectShapeComponents(
             string storeFilePath,
             XbimEditorCredentials credentials,
-            List<Element> elements)
+            List<Element> elements,
+            string ifcElementType)
         {
             var counter = 0;
+            // open Ifc model globally
+            var model = IfcStore.Open(storeFilePath, credentials, null, null, XbimDBAccess.ReadWrite);
+            // Note: no transaction is required -> will be opened in the toolkit function
 
             foreach (var element in elements)
             {
-                // init transporter for each girder
+                // init transporter for each element geometry
                 var transporter = new DirectShapeToIfc();
 
-                // --- GEOMETRIC SHAPE ---
-                // every directShape consists of several faces. Each face has several corner points that are connected by a polyline
-                foreach (var face in element.Faces)
-                {
-                    var transporterFacet =
-                        new Facet(); // face in IfcToolKit understanding, contains several boundaryPoints
-
-                    // error safety
-                    if (face == null) continue;
-
-                    // convert each vertexPt from Revit into an Pt3D of IfcToolKit definition
-                    foreach (var revitVertex in face.Vertices)
-                    {
-                        var pt3D = new Point3D(
-                            revitVertex.PointGeometry.X,
-                            revitVertex.PointGeometry.Y,
-                            revitVertex.PointGeometry.Z
-                        );
-                        // add point to current face
-                        transporterFacet.vertices.Add(pt3D);
-                    }
-
-                    // add face to transporter (remember: one shape has several faces
-                    transporter.Facets.Add(transporterFacet);
-                }
+                // --- GEOMETRIC REPRESENTATION ---
+                InsertShape(element, ref transporter);
 
                 // --- PLACEMENT --- 
                 var location = element.Solids.FirstOrDefault()?.Centroid();
-               
-                // insert Revit coordinates into transporter
                 if (location != null)
-                {
-                    transporter.location.Position = new Point3D(location.X, location.Y, location.Z);
-                }
-                    
-                //// serialize to JSON to check the contained data
-                var myPath = @"C:\Users\Sebastian Esser\Desktop\tmpBridge\" + "meshJSON_girder_0" + counter.ToString() +
+                    transporter.location.Position =
+                        new Point3D(location.X, location.Y, location.Z); // insert Revit coordinates into transporter
+
+                // -- Control: serialize to JSON to check the contained data
+                var myPath = @"C:\Users\Sebastian Esser\Desktop\tmpBridge\" + "meshJSON_girder_0" + counter +
                              ".json";
                 transporter.SerializeToJson(myPath);
 
                 counter++;
+
+                // init class for interactions with IfcModel
+                var toolkit = new AddComponents();
+
+               
+                    switch (ifcElementType) // ToDo: make use of enum
+                    {
+                        case "IfcBearing":
+                        {
+                            // call the bearing function in the toolkit
+                            break;
+                        }
+                        case "IfcBeam":
+                        {
+                            // call the girder function in the toolkit
+
+                            toolkit.addGirderToIfc(ref model, transporter, "Girder" + counter, "GirderRepresentation");
+                            break;
+                        }
+                        case "IfcColumn":
+                        {
+                            // call the bearing function in the toolkit
+
+                            break;
+                        }
+                        case "IfcPier": // ToDo: existing? or is it IfcColumn?
+                        {
+                            // call the bearing function in the toolkit
+
+                            break;
+                        }
+                        case "IfcFooting":
+                        {
+                            break;
+                        }
+
+                        case "IfcSlab":
+                        {
+                            break;
+                        }
+
+                        //ToDo: cases not handled so far: BridgeDeck, Abutment, Caps, Curbstones, Pavement
+
+                        // if nothing fits, make an IfcBuildingElementProxy out of it :-) 
+                        default:
+                            toolkit.addProxyElement();
+                            break;
+                  
+                }
+
+                
             }
 
-
-            //// open Ifc model
-            //using (var model = IfcStore.Open(storeFilePath, credentials, null, null, XbimDBAccess.ReadWrite))
-            //{
-            //    // do fancy transactions
-            //    using (var txn = model.BeginTransaction("add a bridge item"))
-            //    {
-            //        // commit changes
-            //        txn.Commit();
-            //    }
-
-            //    // save model
-            //    model.SaveAs(storeFilePath);
-            //}
-
+            // save model
+            model.SaveAs(storeFilePath);
+            model.Close();
             return storeFilePath;
         }
 
         /// <summary>
-        ///     Add foundation items to IfcModel
+        ///     converts direct shape representation into transporter container
         /// </summary>
-        /// <param name="storeFilePath"></param>
-        /// <param name="credentials"></param>
-        /// <param name="foundationMeshes"></param>
-        /// <returns></returns>
-        public static string AddFoundationsFromRevit(string storeFilePath, XbimEditorCredentials credentials,
-            List<DirectShape> foundationMeshes)
+        /// <param name="element"></param>
+        /// <param name="transporter"></param>
+        private static void InsertShape(Element element, ref DirectShapeToIfc transporter)
         {
-            return storeFilePath;
-        }
+            // every directShape consists of several faces. Each face has several corner points that are connected by a polyline
+            foreach (var face in element.Faces)
+            {
+                var transporterFacet =
+                    new Facet(); // face in IfcToolKit understanding, contains several boundaryPoints
 
-        /// <summary>
-        /// </summary>
-        /// <param name="storeFilePath"></param>
-        /// <param name="credentials"></param>
-        /// <param name="bridgeDeckMeshes"></param>
-        /// <returns></returns>
-        public static string AddBridgeDecksFromRevit(string storeFilePath, XbimEditorCredentials credentials,
-            List<DirectShape> bridgeDeckMeshes)
-        {
-            return storeFilePath;
-        }
+                // error safety
+                if (face == null) continue;
 
-        /// <summary>
-        /// </summary>
-        /// <param name="storeFilePath"></param>
-        /// <param name="credentials"></param>
-        /// <param name="abutmentMeshes"></param>
-        /// <returns></returns>
-        public static string AddAbutmentsFromRevit(string storeFilePath, XbimEditorCredentials credentials,
-            List<DirectShape> abutmentMeshes)
-        {
-            return storeFilePath;
-        }
+                // convert each vertexPt from Revit into an Pt3D of IfcToolKit definition
+                foreach (var revitVertex in face.Vertices)
+                {
+                    var pt3D = new Point3D(
+                        revitVertex.PointGeometry.X,
+                        revitVertex.PointGeometry.Y,
+                        revitVertex.PointGeometry.Z
+                    );
+                    // add point to current face
+                    transporterFacet.vertices.Add(pt3D);
+                }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="storeFilePath"></param>
-        /// <param name="credentials"></param>
-        /// <param name="pierMeshes"></param>
-        /// <returns></returns>
-        public static string AddPiersFromRevit(string storeFilePath, XbimEditorCredentials credentials,
-            List<DirectShape> pierMeshes)
-        {
-            return storeFilePath;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="storeFilePath"></param>
-        /// <param name="credentials"></param>
-        /// <param name="bearingMeshes"></param>
-        /// <returns></returns>
-        public static string AddBearingsFromRevit(string storeFilePath, XbimEditorCredentials credentials,
-            List<DirectShape> bearingMeshes)
-        {
-            return storeFilePath;
-        }
-
-        #endregion
-
-        #region Unclassificable Elements
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="storeFilePath"></param>
-        /// <param name="credentials"></param>
-        /// <returns></returns>
-        public static string AddCapsFromRevit(string storeFilePath, XbimEditorCredentials credentials)
-        {
-            // -> IfcBeam? 
-            return storeFilePath;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="storeFilePath"></param>
-        /// <param name="credentials"></param>
-        /// <returns></returns>
-        public static string AddPavementFromRevit(string storeFilePath, XbimEditorCredentials credentials)
-        {
-            // will be defined by IfcRoad -> use IfcBldElementProxy for now
-            return storeFilePath;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="storeFilePath"></param>
-        /// <param name="credentials"></param>
-        /// <returns></returns>
-        public static string AddCurbstonesFromRevit(string storeFilePath, XbimEditorCredentials credentials)
-        {
-            // will be defined by IfcRoad -> use IfcBldElementProxy for now
-            return storeFilePath;
+                // add face to transporter (remember: one shape has several faces
+                transporter.Facets.Add(transporterFacet);
+            }
         }
 
         #endregion
