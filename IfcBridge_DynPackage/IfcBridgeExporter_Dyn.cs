@@ -79,16 +79,7 @@ namespace IfcBridge_DynPackage
         #endregion
 
         #region Classifiable Items
-
-        /// <summary>
-        ///     Add girder items to IfcModel
-        /// </summary>
-        /// <param name="storeFilePath">Path to the already existing IfcModel</param>
-<<<<<<< HEAD
-        /// <param name="credentials">Editor credits</param>
-        /// <returns></returns>
-        public static string AddGirdersFromRevit(String storeFilePath, XbimEditorCredentials credentials)
-=======
+        
         /// <param name="credentials">Editor credits from Credentials Node</param>
         /// <param name="elements">List of DirectShape geometries</param>
         /// <param name="ifcElementType">Defines the target IfcClass -> use dropdown menu</param>
@@ -172,7 +163,7 @@ namespace IfcBridge_DynPackage
 
                         // if nothing fits, make an IfcBuildingElementProxy out of it :-) 
                         default:
-                            toolkit.addProxyElement();
+                           // toolkit.addProxyElement();
                             break;
                   
                 }
