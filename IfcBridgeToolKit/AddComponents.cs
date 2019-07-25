@@ -39,7 +39,11 @@ namespace IfcBridgeToolKit
             using (var txn = model.BeginTransaction("ich füge einen Träger ein"))
             {
                 var beam = model.Instances.New<IfcBeam>();
+                beam.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbreiteteGeometrie.location.Position);
 
+                var rep = meineAufbreiteteGeometrie.Facets;
+                // ToDo: Input von ConvertMyMeshToIfcFacetedBRep auf neue Struktur von DirectShapeToIfc anpassen
+               //  beam.Representation = ConvertMyMeshToIfcFacetedBRep()
 
                 beam.Name = Bauteilname;
                 //beam.Representation = ConvertMyMeshToIfcFacetedBRep(ref model,NameRepräsentation, list );
@@ -171,14 +175,7 @@ namespace IfcBridgeToolKit
                 }
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void addPier()
-        {
-        }
-
+        
         /// <summary>
         /// 
         /// </summary>
@@ -202,7 +199,7 @@ namespace IfcBridgeToolKit
         /// 
         /// </summary>
         public static IfcProductDefinitionShape ConvertMyMeshToIfcFacetedBRep(ref IfcStore model, string name,
-            List<IfcCartesianPoint> ifcCartesianPoints)
+           DirectShapeToIfc ifcCartesianPoints)
         {
             //ToDo: Liste mit allen Eckpunkten einer Geometrie implementieren --> foreach schleife muss darauf ansprechen!
             //Frage an Sebastian: Herangehensweise ähneld deiner schreibweise. Es wird allerdings nur ein Facegeneriert, dass kann doch dann nicht die gesamte Geometrie beschreiben 
@@ -213,7 +210,7 @@ namespace IfcBridgeToolKit
             var polyloob = model.Instances.New<IfcPolyLoop>();
             //Frage an Sebastian: Es werden CaresianPoints generiert die ich nicht möchte --> Generiere Punkte in der ConsoleAppanwendung ... diese Übergebe ich zu ConvertMyMeshtoIfcFacetedBRep
             //Erstelle Liste die für den Zweiten foreach-loop verwendet werden kann 
-            foreach (IfcCartesianPoint Point in ifcCartesianPoints)
+            foreach (var Point in ifcCartesianPoints.Facets)
             {
                 List<IfcCartesianPoint> Eckpunkte = new List<IfcCartesianPoint>
                     { };
@@ -275,7 +272,7 @@ namespace IfcBridgeToolKit
         /// <param name="model"></param>
         /// <param name="Point"> Der Plazierungspunkt der afubereiteten Meshgeometrie muss verwendet werden, um eine korrekte Plazierung zu gewährleisten </param>
         /// <returns></returns>
-        private IfcLocalPlacement addMyLocalPlacement(ref IfcStore model, IfcCartesianPoint Point)
+        private IfcLocalPlacement addMyLocalPlacement(ref IfcStore model, Point3D Point)
         {
             var localPlacement = model.Instances.New<IfcLocalPlacement>();
             //Axis3D

@@ -128,6 +128,7 @@ namespace IfcBridge_DynPackage
                         case "IfcBearing":
                         {
                             // call the bearing function in the toolkit
+                            
                             break;
                         }
                         case "IfcBeam":
