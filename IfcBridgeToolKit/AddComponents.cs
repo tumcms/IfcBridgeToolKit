@@ -11,6 +11,7 @@ using Xbim.IfcRail.GeometryResource;
 using Xbim.IfcRail.MeasureResource;
 using Xbim.IfcRail.StructuralElementsDomain;
 using Xbim.IfcRail.RailwayDomain;
+using System.Linq;
 
 namespace IfcBridgeToolKit
 {
@@ -27,7 +28,7 @@ namespace IfcBridgeToolKit
         {
         }
 
-        // ToDo: implementieren
+       
         /// <summary>
         /// 
         /// </summary>
@@ -40,32 +41,12 @@ namespace IfcBridgeToolKit
             {
                 var beam = model.Instances.New<IfcBeam>();
                 beam.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbreiteteGeometrie.location.Position);
-
-                var rep = meineAufbreiteteGeometrie.Facets;
-                // ToDo: Input von ConvertMyMeshToIfcFacetedBRep auf neue Struktur von DirectShapeToIfc anpassen
-               //  beam.Representation = ConvertMyMeshToIfcFacetedBRep()
-
-                beam.Name = Bauteilname;
-                //beam.Representation = ConvertMyMeshToIfcFacetedBRep(ref model,NameRepräsentation, list );
-                //beam.ObjectPlacement = addMyLocalPlacement(refmodel,)
-                // beam.ObjectPlacement = addMyLocalPlacement();
+                beam.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbreiteteGeometrie);
+               beam.Name = Bauteilname;
+                
+                txn.Commit();
             }
-
-            //    // öffne Transaktion auf Ifc Model
-
-            //    // füge ein IfcBeam-Entity hinzu
-
-
-            //    // füge Placement ein - BEISPIEL!! noch nicht fertig implementiert
-            //addMyLocalPlacement();
-
-            //var localPlacement = model.Instances.New<IfcLocalPlacement>();
-            //localPlacement.X = meineAufbreiteteGeometrie.PlacementX;
-            //meineAufbreiteteGeometrie.MeshPunkte.Add(new Point3D(1,2,3));
-            //meineAufbreiteteGeometrie.M
-            //    // füge Geometrie in IfcModel ein
-            //  ConvertMyMeshToIfcFacetedBRep();
-            //    // beende Transaktion
+            
         }
 
         /// <summary>
@@ -81,8 +62,8 @@ namespace IfcBridgeToolKit
             {
                     var pile = model.Instances.New<IfcPile>();
                     pile.Name = Bauteilname;
-                    pile.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
-                    pile.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
+                    //pile.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
+                    //pile.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
 
 
 
@@ -125,9 +106,9 @@ namespace IfcBridgeToolKit
                 using (var txn = model.BeginTransaction("Füge ein Bearing ein"))
                 {
                     var Bearing = model.Instances.New<IfcBearing>();
-                    Bearing.Name = Bauteilname;
-                    Bearing.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
-                    Bearing.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
+                    //Bearing.Name = Bauteilname;
+                    //Bearing.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
+                    //Bearing.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
 
                     txn.Commit();
                 }
@@ -147,8 +128,8 @@ namespace IfcBridgeToolKit
                 {
                     var Covering = model.Instances.New<IfcCovering>();
                     Covering.Name = Bauteilname;
-                    Covering.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
-                    Covering.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
+                    //Covering.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
+                    //Covering.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
 
                     txn.Commit();
                 }
@@ -168,8 +149,8 @@ namespace IfcBridgeToolKit
                 {
                     var Foundation = model.Instances.New<IfcDeepFoundation>();
                     Foundation.Name = Bauteilname;
-                    Foundation.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
-                    Foundation.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
+                    //Foundation.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
+                    //Foundation.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
 
                     txn.Commit();
                 }
@@ -188,8 +169,8 @@ namespace IfcBridgeToolKit
                 {
                     var buildingElementProxy = model.Instances.New<IfcBuildingElementProxy>();
                     buildingElementProxy.Name = Bauteilname;
-                    buildingElementProxy.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
-                    buildingElementProxy.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
+                    //buildingElementProxy.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
+                    //buildingElementProxy.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
 
                     txn.Commit();
                 }
@@ -212,19 +193,20 @@ namespace IfcBridgeToolKit
             //Erstelle Liste die für den Zweiten foreach-loop verwendet werden kann 
             foreach (var Point in ifcCartesianPoints.Facets)
             {
-                List<IfcCartesianPoint> Eckpunkte = new List<IfcCartesianPoint>
-                    { };
-                Eckpunkte.Add(Point);
+               
+                var pts = Point.vertices.ToList();
+                    
+               
 
 
                 // Übergibt Eckpunkte in den Polyloob 
-                foreach (var Eckpunkt in Eckpunkte)
+                foreach (var pt in pts)
                 {
                     var ifcCartesianPoint = model.Instances.New<IfcCartesianPoint>(iCP =>
                     {
-                        iCP.X = Eckpunkt.X;
-                        iCP.Y = Eckpunkt.Y;
-                        iCP.Z = Eckpunkt.Z;
+                        iCP.X = pt.X;
+                        iCP.Y = pt.Y;
+                        iCP.Z = pt.Z;
                     });
                     polyloob.Polygon.Add(ifcCartesianPoint);
                 }
@@ -244,7 +226,7 @@ namespace IfcBridgeToolKit
             var context = CreateModel.GetIfcGeometricPresentationContext(ref model);
             ifcShapeRepresentation.ContextOfItems = context;
             ifcShapeRepresentation.RepresentationIdentifier = "Body";
-            ifcShapeRepresentation.RepresentationIdentifier = "FacetedbRep";
+            ifcShapeRepresentation.RepresentationType = "FacetedBRep";
             ifcShapeRepresentation.Items.Add(ifcFacetedBRep);
             //Erstellt IfcProductDefinitionShape 
             var ifcProductDefinitonShape = model.Instances.New<IfcProductDefinitionShape>();

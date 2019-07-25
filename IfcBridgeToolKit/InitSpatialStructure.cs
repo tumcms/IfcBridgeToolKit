@@ -70,6 +70,40 @@ namespace IfcBridgeToolKit
                                           
         }
 
+        public void AddIfcBridgepartSuperstructure(ref IfcStore model)
+        {
+            using (var txn = model.BeginTransaction("Add Superstructure"))
+            {
+                var superstructure = model.Instances.New<IfcBridgePart>();
+                superstructure.Name = "Superstructure";
+                superstructure.ObjectPlacement = GetIfcLocalPlacement(ref model);
+                superstructure.CompositionType = IfcElementCompositionEnum.ELEMENT;
+                superstructure.PredefinedType = IfcBridgePartTypeEnum.SUPERSTRUCTURE;
+                
+
+                var substructure = model.Instances.New<IfcBridgePart>();
+                substructure.Name = "Substructure";
+                substructure.ObjectPlacement = GetIfcLocalPlacement(ref model);
+                substructure.CompositionType = IfcElementCompositionEnum.ELEMENT;
+                substructure.PredefinedType = IfcBridgePartTypeEnum.SUBSTRUCTURE;
+
+                var surfacestructure = model.Instances.New<IfcBridgePart>();
+                surfacestructure.Name = "Surfacestructure";
+                surfacestructure.ObjectPlacement = GetIfcLocalPlacement(ref model);
+                surfacestructure.CompositionType = IfcElementCompositionEnum.ELEMENT;
+                surfacestructure.PredefinedType = IfcBridgePartTypeEnum.SURFACESTRUCTURE;
+
+                var myBridge = model.Instances.OfType<IfcBridge>().FirstOrDefault();
+                var spatial2Bridge = model.Instances.New<IfcRelAggregates>();
+                spatial2Bridge.RelatingObject = myBridge;
+                spatial2Bridge.RelatedObjects.Add(superstructure);
+                spatial2Bridge.RelatedObjects.Add(substructure); 
+                spatial2Bridge.RelatedObjects.Add(surfacestructure);
+
+                txn.Commit();
+            }
+        }
+
         /// <summary>
         /// Verlinkt Element zu den zugehörigen IfcBrigeparts 
         /// </summary>

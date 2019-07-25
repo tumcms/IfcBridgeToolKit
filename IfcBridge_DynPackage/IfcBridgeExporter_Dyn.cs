@@ -113,11 +113,11 @@ namespace IfcBridge_DynPackage
                         new Point3D(location.X, location.Y, location.Z); // insert Revit coordinates into transporter
 
                 // -- Control: serialize to JSON to check the contained data
-                var myPath = @"C:\Users\Sebastian Esser\Desktop\tmpBridge\" + "meshJSON_girder_0" + counter +
-                             ".json";
-                transporter.SerializeToJson(myPath);
+                //var myPath = @"C:\Users\Sebastian Esser\Desktop\tmpBridge\" + "meshJSON_girder_0" + counter +
+                //             ".json";
+                //transporter.SerializeToJson(myPath);
 
-                counter++;
+                //counter++;
 
                 // init class for interactions with IfcModel
                 var toolkit = new AddComponents();
@@ -176,6 +176,28 @@ namespace IfcBridge_DynPackage
             model.SaveAs(storeFilePath);
             model.Close();
             return storeFilePath;
+        }
+
+        public static string AddBridgeStructure(string storeFilePath, XbimEditorCredentials credentials, string bridgeName, string bridgeDescription)
+        {
+            var model = IfcStore.Open(storeFilePath, credentials, null, null, XbimDBAccess.ReadWrite);
+            try
+            {
+               
+
+                var bridgeCreator = new InitSpatialStructure();
+                bridgeCreator.AddIfcBridge(ref model, bridgeName, bridgeDescription);
+                bridgeCreator.AddIfcBridgepartSuperstructure(ref model);
+                model.SaveAs(storeFilePath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            return storeFilePath; // return directory to Ifc Model
+
         }
 
         /// <summary>
