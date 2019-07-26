@@ -231,12 +231,10 @@ namespace IfcBridgeToolKit
             locationPoint.X = 0;
             locationPoint.Y = 0;
             locationPoint.Z = 0;
-            //Grundlegende definition der Achsen und der referenzierten Richtung    
-            //Frage an Sebastian: Soll IfcDirection seperat erstellt werden --> Referenz auf Cambridge_4x2: Elemente habe unterschiedliche Directions 
+        
             var directionAxis = model.Instances.New<IfcDirection>(dA => dA.SetXYZ(0, 0, 1));
             var directionRefDirection = model.Instances.New<IfcDirection>(dRD => dRD.SetXYZ(1, 0, 0));
 
-            //Fülle den Hauptoperatoren mit den Benötigten Inputs
             var axis2Placement3D = model.Instances.New<IfcAxis2Placement3D>(a2P3D =>
             {
                 a2P3D.Location = locationPoint;

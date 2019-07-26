@@ -12,6 +12,7 @@ using Xbim.IfcRail.MeasureResource;
 using Xbim.IfcRail.StructuralElementsDomain;
 using Xbim.IfcRail.RailwayDomain;
 using System.Linq;
+using Xbim.IfcRail.Kernel;
 
 namespace IfcBridgeToolKit
 {
@@ -46,7 +47,15 @@ namespace IfcBridgeToolKit
                 beam.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbreiteteGeometrie.location.Position);
                 beam.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbreiteteGeometrie);
                 beam.Name = Bauteilname;
-                
+               
+                var myBridge = model.Instances.OfType < IfcBridgePart> ().FirstOrDefault();
+                myBridge.PredefinedType = IfcBridgePartTypeEnum.SUPERSTRUCTURE;
+
+                var spatial2Bridge = model.Instances.New<IfcRelAggregates>();
+                spatial2Bridge.RelatingObject = myBridge;
+                spatial2Bridge.RelatedObjects.Add(beam);
+
+
                 txn.Commit();
             }
             
@@ -213,12 +222,18 @@ namespace IfcBridgeToolKit
         public static IfcProductDefinitionShape ConvertMyMeshToIfcFacetedBRep(ref IfcStore model, string name,
            DirectShapeToIfc ifcCartesianPoints)
         {
-            var ifcFacetedBRep = model.Instances.New<IfcFacetedBrep>();
 
-            var polyloob = model.Instances.New<IfcPolyLoop>();
+            var ifcFacetedBRep = model.Instances.New<IfcFacetedBrep>();
+            var ifcClosedShell = model.Instances.New<IfcClosedShell>();
+            ifcFacetedBRep.Outer = ifcClosedShell;
+            
 
             foreach (var Point in ifcCartesianPoints.Facets)
             {
+                var polyloob = model.Instances.New<IfcPolyLoop>();
+
+
+
                 var pts = Point.vertices.ToList();
 
                 // Übergibt Eckpunkte in den Polyloob 
@@ -237,29 +252,25 @@ namespace IfcBridgeToolKit
                 var ifcFaceOuterBound = model.Instances.New<IfcFaceOuterBound>(iFOB => iFOB.Bound = polyloob);
 
                 var ifcFace = model.Instances.New<IfcFace>(iF => iF.Bounds.Add(ifcFaceOuterBound));
+                ifcClosedShell.CfsFaces.Add(ifcFace);
 
-                var ifcClosedShell = model.Instances.New<IfcClosedShell>(iCS => iCS.CfsFaces.Add(ifcFace));
-                //Erstellt Repräsentationsart "FacetedBRep" 
-                ifcFacetedBRep.Outer = ifcClosedShell;
-                //Erstellt IfcShapeRepresentation 
             }
 
             var ifcShapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
-            
-            //Iniziiere GeometricPresentationContext 
-            var CreateModel = new CreateAndInitModel();
-            var context = CreateModel.GetIfcGeometricPresentationContext(ref model);
-            ifcShapeRepresentation.ContextOfItems = context;
-            ifcShapeRepresentation.RepresentationIdentifier = "Body";
-            ifcShapeRepresentation.RepresentationType = "BRep";
-            ifcShapeRepresentation.Items.Add(ifcFacetedBRep);
+                var context = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
+                ifcShapeRepresentation.ContextOfItems = context;
+                ifcShapeRepresentation.RepresentationIdentifier = "Body";
+                ifcShapeRepresentation.RepresentationType = "BRep";
+                ifcShapeRepresentation.Items.Add(ifcFacetedBRep);
 
             //Erstellt IfcProductDefinitionShape 
             var ifcProductDefinitonShape = model.Instances.New<IfcProductDefinitionShape>();
             ifcProductDefinitonShape.Name = name;
             ifcProductDefinitonShape.Representations.Add(ifcShapeRepresentation);
+
+                //  return ProductDefinitionShape
+              
             
-            //  return ProductDefinitionShape
             return ifcProductDefinitonShape;
         }
 
