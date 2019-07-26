@@ -34,170 +34,192 @@ namespace IfcBridgeToolKit
         /// </summary>
         /// <param name="meineAufbreiteteGeometrie"></param>
         /// <param name="Bauteilname"></param>
-        public void addGirderToIfc(ref IfcStore model, DirectShapeToIfc meineAufbreiteteGeometrie,
-            string Bauteilname, string NameRepräsentation)
+        public void addGirderToIfc(
+            ref IfcStore model,
+            DirectShapeToIfc meineAufbreiteteGeometrie,
+            string Bauteilname,
+            string NameRepräsentation)
         {
             using (var txn = model.BeginTransaction("ich füge einen Träger ein"))
             {
                 var beam = model.Instances.New<IfcBeam>();
                 beam.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbreiteteGeometrie.location.Position);
                 beam.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbreiteteGeometrie);
-               beam.Name = Bauteilname;
+                beam.Name = Bauteilname;
                 
                 txn.Commit();
             }
             
         }
-
+        
         /// <summary>
         /// 
         /// </summary>
-        public void addPileToIfc(ref IfcStore model,string fileName, string Bauteilname, string Repräsentationsname, IfcCartesianPoint PlacementPoint, List<IfcCartesianPoint> PointList)
+        /// <param name="model"></param>
+        /// <param name="meineAufbereiteteGeometrie"></param>
+        /// <param name="Bauteilname"></param>
+        /// <param name="NameRepräsentation"></param>
+        public void AddPileToIfc(
+            ref IfcStore model,
+            DirectShapeToIfc meineAufbereiteteGeometrie,
+            string Bauteilname,
+            string NameRepräsentation)
         {
-            string FileName = fileName;
-
-            using (IfcStore.Open(FileName))
-            { 
             using (var txn = model.BeginTransaction("Füge einen Pfahl ein"))
             {
                     var pile = model.Instances.New<IfcPile>();
+                    pile.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
+                    pile.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
                     pile.Name = Bauteilname;
-                    //pile.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
-                    //pile.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
-
-
-
-                txn.Commit();
-            }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void addAbutment(ref IfcStore model, string fileName, string Bauteilname, string Repräsentationsname, IfcCartesianPoint PlacementPoint, List<IfcCartesianPoint> PointList)
-        {
-            string FileName = fileName;
-            using (IfcStore.Open(FileName))
-            {
-                using (var txn = model.BeginTransaction("Füge einen Pfahl ein"))
-                {
-                    //var pile = model.Instances.New<>();
-                    //pile.Name = Bauteilname;
-                    //pile.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
-                    //pile.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
-
-
 
                     txn.Commit();
-                }
             }
-
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void addBearing(ref IfcStore model, string fileName, string Bauteilname, string Repräsentationsname, IfcCartesianPoint PlacementPoint, List<IfcCartesianPoint> PointList)
+        /// <param name="model"></param>
+        /// <param name="meineAufbereiteteGeometrie"></param>
+        /// <param name="Bauteilname"></param>
+        /// <param name="NameRepräsentation"></param>
+        public void AddAbutment(
+            ref IfcStore model,
+            DirectShapeToIfc meineAufbereiteteGeometrie,
+            string Bauteilname,
+            string NameRepräsentation)
         {
-            string FileName = fileName;
-            using (IfcStore.Open(FileName))
+            using (var txn = model.BeginTransaction("Füge Endauflager hinzu ein"))
             {
-                using (var txn = model.BeginTransaction("Füge ein Bearing ein"))
-                {
+                    var pile = model.Instances.New<IfcWall>();
+                    pile.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
+                    pile.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
+                    pile.Name = Bauteilname;
+
+                    txn.Commit();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="meineAufbereiteteGeometrie"></param>
+        /// <param name="Bauteilname"></param>
+        /// <param name="NameRepräsentation"></param>
+        public void addBearing(
+            ref IfcStore model,
+            DirectShapeToIfc meineAufbereiteteGeometrie,
+            string Bauteilname,
+            string NameRepräsentation)
+        {
+            using (var txn = model.BeginTransaction("Füge ein Lager ein"))
+            {
                     var Bearing = model.Instances.New<IfcBearing>();
-                    //Bearing.Name = Bauteilname;
-                    //Bearing.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
-                    //Bearing.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
+                    Bearing.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
+                    Bearing.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
+                    Bearing.Name = Bauteilname;
 
                     txn.Commit();
-                }
             }
-
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void Covering(ref IfcStore model, string fileName, string Bauteilname, string Repräsentationsname, IfcCartesianPoint PlacementPoint, List<IfcCartesianPoint> PointList)
+        /// <param name="model"></param>
+        /// <param name="fileName"></param>
+        /// <param name="Bauteilname"></param>
+        /// <param name="Repräsentationsname"></param>
+        /// <param name="PlacementPoint"></param>
+        /// <param name="PointList"></param>
+        public void Covering(
+            ref IfcStore model,
+            DirectShapeToIfc meineAufbereiteteGeometrie,
+            string Bauteilname,
+            string NameRepräsentation)
         {
-            string FileName = fileName;
-            using (IfcStore.Open(FileName))
+            using (var txn = model.BeginTransaction("Füge ein Covering ein"))
             {
-                using (var txn = model.BeginTransaction("Füge ein Covering ein"))
-                {
                     var Covering = model.Instances.New<IfcCovering>();
                     Covering.Name = Bauteilname;
-                    //Covering.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
-                    //Covering.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
+                    Covering.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
+                    Covering.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
 
                     txn.Commit();
-                }
             }
-
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void addFoundation(ref IfcStore model, string fileName, string Bauteilname, string Repräsentationsname, IfcCartesianPoint PlacementPoint, List<IfcCartesianPoint> PointList)
+        /// <param name="model"></param>
+        /// <param name="fileName"></param>
+        /// <param name="Bauteilname"></param>
+        /// <param name="Repräsentationsname"></param>
+        /// <param name="PlacementPoint"></param>
+        /// <param name="PointList"></param>
+        public void AddFoundation(
+            ref IfcStore model,
+            DirectShapeToIfc meineAufbereiteteGeometrie,
+            string Bauteilname,
+            string NameRepräsentation)
         {
-            string FileName = fileName;
-            using (IfcStore.Open(FileName))
-            {
+        
                 using (var txn = model.BeginTransaction("Füge ein Fundament ein"))
                 {
-                    var Foundation = model.Instances.New<IfcDeepFoundation>();
-                    Foundation.Name = Bauteilname;
-                    //Foundation.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
-                    //Foundation.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
+                    var foundation = model.Instances.New<IfcDeepFoundation>();
+                    foundation.Name = Bauteilname;
+                    foundation.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
+                    foundation.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
 
                     txn.Commit();
                 }
-            }
         }
         
         /// <summary>
         /// 
         /// </summary>
-        public void addProxyElement(ref IfcStore model, string fileName, string Bauteilname, string Repräsentationsname, IfcCartesianPoint PlacementPoint, List<IfcCartesianPoint> PointList)
+        /// <param name="model"></param>
+        /// <param name="meineAufbereiteteGeometrie"></param>
+        /// <param name="Bauteilname"></param>
+        /// <param name="NameRepräsentation"></param>
+        public void addProxyElement(
+            ref IfcStore model,
+            DirectShapeToIfc meineAufbereiteteGeometrie,
+            string Bauteilname,
+            string NameRepräsentation)
         {
-            string FileName = fileName;
-            using (IfcStore.Open(FileName))
-            {
+            
                 using (var txn = model.BeginTransaction("Füge ein Fundament ein"))
                 {
                     var buildingElementProxy = model.Instances.New<IfcBuildingElementProxy>();
                     buildingElementProxy.Name = Bauteilname;
-                    //buildingElementProxy.ObjectPlacement = addMyLocalPlacement(ref model, PlacementPoint);
-                    //buildingElementProxy.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Repräsentationsname, PointList);
+                    buildingElementProxy.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
+                    buildingElementProxy.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
 
                     txn.Commit();
                 }
-            }
         }
-        /// <summary>
-        /// 
-        /// </summary>
+
+
+     /// <summary>
+     /// 
+     /// </summary>
+     /// <param name="model"></param>
+     /// <param name="name"></param>
+     /// <param name="ifcCartesianPoints"></param>
+     /// <returns></returns>
         public static IfcProductDefinitionShape ConvertMyMeshToIfcFacetedBRep(ref IfcStore model, string name,
            DirectShapeToIfc ifcCartesianPoints)
         {
-            //ToDo: Liste mit allen Eckpunkten einer Geometrie implementieren --> foreach schleife muss darauf ansprechen!
-            //Frage an Sebastian: Herangehensweise ähneld deiner schreibweise. Es wird allerdings nur ein Facegeneriert, dass kann doch dann nicht die gesamte Geometrie beschreiben 
-
-
             var ifcFacetedBRep = model.Instances.New<IfcFacetedBrep>();
 
             var polyloob = model.Instances.New<IfcPolyLoop>();
-            //Frage an Sebastian: Es werden CaresianPoints generiert die ich nicht möchte --> Generiere Punkte in der ConsoleAppanwendung ... diese Übergebe ich zu ConvertMyMeshtoIfcFacetedBRep
-            //Erstelle Liste die für den Zweiten foreach-loop verwendet werden kann 
+
             foreach (var Point in ifcCartesianPoints.Facets)
             {
-               
                 var pts = Point.vertices.ToList();
-                    
-               
-
 
                 // Übergibt Eckpunkte in den Polyloob 
                 foreach (var pt in pts)
@@ -210,17 +232,20 @@ namespace IfcBridgeToolKit
                     });
                     polyloob.Polygon.Add(ifcCartesianPoint);
                 }
+
+
+                var ifcFaceOuterBound = model.Instances.New<IfcFaceOuterBound>(iFOB => iFOB.Bound = polyloob);
+
+                var ifcFace = model.Instances.New<IfcFace>(iF => iF.Bounds.Add(ifcFaceOuterBound));
+
+                var ifcClosedShell = model.Instances.New<IfcClosedShell>(iCS => iCS.CfsFaces.Add(ifcFace));
+                //Erstellt Repräsentationsart "FacetedBRep" 
+                ifcFacetedBRep.Outer = ifcClosedShell;
+                //Erstellt IfcShapeRepresentation 
             }
 
-            var ifcFaceOuterBound = model.Instances.New<IfcFaceOuterBound>(iFOB => iFOB.Bound = polyloob);
-
-            var ifcFace = model.Instances.New<IfcFace>(iF => iF.Bounds.Add(ifcFaceOuterBound));
-
-            var ifcClosedShell = model.Instances.New<IfcClosedShell>(iCS => iCS.CfsFaces.Add(ifcFace));
-            //Erstellt Repräsentationsart "FacetedBRep" 
-            ifcFacetedBRep.Outer = ifcClosedShell;
-            //Erstellt IfcShapeRepresentation 
             var ifcShapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
+            
             //Iniziiere GeometricPresentationContext 
             var CreateModel = new CreateAndInitModel();
             var context = CreateModel.GetIfcGeometricPresentationContext(ref model);
@@ -228,11 +253,12 @@ namespace IfcBridgeToolKit
             ifcShapeRepresentation.RepresentationIdentifier = "Body";
             ifcShapeRepresentation.RepresentationType = "FacetedBRep";
             ifcShapeRepresentation.Items.Add(ifcFacetedBRep);
+
             //Erstellt IfcProductDefinitionShape 
             var ifcProductDefinitonShape = model.Instances.New<IfcProductDefinitionShape>();
             ifcProductDefinitonShape.Name = name;
             ifcProductDefinitonShape.Representations.Add(ifcShapeRepresentation);
-
+            
             //  return ProductDefinitionShape
             return ifcProductDefinitonShape;
         }
@@ -249,10 +275,10 @@ namespace IfcBridgeToolKit
 
 
         /// <summary>
-        /// LocalPlacement plaziert Komponenten absolut in Bezug auf der geometrischen Representaion
+        /// LocalPlacement plaziert Komponenten absolut in Bezug auf die geometrischen Representaion
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="Point"> Der Plazierungspunkt der afubereiteten Meshgeometrie muss verwendet werden, um eine korrekte Plazierung zu gewährleisten </param>
+        /// <param name="Point">
         /// <returns></returns>
         private IfcLocalPlacement addMyLocalPlacement(ref IfcStore model, Point3D Point)
         {
@@ -265,12 +291,12 @@ namespace IfcBridgeToolKit
             locationPoint.X = Point.X;
             locationPoint.Y = Point.Y;
             locationPoint.Z = Point.Z;
+
             //Grundlegende definition der Achsen und der referenzierten Richtung    
-            //Frage an Sebastian: Soll IfcDirection seperat erstellt werden --> Referenz auf Cambridge_4x2: Elemente habe unterschiedliche Directions 
             var directionAxis = model.Instances.New<IfcDirection>(dA => dA.SetXYZ(0, 0, 1));
             var directionRefDirection = model.Instances.New<IfcDirection>(dRD => dRD.SetXYZ(1, 0, 0));
 
-            //Fülle den Hauptoperatoren mit den Benötigten Inputs 
+            //Fülle den Hauptoperatoren mit den benötigten Inputs 
             axis2Placement3D.Location = locationPoint;
             axis2Placement3D.Axis = directionAxis;
             axis2Placement3D.RefDirection = directionRefDirection;
@@ -283,7 +309,6 @@ namespace IfcBridgeToolKit
         /// <summary>
         /// LinearPlacement wird verwendet, wenn ein Alignment verwendet wird 
         /// Aktueller Status: AlignmentCurve wird nicht verwendet, da IW diese nicht nach Revit exportiert 
-        /// !!!Achtung: Wenn Alignment existiert, nutze LinearPlacement!!! 
         /// </summary>
         /// <param name="model"></param>
         /// <param name="UseModelAlignmentCurve"> Die benötigte AlignmentCurve soll verwendet werden, um die Komponenten an die richtige Stelle zu platzieren </param>
@@ -314,10 +339,6 @@ namespace IfcBridgeToolKit
             linearPlacement.PlacementMeasuredAlong = UseModelAlignmentCurve;
             linearPlacement.Distance = distanceExpression;
             linearPlacement.Orientation = orientationExpression;
-
-            //Frage an Sebastian: Soll ein IfcAxis2Placement3D implementiert werden... Ist ja nur notwendig, wenn App linear Placement nicht unterstützt 
-            //linearPlacement.CartesianPosition = ;
-
 
             return linearPlacement;
         }

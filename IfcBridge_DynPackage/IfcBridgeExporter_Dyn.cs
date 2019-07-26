@@ -159,11 +159,35 @@ namespace IfcBridge_DynPackage
                             break;
                         }
 
-                        //ToDo: cases not handled so far: BridgeDeck, Abutment, Caps, Curbstones, Pavement
+                        case "IfcAbutment": 
+                        {
+                            break;
+                        }
 
-                        // if nothing fits, make an IfcBuildingElementProxy out of it :-) 
+                        case "IfcPavement":
+                        {
+                            break;
+                        }
+
+                        case "IfcCurbstones":
+                        {
+                            break;
+                        }
+
+                        case "IfcDeck":
+                        {
+                            break;
+                        }
+
+                        case "Caps":
+                        {
+                            break;
+                        }
+                     
+
+                        // if nothing fits, make an IfcBuildingElementProxy out of it
                         default:
-                           // toolkit.addProxyElement();
+                            toolkit.addProxyElement(ref model,transporter, "Proxy" + counter,"ProxyRepresentation");
                             break;
                   
                 }
