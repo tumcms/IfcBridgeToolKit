@@ -251,7 +251,7 @@ namespace IfcBridgeToolKit
             var context = CreateModel.GetIfcGeometricPresentationContext(ref model);
             ifcShapeRepresentation.ContextOfItems = context;
             ifcShapeRepresentation.RepresentationIdentifier = "Body";
-            ifcShapeRepresentation.RepresentationType = "FacetedBRep";
+            ifcShapeRepresentation.RepresentationType = "BRep";
             ifcShapeRepresentation.Items.Add(ifcFacetedBRep);
 
             //Erstellt IfcProductDefinitionShape 

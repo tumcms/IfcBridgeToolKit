@@ -61,7 +61,7 @@ namespace IfcBridge_DynPackage
             {
                 var modelCreator = new CreateAndInitModel(); //ToDo: Correct Header -> IfcVersion 
                 var model = modelCreator.CreateModel(projectName, credentials);
-
+                modelCreator.CreateRequiredInstances(ref model, "BridgeSite");
                 
 
                 model.SaveAs(storeFilePath);

@@ -27,11 +27,11 @@ namespace IfcBridgeToolKit
                 bridge.Name = name;
                 bridge.Description = description;
                 bridge.ObjectPlacement = GetIfcLocalPlacement(ref model);
-                var myProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
+                var mySite = model.Instances.OfType<IfcSite>().FirstOrDefault();
 
                 var spatial2Bridge = model.Instances.New<IfcRelAggregates>();
 
-                spatial2Bridge.RelatingObject = myProject;
+                spatial2Bridge.RelatingObject = mySite;
                 spatial2Bridge.RelatedObjects.Add(bridge);
                 
                 txn.Commit();
@@ -100,6 +100,7 @@ namespace IfcBridgeToolKit
                 spatial2Bridge.RelatedObjects.Add(substructure); 
                 spatial2Bridge.RelatedObjects.Add(surfacestructure);
 
+              
                 txn.Commit();
             }
         }
