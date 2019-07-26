@@ -62,8 +62,7 @@ namespace IfcBridge_DynPackage
                 var modelCreator = new CreateAndInitModel(); //ToDo: Correct Header -> IfcVersion 
                 var model = modelCreator.CreateModel(projectName, credentials);
 
-                var bridgeCreator = new InitSpatialStructure();
-                bridgeCreator.AddIfcBridge(ref model, bridgeName, bridgeDescription);
+                
 
                 model.SaveAs(storeFilePath);
             }
