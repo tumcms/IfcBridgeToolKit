@@ -127,7 +127,7 @@ namespace IfcBridge_DynPackage
                         case "IfcBearing":
                         {
                             // call the bearing function in the toolkit
-                            
+                            toolkit.addBearing(ref model, transporter, "Bearing","BearingRepresentation");
                             break;
                         }
                         case "IfcBeam":
