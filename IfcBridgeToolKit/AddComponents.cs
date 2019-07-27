@@ -224,15 +224,13 @@ namespace IfcBridgeToolKit
         {
 
             var ifcFacetedBRep = model.Instances.New<IfcFacetedBrep>();
-            var ifcClosedShell = model.Instances.New<IfcClosedShell>();
-            ifcFacetedBRep.Outer = ifcClosedShell;
+            var polyloob = model.Instances.New<IfcPolyLoop>();
+          
             
 
             foreach (var Point in ifcCartesianPoints.Facets)
             {
-                var polyloob = model.Instances.New<IfcPolyLoop>();
-
-
+                
 
                 var pts = Point.vertices.ToList();
 
@@ -252,7 +250,10 @@ namespace IfcBridgeToolKit
                 var ifcFaceOuterBound = model.Instances.New<IfcFaceOuterBound>(iFOB => iFOB.Bound = polyloob);
 
                 var ifcFace = model.Instances.New<IfcFace>(iF => iF.Bounds.Add(ifcFaceOuterBound));
+                var ifcClosedShell = model.Instances.New<IfcClosedShell>();
                 ifcClosedShell.CfsFaces.Add(ifcFace);
+
+                ifcFacetedBRep.Outer = ifcClosedShell;
 
             }
 
