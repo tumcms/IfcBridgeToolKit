@@ -223,15 +223,17 @@ namespace IfcBridgeToolKit
            DirectShapeToIfc ifcCartesianPoints)
         {
 
+
             var ifcFacetedBRep = model.Instances.New<IfcFacetedBrep>();
             var ifcClosedShell = model.Instances.New<IfcClosedShell>();
             ifcFacetedBRep.Outer = ifcClosedShell;
-            
+            //var ifcClosedShell = model.Instances.New<IfcClosedShell>();
+            //ifcFacetedBRep.Outer = ifcClosedShell;
+
 
             foreach (var Point in ifcCartesianPoints.Facets)
             {
                 var polyloob = model.Instances.New<IfcPolyLoop>();
-
 
 
                 var pts = Point.vertices.ToList();
@@ -252,7 +254,10 @@ namespace IfcBridgeToolKit
                 var ifcFaceOuterBound = model.Instances.New<IfcFaceOuterBound>(iFOB => iFOB.Bound = polyloob);
 
                 var ifcFace = model.Instances.New<IfcFace>(iF => iF.Bounds.Add(ifcFaceOuterBound));
+                //var ifcClosedShell = model.Instances.New<IfcClosedShell>();
                 ifcClosedShell.CfsFaces.Add(ifcFace);
+                //ifcFacetedBRep.Outer = ifcClosedShell;
+                
 
             }
 
@@ -260,7 +265,7 @@ namespace IfcBridgeToolKit
                 var context = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
                 ifcShapeRepresentation.ContextOfItems = context;
                 ifcShapeRepresentation.RepresentationIdentifier = "Body";
-                ifcShapeRepresentation.RepresentationType = "BRep";
+                ifcShapeRepresentation.RepresentationType = "Brep";
                 ifcShapeRepresentation.Items.Add(ifcFacetedBRep);
 
             //Erstellt IfcProductDefinitionShape 
@@ -299,9 +304,9 @@ namespace IfcBridgeToolKit
 
             // CartesianPoint has get the coordinates for the choosen Placement 
             var locationPoint = model.Instances.New<IfcCartesianPoint>();
-            locationPoint.X = Point.X;
-            locationPoint.Y = Point.Y;
-            locationPoint.Z = Point.Z;
+            locationPoint.X = 0;
+            locationPoint.Y = 0;
+            locationPoint.Z = 0;
 
             //Grundlegende definition der Achsen und der referenzierten Richtung    
             var directionAxis = model.Instances.New<IfcDirection>(dA => dA.SetXYZ(0, 0, 1));

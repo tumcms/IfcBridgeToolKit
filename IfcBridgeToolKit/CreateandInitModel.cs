@@ -86,14 +86,14 @@ namespace IfcBridgeToolKit
                 axis2Placement3D.Location = point;
 
                 // IfcGeometricRepresentationContext -- necessary for TIN usw
-                //var context = model.Instances.New<IfcGeometricRepresentationContext>();
-                //context.ContextType = "Model";
-                //context.CoordinateSpaceDimension = 3;
-                //context.WorldCoordinateSystem = axis2Placement3D;
+                var context = model.Instances.New<IfcGeometricRepresentationContext>();
+                context.ContextType = "Model";
+                context.CoordinateSpaceDimension = 3;
+                context.WorldCoordinateSystem = axis2Placement3D;
 
                 // link representationContext with project
-                var context = GetIfcGeometricPresentationContext(ref model);
-                project.RepresentationContexts.Add(context);
+                //var context = GetIfcGeometricPresentationContext(ref model);
+               // project.RepresentationContexts.Add(context);
 
                 //now commit the changes, else they will be rolled back at the end of the scope of the using statement
                 txt.Commit();
@@ -159,14 +159,14 @@ namespace IfcBridgeToolKit
                 axis2Placement3D.Location = point;
 
                 // IfcGeometricRepresentationContext -- necessary for TIN usw
-                //var context = model.Instances.New<IfcGeometricRepresentationContext>();
-                //context.ContextType = "Model";
-                //context.CoordinateSpaceDimension = 3;
-                //context.WorldCoordinateSystem = axis2Placement3D;
+                var context = model.Instances.New<IfcGeometricRepresentationContext>();
+                context.ContextType = "Model";
+                context.CoordinateSpaceDimension = 3;
+                context.WorldCoordinateSystem = axis2Placement3D;
 
                 // link representationContext with project
-                var context = GetIfcGeometricPresentationContext(ref model);
-                project.RepresentationContexts.Add(context);
+                //var context = GetIfcGeometricPresentationContext(ref model);
+                //project.RepresentationContexts.Add(context);
 
                 //now commit the changes, else they will be rolled back at the end of the scope of the using statement
                 txt.Commit();
@@ -208,10 +208,10 @@ namespace IfcBridgeToolKit
                 ifcSite.ObjectPlacement = ifcAxis2Placement3D;
 
                 // add a relContainedInSpatialStructure
-                var cisps = model.Instances.New<IfcRelContainedInSpatialStructure>(css =>
-                {
-                    css.RelatingStructure = ifcSite;
-                });
+                //var cisps = model.Instances.New<IfcRelContainedInSpatialStructure>(css =>
+                //{
+                //    css.RelatingStructure = ifcSite;
+                //});
 
 
                 // Coordinate Reference System
