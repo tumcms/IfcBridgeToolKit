@@ -129,14 +129,7 @@ namespace IfcBridgeToolKit
                     Bearing.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
                     Bearing.Name = Bauteilname;
 
-                var myBridge = model.Instances.OfType<IfcBridgePart>().FirstOrDefault();
-                myBridge.PredefinedType = IfcBridgePartTypeEnum.SUPERSTRUCTURE;
-
-                var spatial2Bridge = model.Instances.New<IfcRelAggregates>();
-                spatial2Bridge.RelatingObject = myBridge;
-                spatial2Bridge.RelatedObjects.Add(Bearing);
-
-                txn.Commit();
+                    txn.Commit();
             }
         }
 
