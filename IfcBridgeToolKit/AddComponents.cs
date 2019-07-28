@@ -47,13 +47,19 @@ namespace IfcBridgeToolKit
                 beam.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbreiteteGeometrie.location.Position);
                 beam.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbreiteteGeometrie);
                 beam.Name = Bauteilname;
-               
-                var myBridge = model.Instances.OfType < IfcBridgePart> ().FirstOrDefault();
-                myBridge.PredefinedType = IfcBridgePartTypeEnum.SUPERSTRUCTURE;
 
-                var spatial2Bridge = model.Instances.New<IfcRelAggregates>();
-                spatial2Bridge.RelatingObject = myBridge;
-                spatial2Bridge.RelatedObjects.Add(beam);
+                var superstructure = model.Instances.OfType<IfcBridgePart>().FirstOrDefault(type => type.PredefinedType == IfcBridgePartTypeEnum.SUPERSTRUCTURE);
+                model.Instances.New<IfcRelAggregates>(E2S => {
+                        E2S.RelatingObject = superstructure;
+                        E2S.RelatedObjects.Add(beam);
+                });
+
+                //var myBridge = model.Instances.OfType < IfcBridgePart> ().FirstOrDefault();
+                //myBridge.PredefinedType = IfcBridgePartTypeEnum.SUPERSTRUCTURE;
+
+                //var spatial2Bridge = model.Instances.New<IfcRelAggregates>();
+                //spatial2Bridge.RelatingObject = myBridge;
+                //spatial2Bridge.RelatedObjects.Add(beam);
 
 
                 txn.Commit();
