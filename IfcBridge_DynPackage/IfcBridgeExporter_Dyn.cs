@@ -128,7 +128,7 @@ namespace IfcBridge_DynPackage
                         {
                             // call the bearing function in the toolkit
                             
-                            toolkit.addBearingToIfc(ref model, transporter, "Bearing" + counter, "BearingRepresentation");
+                            //toolkit.addBearingToIfc(ref model, transporter, "Bearing" + counter, "BearingRepresentation");
                             break;
                         }
                         case "IfcBeam":
@@ -148,14 +148,14 @@ namespace IfcBridge_DynPackage
                         {
                             // call the bearing function in the toolkit
 
-                            toolkit.AddPileToIfc(ref model, transporter, "Pile" + counter, "PileRepresentation");
+                            //toolkit.AddPileToIfc(ref model, transporter, "Pile" + counter, "PileRepresentation");
                             break;
                         }
                         case "IfcFoundation":
                         {
                             // call the foundation function in the toolkit
 
-                            toolkit.addFoundationToIfc(ref model, transporter, "Foundation" + counter, "FoundationRepresentation");
+                            //toolkit.addFoundationToIfc(ref model, transporter, "Foundation" + counter, "FoundationRepresentation");
                             break;
                         }
 
@@ -163,7 +163,7 @@ namespace IfcBridge_DynPackage
                         {
                             // call the Slab function in the toolkit
 
-                            toolkit.addSlabToIfc(ref model, transporter, "Slab" + counter, "SlabRepresentation");
+                            //toolkit.addSlabToIfc(ref model, transporter, "Slab" + counter, "SlabRepresentation");
                             break;
                         }
 
@@ -171,7 +171,7 @@ namespace IfcBridge_DynPackage
                         {
                             // call the Abutment function in the toolkit
 
-                            toolkit.AddAbutment(ref model, transporter, "Wall" + counter,"WallRepresentation");
+                           // toolkit.AddAbutment(ref model, transporter, "Wall" + counter,"WallRepresentation");
                             break;
                         }
 
@@ -179,7 +179,7 @@ namespace IfcBridge_DynPackage
                         {
                             // call the bearing function in the toolkit
 
-                            toolkit.addSlabToIfc(ref model, transporter, "Pavement" + counter, "PavementRepresentation");
+                           // toolkit.addSlabToIfc(ref model, transporter, "Pavement" + counter, "PavementRepresentation");
                             
                             break;
                         }
@@ -188,7 +188,7 @@ namespace IfcBridge_DynPackage
 
                         // if nothing fits, make an IfcBuildingElementProxy out of it
                         default:
-                            toolkit.addProxyElement(ref model,transporter, "Proxy" + counter,"ProxyRepresentation");
+                          //  toolkit.addProxyElement(ref model,transporter, "Proxy" + counter,"ProxyRepresentation");
                             break;
                   
                 }

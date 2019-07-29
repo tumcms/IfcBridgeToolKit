@@ -26,8 +26,8 @@ namespace App_IBTK_Example
 
             using (var txn = model.BeginTransaction("add an IfcAlignment"))
             {
-                AddComponents.ConvertMyMeshToIfcFacetedBRep(ref model, "Testprodukt", ifcCartesianPoints(ref model));
-                txn.Commit();
+                //AddComponents.ConvertMyMeshToIfcFacetedBRep(ref model, "Testprodukt", ifcCartesianPoints(ref model));
+                //txn.Commit();
 
                 
 
