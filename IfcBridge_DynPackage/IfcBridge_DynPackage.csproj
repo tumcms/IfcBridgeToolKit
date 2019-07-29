@@ -43,7 +43,7 @@
       <HintPath>..\packages\ManagedEsent.1.9.4\lib\net40\Esent.Interop.dll</HintPath>
     </Reference>
     <Reference Include="IfcBridgeToolKit">
-      <HintPath>..\IfcBridgeToolKit\bin\Debug\IfcBridgeToolKit.dll</HintPath>
+      <HintPath>..\IfcBridgeToolKit\bin\Release\IfcBridgeToolKit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Configuration, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Configuration.2.1.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
