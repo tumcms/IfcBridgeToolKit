@@ -128,6 +128,7 @@ namespace IfcBridge_DynPackage
                         {
                             // call the bearing function in the toolkit
                             
+                            //toolkit.addBearingToIfc(ref model, transporter, "Bearing" + counter, "BearingRepresentation");
                             break;
                         }
                         case "IfcBeam":
@@ -143,51 +144,51 @@ namespace IfcBridge_DynPackage
 
                             break;
                         }
-                        case "IfcPier": // ToDo: existing? or is it IfcColumn?
+                        case "IfcPile": 
                         {
                             // call the bearing function in the toolkit
 
+                            //toolkit.AddPileToIfc(ref model, transporter, "Pile" + counter, "PileRepresentation");
                             break;
                         }
-                        case "IfcFooting":
+                        case "IfcFoundation":
                         {
+                            // call the foundation function in the toolkit
+
+                            //toolkit.addFoundationToIfc(ref model, transporter, "Foundation" + counter, "FoundationRepresentation");
                             break;
                         }
 
                         case "IfcSlab":
                         {
+                            // call the Slab function in the toolkit
+
+                            //toolkit.addSlabToIfc(ref model, transporter, "Slab" + counter, "SlabRepresentation");
                             break;
                         }
 
                         case "IfcAbutment": 
                         {
+                            // call the Abutment function in the toolkit
+
+                           // toolkit.AddAbutment(ref model, transporter, "Wall" + counter,"WallRepresentation");
                             break;
                         }
 
                         case "IfcPavement":
                         {
+                            // call the bearing function in the toolkit
+
+                           // toolkit.addSlabToIfc(ref model, transporter, "Pavement" + counter, "PavementRepresentation");
+                            
                             break;
                         }
 
-                        case "IfcCurbstones":
-                        {
-                            break;
-                        }
-
-                        case "IfcDeck":
-                        {
-                            break;
-                        }
-
-                        case "Caps":
-                        {
-                            break;
-                        }
-                     
+                      
 
                         // if nothing fits, make an IfcBuildingElementProxy out of it
                         default:
-                            toolkit.addProxyElement(ref model,transporter, "Proxy" + counter,"ProxyRepresentation");
+                          //  toolkit.addProxyElement(ref model,transporter, "Proxy" + counter,"ProxyRepresentation");
                             break;
                   
                 }
