@@ -110,8 +110,8 @@ namespace IfcBridge_DynPackage
                 if (location != null)
                     transporter.location.Position =
                         new Point3D(location.X, location.Y, location.Z); // insert Revit coordinates into transporter
-                else
-                    transporter.location.Position = new Point3D(0, 0, 0);
+                else 
+                    transporter.location.Position = new Point3D(0,0,0);
 
                 // -- Control: serialize to JSON to check the contained data
                 //var myPath = @"C:\Users\Sebastian Esser\Desktop\tmpBridge\" + "meshJSON_girder_0" + counter +
