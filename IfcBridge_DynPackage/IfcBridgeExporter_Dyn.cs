@@ -5,7 +5,6 @@ using IfcBridgeToolKit;
 using IfcBridgeToolKit_DataLayer.GeometryConnector;
 using Revit.Elements;
 using Xbim.Ifc;
-using Xbim.IO;
 
 namespace IfcBridge_DynPackage
 {
@@ -51,18 +50,20 @@ namespace IfcBridge_DynPackage
         /// <search>
         ///     init, IfcBridge
         /// </search>
-        public static string InitIfcModel(string projectName, XbimEditorCredentials credentials, string directory,
+        public static IfcStore InitIfcModel(string projectName, XbimEditorCredentials credentials, string directory,
             string fileName, string bridgeName = "unknown", string bridgeDescription = "unknown")
         {
             // build storage path of the model
             var storeFilePath = directory + "/" + fileName;
 
+            IfcStore model; 
+
             try
             {
                 var modelCreator = new CreateAndInitModel(); //ToDo: Correct Header -> IfcVersion 
-                var model = modelCreator.CreateModel(projectName, credentials);
+                model = modelCreator.CreateModel(projectName, credentials);
                 modelCreator.CreateRequiredInstances(ref model, "BridgeSite");
-                
+
 
                 model.SaveAs(storeFilePath);
             }
@@ -72,13 +73,14 @@ namespace IfcBridge_DynPackage
                 throw;
             }
 
-            return storeFilePath; // return directory to Ifc Model
+            return model; // return Ifc Model
         }
 
         #endregion
 
         #region Classifiable Items
-        
+
+        /// <param name="model">Ifc model - already opened</param>
         /// <param name="credentials">Editor credits from Credentials Node</param>
         /// <param name="elements">List of DirectShape geometries</param>
         /// <param name="ifcElementType">Defines the target IfcClass -> use dropdown menu</param>
@@ -86,15 +88,14 @@ namespace IfcBridge_DynPackage
         /// <search>
         ///     girder, beam, IfcBridge
         /// </search>
-        public static string AddDirectShapeComponents(
-            string storeFilePath,
+        public static IfcStore AddDirectShapeComponents(
+            IfcStore model,
             XbimEditorCredentials credentials,
             List<Element> elements,
             string ifcElementType)
         {
             var counter = 0;
-            // open Ifc model globally
-            var model = IfcStore.Open(storeFilePath, credentials, null, null, XbimDBAccess.ReadWrite);
+
             // Note: no transaction is required -> will be opened in the toolkit function
 
             foreach (var element in elements)
@@ -110,8 +111,8 @@ namespace IfcBridge_DynPackage
                 if (location != null)
                     transporter.location.Position =
                         new Point3D(location.X, location.Y, location.Z); // insert Revit coordinates into transporter
-                else 
-                    transporter.location.Position = new Point3D(0,0,0);
+                else
+                    transporter.location.Position = new Point3D(0, 0, 0);
 
                 // -- Control: serialize to JSON to check the contained data
                 //var myPath = @"C:\Users\Sebastian Esser\Desktop\tmpBridge\" + "meshJSON_girder_0" + counter +
@@ -123,98 +124,83 @@ namespace IfcBridge_DynPackage
                 // init class for interactions with IfcModel
                 var toolkit = new AddComponents();
 
-               
-                    switch (ifcElementType) // ToDo: make use of enum
+
+                switch (ifcElementType) // ToDo: make use of enum
+                {
+                    case "IfcBearing":
                     {
-                        case "IfcBearing":
-                        {
-                            // call the bearing function in the toolkit
-                            
-                            toolkit.addBearingToIfc(ref model, transporter, "Bearing" + counter, "BearingRepresentation");
-                            break;
-                        }
-                        case "IfcBeam":
-                        {
-                            // call the girder function in the toolkit
+                        // call the bearing function in the toolkit
+                        toolkit.addBearingToIfc(ref model, transporter, "Bearing" + counter, "BearingRepresentation");
+                        break;
+                    }
+                    case "IfcBeam":
+                    {
+                        // call the girder function in the toolkit
+                        toolkit.addGirderToIfc(ref model, transporter, "Girder" + counter, "GirderRepresentation");
+                        break;
+                    }
+                    case "IfcColumn":
+                    {
+                        // call the bearing function in the toolkit
 
-                            toolkit.addGirderToIfc(ref model, transporter, "Girder" + counter, "GirderRepresentation");
-                            break;
-                        }
-                        case "IfcColumn":
-                        {
-                            // call the bearing function in the toolkit
+                        break;
+                    }
+                    case "IfcPile":
+                    {
+                        // call the bearing function in the toolkit
+                        toolkit.AddPileToIfc(ref model, transporter, "Pile" + counter, "PileRepresentation");
+                        break;
+                    }
+                    case "IfcFoundation":
+                    {
+                        // call the foundation function in the toolkit
+                        toolkit.addFoundationToIfc(ref model, transporter, "Foundation" + counter,
+                            "FoundationRepresentation");
+                        break;
+                    }
 
-                            break;
-                        }
-                        case "IfcPile": 
-                        {
-                            // call the bearing function in the toolkit
+                    case "IfcSlab":
+                    {
+                        // call the Slab function in the toolkit
+                        toolkit.addSlabToIfc(ref model, transporter, "Slab" + counter, "SlabRepresentation");
+                        break;
+                    }
 
-                            toolkit.AddPileToIfc(ref model, transporter, "Pile" + counter, "PileRepresentation");
-                            break;
-                        }
-                        case "IfcFoundation":
-                        {
-                            // call the foundation function in the toolkit
-
-                            toolkit.addFoundationToIfc(ref model, transporter, "Foundation" + counter, "FoundationRepresentation");
-                            break;
-                        }
-
-                        case "IfcSlab":
-                        {
-                            // call the Slab function in the toolkit
-
-                            toolkit.addSlabToIfc(ref model, transporter, "Slab" + counter, "SlabRepresentation");
-                            break;
-                        }
-
-                        case "IfcAbutment": 
-                        {
-                            // call the Abutment function in the toolkit
-
-                            toolkit.AddAbutment(ref model, transporter, "Wall" + counter,"WallRepresentation");
-                            break;
-                        }
-
-                        case "IfcPavement":
-                        {
-                            // call the bearing function in the toolkit
-
-                           // toolkit.addSlabToIfc(ref model, transporter, "Pavement" + counter, "PavementRepresentation");
-                            
-                            break;
-                        }
-
-                      
-
-                        // if nothing fits, make an IfcBuildingElementProxy out of it
-                        default:
-                            toolkit.addProxyElement(ref model,transporter, "Proxy" + counter,"ProxyRepresentation");
-                            break;
-                  
+                    case "IfcAbutment":
+                    {
+                        // call the Abutment function in the toolkit
+                        toolkit.AddAbutment(ref model, transporter, "Wall" + counter, "WallRepresentation");
+                        break;
+                    }
+                    
+                    // if nothing fits, make an IfcBuildingElementProxy out of it
+                    default:
+                        toolkit.addProxyElement(ref model, transporter, "Proxy" + counter, "ProxyRepresentation");
+                        break;
                 }
-
-                
+                // simple counter for testing purposes -> 
+                counter++;
             }
 
-            // save model
-            model.SaveAs(storeFilePath);
-            model.Close();
-            return storeFilePath;
+            return model;
         }
 
-        public static string AddBridgeStructure(string storeFilePath, XbimEditorCredentials credentials, string bridgeName, string bridgeDescription)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model">open Ifc Model</param>
+        /// <param name="credentials"></param>
+        /// <param name="bridgeName"></param>
+        /// <param name="bridgeDescription"></param>
+        /// <returns></returns>
+        public static IfcStore AddBridgeStructure(IfcStore model, XbimEditorCredentials credentials, string bridgeName, string bridgeDescription)
         {
-            var model = IfcStore.Open(storeFilePath, credentials, null, null, XbimDBAccess.ReadWrite);
             try
             {
-               
-
                 var bridgeCreator = new InitSpatialStructure();
                 bridgeCreator.AddIfcBridge(ref model, bridgeName, bridgeDescription);
                 bridgeCreator.AddIfcBridgepartSuperstructure(ref model);
-                model.SaveAs(storeFilePath);
+              
             }
             catch (Exception e)
             {
@@ -222,8 +208,7 @@ namespace IfcBridge_DynPackage
                 throw;
             }
 
-            return storeFilePath; // return directory to Ifc Model
-
+            return model; // return directory to Ifc Model
         }
 
         /// <summary>
@@ -258,6 +243,8 @@ namespace IfcBridge_DynPackage
                 transporter.Facets.Add(transporterFacet);
             }
         }
+       
+        // ToDo: add new class to handle mesh geometries
 
         #endregion
     }
