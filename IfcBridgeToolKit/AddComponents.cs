@@ -20,7 +20,6 @@ namespace IfcBridgeToolKit
     /// </summary>
     public class AddComponents
     {
-
         /// <summary>
         /// default constructor
         /// </summary>
@@ -28,52 +27,52 @@ namespace IfcBridgeToolKit
         {
         }
 
-       
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="meineAufbreiteteGeometrie"></param>
-        /// <param name="Bauteilname"></param>
-        public void addGirderToIfc(
+        /// <param name="rawGeometry"></param>
+        /// <param name="Name"></param>
+        public void AddGirderToIfc(
             ref IfcStore model,
-            DirectShapeToIfc meineAufbreiteteGeometrie,
-            string Bauteilname,
-            string NameRepräsentation)
+            DirectShapeToIfc rawGeometry,
+            string Name,
+            string Representation)
         {
-            using (var txn = model.BeginTransaction("ich füge einen Träger ein"))
+            using (var txn = model.BeginTransaction("insert beam"))
             {
                 var beam = model.Instances.New<IfcBeam>();
-                beam.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbreiteteGeometrie.location.Position);
-                beam.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbreiteteGeometrie);
-                beam.Name = Bauteilname;
+                beam.ObjectPlacement = addMyLocalPlacement(ref model, rawGeometry.location.Position);
+                beam.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Representation, rawGeometry);
+                beam.Name = Name;
 
-                addSuperstructure(ref model, beam);
-                
+                AddToSuperstructure(ref model, beam);
+
                 txn.Commit();
             }
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="meineAufbereiteteGeometrie"></param>
-        /// <param name="Bauteilname"></param>
-        /// <param name="NameRepräsentation"></param>
+        /// <param name="rawGeometry"></param>
+        /// <param name="Name"></param>
+        /// <param name="Representation"></param>
         public void AddPileToIfc(
             ref IfcStore model,
-            DirectShapeToIfc meineAufbereiteteGeometrie,
-            string Bauteilname,
-            string NameRepräsentation)
+            DirectShapeToIfc rawGeometry,
+            string Name,
+            string Representation)
         {
-            using (var txn = model.BeginTransaction("Füge einen Pfahl ein"))
+            using (var txn = model.BeginTransaction("insert pile"))
             {
-                    var pile = model.Instances.New<IfcPile>();
-                    pile.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
-                    pile.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
-                    pile.Name = Bauteilname;
+                var pile = model.Instances.New<IfcPile>();
+                pile.ObjectPlacement = addMyLocalPlacement(ref model, rawGeometry.location.Position);
+                pile.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Representation, rawGeometry);
+                pile.Name = Name;
 
-                    addSubstructure(ref model, pile);
+                // insert in spatial structure
+                AddToSubstructure(ref model, pile);
 
                 txn.Commit();
             }
@@ -83,61 +82,24 @@ namespace IfcBridgeToolKit
         /// 
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="meineAufbereiteteGeometrie"></param>
-        /// <param name="Bauteilname"></param>
-        /// <param name="NameRepräsentation"></param>
+        /// <param name="rawGeometry"></param>
+        /// <param name="name"></param>
+        /// <param name="representation"></param>
         public void AddAbutment(
             ref IfcStore model,
-            DirectShapeToIfc meineAufbereiteteGeometrie,
-            string Bauteilname,
-            string NameRepräsentation)
+            DirectShapeToIfc rawGeometry,
+            string name,
+            string representation)
         {
-            using (var txn = model.BeginTransaction("Füge Endauflager hinzu ein"))
+            using (var txn = model.BeginTransaction("insert abutment"))
             {
-                    var wingWall = model.Instances.New<IfcWall>();
-                    wingWall.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
-                    wingWall.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
-                    wingWall.Name = Bauteilname;
+                var wingWall = model.Instances.New<IfcWall>();
+                wingWall.ObjectPlacement = addMyLocalPlacement(ref model, rawGeometry.location.Position);
+                wingWall.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, representation, rawGeometry);
+                wingWall.Name = name;
 
-                    addSubstructure(ref model, wingWall);
-
-                txn.Commit();
-            }
-        }
-
-        public void addSlabToIfc(
-            ref IfcStore model,
-            DirectShapeToIfc meineAufbereiteteGeometrie,
-            string Bauteilname,
-            string NameRepräsentation)
-        {
-            using (var txn = model.BeginTransaction("Füge Slab  ein"))
-            {
-                var slab = model.Instances.New<IfcSlab>();
-                slab.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
-                slab.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
-                slab.Name = Bauteilname;
-
-                addSurfacestructure(ref model, slab);
-
-                txn.Commit();
-            }
-        }
-
-        public void addPlateToIfc(
-            ref IfcStore model,
-            DirectShapeToIfc meineAufbereiteteGeometrie,
-            string Bauteilname,
-            string NameRepräsentation)
-        {
-            using (var txn = model.BeginTransaction("Füge Plate  ein"))
-            {
-                var plate = model.Instances.New<IfcPlate>();
-                plate.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
-                plate.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
-                plate.Name = Bauteilname;
-
-                addSurfacestructure(ref model, plate);
+                // insert in spatial structure
+                AddToSubstructure(ref model, wingWall);
 
                 txn.Commit();
             }
@@ -147,28 +109,57 @@ namespace IfcBridgeToolKit
         /// 
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="meineAufbereiteteGeometrie"></param>
-        /// <param name="Bauteilname"></param>
-        /// <param name="NameRepräsentation"></param>
-        public void addBearingToIfc(
+        /// <param name="rawGeometry"></param>
+        /// <param name="Name"></param>
+        /// <param name="Representation"></param>
+        public void addSlabToIfc(
             ref IfcStore model,
-            DirectShapeToIfc meineAufbereiteteGeometrie,
-            string Bauteilname,
-            string NameRepräsentation)
+            DirectShapeToIfc rawGeometry,
+            string Name,
+            string Representation)
         {
-            using (var txn = model.BeginTransaction("Füge ein Lager ein"))
+            using (var txn = model.BeginTransaction("insert slab"))
             {
-                    var bearing = model.Instances.New<IfcBearing>();
-                    bearing.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
-                    bearing.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
-                    bearing.Name = Bauteilname;
+                var slab = model.Instances.New<IfcSlab>();
+                slab.ObjectPlacement = addMyLocalPlacement(ref model, rawGeometry.location.Position);
+                slab.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, Representation, rawGeometry);
+                slab.Name = Name;
 
-                    addSuperstructure(ref model, bearing);
+                // insert in spatial structure
+                AddToSurfacestructure(ref model, slab);
 
                 txn.Commit();
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="rawGeometry"></param>
+        /// <param name="name"></param>
+        /// <param name="representation"></param>
+        public void addBearingToIfc(
+            ref IfcStore model,
+            DirectShapeToIfc rawGeometry,
+            string name,
+            string representation)
+        {
+            using (var txn = model.BeginTransaction("insert bearing"))
+            {
+                var bearing = model.Instances.New<IfcBearing>();
+                bearing.ObjectPlacement = addMyLocalPlacement(ref model, rawGeometry.location.Position);
+                bearing.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, representation, rawGeometry);
+                bearing.Name = name;
+
+                // insert in spatial structure
+                AddToSuperstructure(ref model, bearing);
+
+                txn.Commit();
+            }
+        }
+
+        //ToDo: verify use of IfcCovering 
         /// <summary>
         /// 
         /// </summary>
@@ -184,16 +175,18 @@ namespace IfcBridgeToolKit
             string Bauteilname,
             string NameRepräsentation)
         {
-            using (var txn = model.BeginTransaction("Füge ein Covering ein"))
+            using (var txn = model.BeginTransaction("insertCovering"))
             {
-                    var covering = model.Instances.New<IfcCovering>();
-                    covering.Name = Bauteilname;
-                    covering.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
-                    covering.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
+                var covering = model.Instances.New<IfcCovering>();
+                covering.Name = Bauteilname;
+                covering.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
+                covering.Representation =
+                    ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
 
-                    addSurfacestructure(ref model, covering);
+                // insert in spatial structure
+                AddToSurfacestructure(ref model, covering);
 
-                    txn.Commit();
+                txn.Commit();
             }
         }
 
@@ -212,69 +205,68 @@ namespace IfcBridgeToolKit
             string Bauteilname,
             string NameRepräsentation)
         {
-        
-                using (var txn = model.BeginTransaction("Füge ein Fundament ein"))
-                {
-                    var foundation = model.Instances.New<IfcDeepFoundation>();
-                    foundation.Name = Bauteilname;
-                    foundation.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
-                    foundation.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
+            using (var txn = model.BeginTransaction("Füge ein Fundament ein"))
+            {
+                var foundation = model.Instances.New<IfcDeepFoundation>();
+                foundation.Name = Bauteilname;
+                foundation.ObjectPlacement =
+                    addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
+                foundation.Representation =
+                    ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
 
-                    addSubstructure(ref model, foundation);
+                // insert in spatial structure
+                AddToSubstructure(ref model, foundation);
 
-                    txn.Commit();
-                }
+                txn.Commit();
+            }
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="meineAufbereiteteGeometrie"></param>
+        /// <param name="rawGeometry"></param>
         /// <param name="Bauteilname"></param>
         /// <param name="NameRepräsentation"></param>
         public void addProxyElement(
             ref IfcStore model,
-            DirectShapeToIfc meineAufbereiteteGeometrie,
+            DirectShapeToIfc rawGeometry,
             string Bauteilname,
             string NameRepräsentation)
         {
-            
-                using (var txn = model.BeginTransaction("Füge ein Fundament ein"))
-                {
-                    var buildingElementProxy = model.Instances.New<IfcBuildingElementProxy>();
-                    buildingElementProxy.Name = Bauteilname;
-                    buildingElementProxy.ObjectPlacement = addMyLocalPlacement(ref model, meineAufbereiteteGeometrie.location.Position);
-                    buildingElementProxy.Representation = ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, meineAufbereiteteGeometrie);
+            using (var txn = model.BeginTransaction("Füge ein Fundament ein"))
+            {
+                var buildingElementProxy = model.Instances.New<IfcBuildingElementProxy>();
+                buildingElementProxy.Name = Bauteilname;
+                buildingElementProxy.ObjectPlacement = addMyLocalPlacement(ref model, rawGeometry.location.Position);
+                buildingElementProxy.Representation =
+                    ConvertMyMeshToIfcFacetedBRep(ref model, NameRepräsentation, rawGeometry);
                 //ToDo: If-Loops für 3 Structuretypen, die auf Bauteiltypen referenzieren
-                    txn.Commit();
-                }
+
+                AddToSuperstructure(ref model, buildingElementProxy);
+
+                txn.Commit();
+            }
         }
 
 
-     /// <summary>
-     /// 
-     /// </summary>
-     /// <param name="model"></param>
-     /// <param name="name"></param>
-     /// <param name="ifcCartesianPoints"></param>
-     /// <returns></returns>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="name">Name of ifcProductDefinitionShape</param>
+        /// <param name="ifcCartesianPoints"></param>
+        /// <returns></returns>
         public static IfcProductDefinitionShape ConvertMyMeshToIfcFacetedBRep(ref IfcStore model, string name,
-           DirectShapeToIfc ifcCartesianPoints)
+            DirectShapeToIfc ifcCartesianPoints)
         {
-
-
             var ifcFacetedBRep = model.Instances.New<IfcFacetedBrep>();
             var ifcClosedShell = model.Instances.New<IfcClosedShell>();
             ifcFacetedBRep.Outer = ifcClosedShell;
-            //var ifcClosedShell = model.Instances.New<IfcClosedShell>();
-            //ifcFacetedBRep.Outer = ifcClosedShell;
-
 
             foreach (var Point in ifcCartesianPoints.Facets)
             {
-                var polyloob = model.Instances.New<IfcPolyLoop>();
-
+                var polyloop = model.Instances.New<IfcPolyLoop>();
 
                 var pts = Point.vertices.ToList();
 
@@ -287,50 +279,34 @@ namespace IfcBridgeToolKit
                         iCP.Y = pt.Y;
                         iCP.Z = pt.Z;
                     });
-                    polyloob.Polygon.Add(ifcCartesianPoint);
+                    polyloop.Polygon.Add(ifcCartesianPoint);
                 }
 
-
-                var ifcFaceOuterBound = model.Instances.New<IfcFaceOuterBound>(iFOB => iFOB.Bound = polyloob);
+                var ifcFaceOuterBound = model.Instances.New<IfcFaceOuterBound>(iFOB => iFOB.Bound = polyloop);
 
                 var ifcFace = model.Instances.New<IfcFace>(iF => iF.Bounds.Add(ifcFaceOuterBound));
                 //var ifcClosedShell = model.Instances.New<IfcClosedShell>();
                 ifcClosedShell.CfsFaces.Add(ifcFace);
                 //ifcFacetedBRep.Outer = ifcClosedShell;
-                
 
                 ifcFacetedBRep.Outer = ifcClosedShell;
-
             }
 
             var ifcShapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
-                var context = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
-                ifcShapeRepresentation.ContextOfItems = context;
-                ifcShapeRepresentation.RepresentationIdentifier = "Body";
-                ifcShapeRepresentation.RepresentationType = "Brep";
-                ifcShapeRepresentation.Items.Add(ifcFacetedBRep);
+            var context = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
+            ifcShapeRepresentation.ContextOfItems = context;
+            ifcShapeRepresentation.RepresentationIdentifier = "Body";
+            ifcShapeRepresentation.RepresentationType = "Brep";
+            ifcShapeRepresentation.Items.Add(ifcFacetedBRep);
 
             //Erstellt IfcProductDefinitionShape 
             var ifcProductDefinitonShape = model.Instances.New<IfcProductDefinitionShape>();
             ifcProductDefinitonShape.Name = name;
             ifcProductDefinitonShape.Representations.Add(ifcShapeRepresentation);
 
-                //  return ProductDefinitionShape
-              
-            
+            //  return ProductDefinitionShape
             return ifcProductDefinitonShape;
         }
-
-        /// <summary>
-        /// SectionedSolidHorizontal kann Ideal verwendet werden, sobald in Dynamo die geometrische Repräsentation für Ifc verbessert wird 
-        /// Es werden Solids, mit Informationen über die Oberfläche die gesweept wird, benötigt
-        /// </summary>
-        ///
-        private void ConvertMySolidToIfcSectionedSolidHorizontal()
-        {
-            //not implemented yet
-        }
-
 
         /// <summary>
         /// LocalPlacement plaziert Komponenten absolut in Bezug auf die geometrischen Representaion
@@ -358,6 +334,7 @@ namespace IfcBridgeToolKit
             axis2Placement3D.Location = locationPoint;
             axis2Placement3D.Axis = directionAxis;
             axis2Placement3D.RefDirection = directionRefDirection;
+
             //Erstelle LocalPlacement 
             localPlacement.RelativePlacement = axis2Placement3D;
 
@@ -386,9 +363,11 @@ namespace IfcBridgeToolKit
             distanceExpression.AlongHorizontal = true;
 
             var orientationExpression = model.Instances.New<IfcOrientationExpression>();
+
             // Füge Informationen für OrientationExpression hinzu 
             var lateralAxisDirection = model.Instances.New<IfcDirection>(lAD => lAD.SetXYZ(1, 0, 0));
             var verticalAxisDirection = model.Instances.New<IfcDirection>(vAD => vAD.SetXYZ(0, 0, 1));
+
             //Fülle OrientationExpression 
             orientationExpression.LateralAxisDirection = lateralAxisDirection;
             orientationExpression.VerticalAxisDirection = verticalAxisDirection;
@@ -401,30 +380,36 @@ namespace IfcBridgeToolKit
             return linearPlacement;
         }
 
-        private IfcBridgePart addSuperstructure(ref IfcStore model, IfcElement addElement)
+        private IfcBridgePart AddToSuperstructure(ref IfcStore model, IfcElement addElement)
         {
-            var superstructure = model.Instances.OfType<IfcBridgePart>().FirstOrDefault(type => type.PredefinedType == IfcBridgePartTypeEnum.SUPERSTRUCTURE);
-            model.Instances.New<IfcRelAggregates>(E2S => {
+            var superstructure = model.Instances.OfType<IfcBridgePart>()
+                .FirstOrDefault(type => type.PredefinedType == IfcBridgePartTypeEnum.SUPERSTRUCTURE);
+            model.Instances.New<IfcRelAggregates>(E2S =>
+            {
                 E2S.RelatingObject = superstructure;
                 E2S.RelatedObjects.Add(addElement);
             });
             return superstructure;
         }
 
-        private IfcBridgePart addSubstructure(ref IfcStore model, IfcElement addElement)
+        private IfcBridgePart AddToSubstructure(ref IfcStore model, IfcElement addElement)
         {
-            var substructure = model.Instances.OfType<IfcBridgePart>().FirstOrDefault(type => type.PredefinedType == IfcBridgePartTypeEnum.SUBSTRUCTURE);
-            model.Instances.New<IfcRelAggregates>(E2S => {
+            var substructure = model.Instances.OfType<IfcBridgePart>()
+                .FirstOrDefault(type => type.PredefinedType == IfcBridgePartTypeEnum.SUBSTRUCTURE);
+            model.Instances.New<IfcRelAggregates>(E2S =>
+            {
                 E2S.RelatingObject = substructure;
                 E2S.RelatedObjects.Add(addElement);
             });
             return substructure;
         }
 
-        private IfcBridgePart addSurfacestructure(ref IfcStore model, IfcElement addElement)
+        private IfcBridgePart AddToSurfacestructure(ref IfcStore model, IfcElement addElement)
         {
-            var surfacestructure = model.Instances.OfType<IfcBridgePart>().FirstOrDefault(type => type.PredefinedType == IfcBridgePartTypeEnum.SURFACESTRUCTURE);
-            model.Instances.New<IfcRelAggregates>(E2S => {
+            var surfacestructure = model.Instances.OfType<IfcBridgePart>()
+                .FirstOrDefault(type => type.PredefinedType == IfcBridgePartTypeEnum.SURFACESTRUCTURE);
+            model.Instances.New<IfcRelAggregates>(E2S =>
+            {
                 E2S.RelatingObject = surfacestructure;
                 E2S.RelatedObjects.Add(addElement);
             });

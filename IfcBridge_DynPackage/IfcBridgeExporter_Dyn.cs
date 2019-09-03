@@ -136,7 +136,7 @@ namespace IfcBridge_DynPackage
                     case "IfcBeam":
                     {
                         // call the girder function in the toolkit
-                        toolkit.addGirderToIfc(ref model, transporter, "Girder" + counter, "GirderRepresentation");
+                        toolkit.AddGirderToIfc(ref model, transporter, "Girder" + counter, "GirderRepresentation");
                         break;
                     }
                     case "IfcColumn":
