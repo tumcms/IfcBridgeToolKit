@@ -122,7 +122,7 @@ namespace IfcBridge_DynPackage
                 //counter++;
 
                 // init class for interactions with IfcModel
-                var toolkit = new AddComponents();
+                var toolkit = new ProductService();
 
 
                 switch (ifcElementType) // ToDo: make use of enum

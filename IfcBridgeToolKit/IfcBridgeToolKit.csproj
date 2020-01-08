@@ -146,8 +146,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddAlignment.cs" />
-    <Compile Include="AddComponents.cs" />
+    <Compile Include="AlignmentService.cs" />
+    <Compile Include="ProdGeometryService.cs" />
+    <Compile Include="ProductService.cs" />
     <Compile Include="CreateandInitModel.cs" />
     <Compile Include="InitSpatialStructure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
