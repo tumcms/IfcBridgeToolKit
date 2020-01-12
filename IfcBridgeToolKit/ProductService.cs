@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using IfcBridgeToolKit_DataLayer.GeometryConnector;
 using System.Linq;
-using Autodesk.Revit.DB;
 using Xbim.Ifc;
 using Xbim.IfcRail.GeometricConstraintResource;
 using Xbim.IfcRail.GeometryResource;
 using Xbim.IfcRail.Kernel;
-using Xbim.IfcRail.MeasureResource;
 using Xbim.IfcRail.ProductExtension;
 using Xbim.IfcRail.RailwayDomain;
 using Xbim.IfcRail.SharedBldgElements;
 using Xbim.IfcRail.StructuralElementsDomain;
-using static IfcBridgeToolKit.BridgePartEnum;
 
 namespace IfcBridgeToolKit
 {
     /// <summary>
-    /// 
+    /// Contains methods to add and modify components inside a given IfcModel. All public methods create a new transaction, all private methods require a running transaction
     /// </summary>
     public class ProductService
     {
@@ -272,10 +268,10 @@ namespace IfcBridgeToolKit
         /// 
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="UseModelAlignmentCurve"> Die benötigte AlignmentCurve soll verwendet werden, um die Komponenten an die richtige Stelle zu platzieren </param>
+        /// <param name="AlignmentCurve"> Die benötigte AlignmentCurve soll verwendet werden, um die Komponenten an die richtige Stelle zu platzieren </param>
         /// <param name="distancealong">Abstand Start zu Plazierungspunkt muss angegeben werden</param>
         /// <returns></returns>
-        private IfcLinearPlacement AddLinearPlacement(ref IfcStore model, IfcCurve UseModelAlignmentCurve, double distancealong)
+        private IfcLinearPlacement AddLinearPlacement(ref IfcStore model, IfcCurve AlignmentCurve, double distancealong)
         {
             // ToDo: Identify chosen alignment by its GUID
             var linearPlacement = model.Instances.New<IfcLinearPlacement>();
@@ -303,7 +299,7 @@ namespace IfcBridgeToolKit
             orientationExpression.VerticalAxisDirection = verticalAxisDirection;
 
             //Fülle den Hauptoperator mit den benötigten Inputs
-            linearPlacement.PlacementMeasuredAlong = UseModelAlignmentCurve;
+            linearPlacement.PlacementMeasuredAlong = AlignmentCurve;
             linearPlacement.Distance = distanceExpression;
             linearPlacement.Orientation = orientationExpression;
 
