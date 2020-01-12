@@ -84,6 +84,7 @@ namespace IfcBridge_DynPackage
         /// <param name="credentials">Editor credits from Credentials Node</param>
         /// <param name="elements">List of DirectShape geometries</param>
         /// <param name="ifcElementType">Defines the target IfcClass -> use dropdown menu</param>
+        /// <param name="ifcSpatialStructure">Choose desired spatial structure container</param>
         /// <returns>File Path to the IfcModel</returns>
         /// <search>
         ///     girder, beam, IfcBridge
@@ -92,96 +93,37 @@ namespace IfcBridge_DynPackage
             IfcStore model,
             XbimEditorCredentials credentials,
             List<Element> elements,
-            string ifcElementType)
+            string ifcElementType, 
+            string ifcSpatialStructure)
         {
             var counter = 0;
 
             // Note: no transaction is required -> will be opened in the toolkit function
-
             foreach (var element in elements)
             {
                 // init transporter for each element geometry
                 var transporter = new DirectShapeToIfc();
 
-                // --- GEOMETRIC REPRESENTATION ---
+                // --- add geometry to transporter ---
                 InsertShape(element, ref transporter);
 
-                // --- PLACEMENT --- 
+                // --- add placement to transporter --- 
                 var location = element.Solids?.FirstOrDefault()?.Centroid();
                 if (location != null)
-                    transporter.location.Position =
-                        new Point3D(location.X, location.Y, location.Z); // insert Revit coordinates into transporter
+                    transporter.location.Position =new Point3D(location.X, location.Y, location.Z); // insert Revit coordinates into transporter
                 else
                     transporter.location.Position = new Point3D(0, 0, 0);
 
-                // -- Control: serialize to JSON to check the contained data
-                //var myPath = @"C:\Users\Sebastian Esser\Desktop\tmpBridge\" + "meshJSON_girder_0" + counter +
-                //             ".json";
-                //transporter.SerializeToJson(myPath);
-
-                //counter++;
-
-                // init class for interactions with IfcModel
-                var toolkit = new ProductService();
-
-
-                switch (ifcElementType) // ToDo: make use of enum
-                {
-                    case "IfcBearing":
-                    {
-                        // call the bearing function in the toolkit
-                        toolkit.addBearingToIfc(ref model, transporter, "Bearing" + counter, "BearingRepresentation");
-                        break;
-                    }
-                    case "IfcBeam":
-                    {
-                        // call the girder function in the toolkit
-                        toolkit.AddGirderToIfc(ref model, transporter, "Girder" + counter, "GirderRepresentation");
-                        break;
-                    }
-                    case "IfcColumn":
-                    {
-                        // call the bearing function in the toolkit
-
-                        break;
-                    }
-                    case "IfcPile":
-                    {
-                        // call the bearing function in the toolkit
-                        toolkit.AddPileToIfc(ref model, transporter, "Pile" + counter, "PileRepresentation");
-                        break;
-                    }
-                    case "IfcFoundation":
-                    {
-                        // call the foundation function in the toolkit
-                        toolkit.addFoundationToIfc(ref model, transporter, "Foundation" + counter,
-                            "FoundationRepresentation");
-                        break;
-                    }
-
-                    case "IfcSlab":
-                    {
-                        // call the Slab function in the toolkit
-                        toolkit.addSlabToIfc(ref model, transporter, "Slab" + counter, "SlabRepresentation");
-                        break;
-                    }
-
-                    case "IfcAbutment":
-                    {
-                        // call the Abutment function in the toolkit
-                        toolkit.AddAbutment(ref model, transporter, "Wall" + counter, "WallRepresentation");
-                        break;
-                    }
-                    
-                    // if nothing fits, make an IfcBuildingElementProxy out of it
-                    default:
-                        toolkit.addProxyElement(ref model, transporter, "Proxy" + counter, "ProxyRepresentation");
-                        break;
-                }
-                // simple counter for testing purposes -> 
-                counter++;
+                // use IfcBridgeToolKit to generate a new IfcBuildingElement instance in the current model
+                var productService = new ProductService();
+                productService.AddBuildingElement(
+                    ref model,                 // the Ifc Model
+                    transporter,               // the container for all geometry-related content
+                    "BuildingElement",    // the bldElement's name
+                    ifcElementType,            // desired IfcBuildingElement subclass
+                    "local",       // placement method
+                    ifcSpatialStructure);     // spatial structure element the component should belong to
             }
-
             return model;
         }
 

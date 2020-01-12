@@ -35,9 +35,9 @@ namespace IfcBridgeToolKit
         /// <param name="rawGeometry">product geometry</param>
         /// <param name="name">name of product</param>
         /// <param name="ifcElementType">desired Ifc class (choose one out of IfcBuildingElement</param>
-        /// <param name="placementType">either "localPlacement" or "linearPlacement"</param>
+        /// <param name="placementType">either "local", "linear" or "span"</param>
         /// <param name="spatialStructure">choose spatial container the product should be added to</param>
-        public void AddProduct(ref IfcStore model, DirectShapeToIfc rawGeometry, string name, string ifcElementType, string placementType, string spatialStructure)
+        public void AddBuildingElement(ref IfcStore model, DirectShapeToIfc rawGeometry, string name, string ifcElementType, string placementType, string spatialStructure)
         {
             // handle null inputs
             if (placementType == null)
@@ -47,432 +47,177 @@ namespace IfcBridgeToolKit
             
             using (var txn = model.BeginTransaction("insert a product"))
             {
-                IfcProduct product;
+                IfcBuildingElement buildingElement;
 
                 switch (ifcElementType) // ToDo: make use of enum
                 {
                     case "IfcBeam":
                     {
-                        product = model.Instances.New<IfcBeam>();
+                        buildingElement = model.Instances.New<IfcBeam>();
                         break;
                     }
 
                     case "IfcBearing":
                     {
-                        product = model.Instances.New<IfcBearing>();
+                        buildingElement = model.Instances.New<IfcBearing>();
                         break;
                     }
 
                     case "IfcChimney":
                     {
-                        product = model.Instances.New<IfcChimney>();
+                        buildingElement = model.Instances.New<IfcChimney>();
                         break;
                     }
 
                     case "IfcColumn":
                     {
                         // call the bearing function in the toolkit
-                        product = model.Instances.New<IfcColumn>();
+                        buildingElement = model.Instances.New<IfcColumn>();
                         break;
                     }
 
                     case "IfcCovering":
                     {
                         // call the bearing function in the toolkit
-                        product = model.Instances.New<IfcCovering>();
+                        buildingElement = model.Instances.New<IfcCovering>();
                         break;
                     }
 
                     case "IfcCurtainWall":
                     {
                         // call the bearing function in the toolkit
-                        product = model.Instances.New<IfcCurtainWall>();
+                        buildingElement = model.Instances.New<IfcCurtainWall>();
                         break;
                     }
 
                     case "IfcDeepFoundation":
                     {
-                        product = model.Instances.New<IfcDeepFoundation>();
+                        buildingElement = model.Instances.New<IfcDeepFoundation>();
                         break;
                     }
 
                     case "IfcDoor":
                     {
-                        product = model.Instances.New<IfcDoor>();
+                        buildingElement = model.Instances.New<IfcDoor>();
                         break;
                     }
 
                     case "IfcFooting":
                     {
-                        product = model.Instances.New<IfcFooting>();
+                        buildingElement = model.Instances.New<IfcFooting>();
                         break;
                     }
 
                     case "IfcMember":
                     {
-                        product = model.Instances.New<IfcMember>();
+                        buildingElement = model.Instances.New<IfcMember>();
                         break;
                     }
 
                     case "IfcPlate":
                     {
-                        product = model.Instances.New<IfcPlate>();
+                        buildingElement = model.Instances.New<IfcPlate>();
                         break;
                     }
 
                     case "IfcRailing":
                     {
-                        product = model.Instances.New<IfcRailing>();
+                        buildingElement = model.Instances.New<IfcRailing>();
                         break;
                     }
 
                     case "IfcRamp":
                     {
-                        product = model.Instances.New<IfcRamp>();
+                        buildingElement = model.Instances.New<IfcRamp>();
                         break;
                     }
 
                     case "IfcRampFlight":
                     {
-                        product = model.Instances.New<IfcRampFlight>();
+                        buildingElement = model.Instances.New<IfcRampFlight>();
                         break;
                     }
 
                     case "IfcRoof":
                     {
-                        product = model.Instances.New<IfcRoof>();
+                        buildingElement = model.Instances.New<IfcRoof>();
                         break;
                     }
 
                     case "IfcShadingDevice":
                     {
-                        product = model.Instances.New<IfcShadingDevice>();
+                        buildingElement = model.Instances.New<IfcShadingDevice>();
                         break;
                     }
 
                     case "IfcSlab":
                     {
-                        product = model.Instances.New<IfcSlab>();
+                        buildingElement = model.Instances.New<IfcSlab>();
                         break;
                     }
 
                     case "IfcStair":
                     {
-                        product = model.Instances.New<IfcStair>();
+                        buildingElement = model.Instances.New<IfcStair>();
                         break;
                     }
 
                     case "IfcWall":
                     {
-                        product = model.Instances.New<IfcWall>();
+                        buildingElement = model.Instances.New<IfcWall>();
                         break;
                     }
 
                     case "IfcWindow":
                     {
-                        product = model.Instances.New<IfcWindow>();
+                        buildingElement = model.Instances.New<IfcWindow>();
                         break;
                     }
 
                     // if nothing fits, make an IfcBuildingElementProxy out of it
                     default:
-                        product = model.Instances.New<IfcBuildingElementProxy>();
+                        buildingElement = model.Instances.New<IfcBuildingElementProxy>();
                         break;
                 }
 
                 // fill name property
-                product.Name = name; 
-
-
+                buildingElement.Name = name; 
+                
                 // add product placement (localPlacement or linearPlacement - Span is not supported by Ifc 4x2!)
                 switch (placementType)
                 {
                     case "local":
-                        product.ObjectPlacement = addMyLocalPlacement(ref model,
-                            rawGeometry.location.Position);
+                        buildingElement.ObjectPlacement = addLocalPlacement(ref model, rawGeometry.location.Position);
                         break;
 
-                    case "linearPlacement":
-                        var e = new Exception("Linear placement is not implemented yet.");
+                    case "linear":
+                    {
+                        buildingElement.ObjectPlacement = AddLinearPlacement(ref model, null, 0);
+                        break;
+                    }
+
+                    case "span":
+                    {
+                        var e = new Exception("Span placement was not introduced by IfcBridge!");
                         throw e;
+                    }
+
+                    default:
+                    {
+                        var e = new Exception("Placement method was not specified correctly .");
+                        throw e;
+                    }
                 }
 
                 // add product representation              
-                product.Representation =
-                    ProdGeometryService.ConvertMyMeshToIfcFacetedBRep(ref model,
-                        "representation",
-                        rawGeometry);
-                product.Name = name;
-
-                // add product to spatial structure
-                spatialStructure = spatialStructure.ToUpper();
+                buildingElement.Representation = ProdGeometryService.ConvertMyMeshToIfcFacetedBRep(ref model, "representation", rawGeometry);
                
-                txn.Commit();
-            }
-        }
-
-       
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="rawGeometry"></param>
-        /// <param name="Name"></param>
-        public void AddGirderToIfc(
-            ref IfcStore model,
-            DirectShapeToIfc rawGeometry,
-            string Name,
-            string Representation)
-        {
-            using (var txn = model.BeginTransaction("insert beam"))
-            {
-                var beam = model.Instances.New<IfcBeam>();
-                beam.ObjectPlacement = addMyLocalPlacement(ref model,
-                    rawGeometry.location.Position);
-                beam.Representation =
-                    ProdGeometryService.ConvertMyMeshToIfcFacetedBRep(ref model,
-                        Representation,
-                        rawGeometry);
-                beam.Name = Name;
-
-                AddToSuperstructure(ref model,
-                    beam);
+                // add product to spatial structure
+                AddToSpatialStructure(ref model, buildingElement, spatialStructure);
 
                 txn.Commit();
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="rawGeometry"></param>
-        /// <param name="Name"></param>
-        /// <param name="Representation"></param>
-        public void AddPileToIfc(
-            ref IfcStore model,
-            DirectShapeToIfc rawGeometry,
-            string Name,
-            string Representation)
-        {
-            using (var txn = model.BeginTransaction("insert pile"))
-            {
-                var pile = model.Instances.New<IfcPile>();
-                pile.ObjectPlacement = addMyLocalPlacement(ref model,
-                    rawGeometry.location.Position);
-                pile.Representation =
-                    ProdGeometryService.ConvertMyMeshToIfcFacetedBRep(ref model,
-                        Representation,
-                        rawGeometry);
-                pile.Name = Name;
-
-                // insert in spatial structure
-                AddToSubstructure(ref model,
-                    pile);
-
-                txn.Commit();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="rawGeometry"></param>
-        /// <param name="name"></param>
-        /// <param name="representation"></param>
-        public void AddAbutment(
-            ref IfcStore model,
-            DirectShapeToIfc rawGeometry,
-            string name,
-            string representation)
-        {
-            using (var txn = model.BeginTransaction("insert abutment"))
-            {
-                var wingWall = model.Instances.New<IfcWall>();
-                wingWall.ObjectPlacement = addMyLocalPlacement(ref model,
-                    rawGeometry.location.Position);
-                wingWall.Representation =
-                    ProdGeometryService.ConvertMyMeshToIfcFacetedBRep(ref model,
-                        representation,
-                        rawGeometry);
-                wingWall.Name = name;
-
-                // insert in spatial structure
-                AddToSubstructure(ref model,
-                    wingWall);
-
-                txn.Commit();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="rawGeometry"></param>
-        /// <param name="Name"></param>
-        /// <param name="Representation"></param>
-        public void addSlabToIfc(
-            ref IfcStore model,
-            DirectShapeToIfc rawGeometry,
-            string Name,
-            string Representation)
-        {
-            using (var txn = model.BeginTransaction("insert slab"))
-            {
-                var slab = model.Instances.New<IfcSlab>();
-                slab.ObjectPlacement = addMyLocalPlacement(ref model,
-                    rawGeometry.location.Position);
-                slab.Representation =
-                    ProdGeometryService.ConvertMyMeshToIfcFacetedBRep(ref model,
-                        Representation,
-                        rawGeometry);
-                slab.Name = Name;
-
-                // insert in spatial structure
-                AddToSurfacestructure(ref model,
-                    slab);
-
-                txn.Commit();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="rawGeometry"></param>
-        /// <param name="name"></param>
-        /// <param name="representation"></param>
-        public void addBearingToIfc(
-            ref IfcStore model,
-            DirectShapeToIfc rawGeometry,
-            string name,
-            string representation)
-        {
-            using (var txn = model.BeginTransaction("insert bearing"))
-            {
-                var bearing = model.Instances.New<IfcBearing>();
-                bearing.ObjectPlacement = addMyLocalPlacement(ref model,
-                    rawGeometry.location.Position);
-                bearing.Representation =
-                    ProdGeometryService.ConvertMyMeshToIfcFacetedBRep(ref model,
-                        representation,
-                        rawGeometry);
-                bearing.Name = name;
-
-                // insert in spatial structure
-                AddToSuperstructure(ref model,
-                    bearing);
-
-                txn.Commit();
-            }
-        }
-
-        //ToDo: verify use of IfcCovering 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="fileName"></param>
-        /// <param name="Bauteilname"></param>
-        /// <param name="Repräsentationsname"></param>
-        /// <param name="PlacementPoint"></param>
-        /// <param name="PointList"></param>
-        public void addCovering(
-            ref IfcStore model,
-            DirectShapeToIfc meineAufbereiteteGeometrie,
-            string Bauteilname,
-            string NameRepräsentation)
-        {
-            using (var txn = model.BeginTransaction("insertCovering"))
-            {
-                var covering = model.Instances.New<IfcCovering>();
-                covering.Name = Bauteilname;
-                covering.ObjectPlacement = addMyLocalPlacement(ref model,
-                    meineAufbereiteteGeometrie.location.Position);
-                covering.Representation =
-                    ProdGeometryService.ConvertMyMeshToIfcFacetedBRep(ref model,
-                        NameRepräsentation,
-                        meineAufbereiteteGeometrie);
-
-                // insert in spatial structure
-                AddToSurfacestructure(ref model,
-                    covering);
-
-                txn.Commit();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="fileName"></param>
-        /// <param name="Bauteilname"></param>
-        /// <param name="Repräsentationsname"></param>
-        /// <param name="PlacementPoint"></param>
-        /// <param name="PointList"></param>
-        public void addFoundationToIfc(
-            ref IfcStore model,
-            DirectShapeToIfc meineAufbereiteteGeometrie,
-            string Bauteilname,
-            string NameRepräsentation)
-        {
-            using (var txn = model.BeginTransaction("Füge ein Fundament ein"))
-            {
-                var foundation = model.Instances.New<IfcDeepFoundation>();
-                foundation.Name = Bauteilname;
-                foundation.ObjectPlacement =
-                    addMyLocalPlacement(ref model,
-                        meineAufbereiteteGeometrie.location.Position);
-                foundation.Representation =
-                    ProdGeometryService.ConvertMyMeshToIfcFacetedBRep(ref model,
-                        NameRepräsentation,
-                        meineAufbereiteteGeometrie);
-
-                // insert in spatial structure
-                AddToSubstructure(ref model,
-                    foundation);
-
-                txn.Commit();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="rawGeometry"></param>
-        /// <param name="Bauteilname"></param>
-        /// <param name="NameRepräsentation"></param>
-        public void addProxyElement(
-            ref IfcStore model,
-            DirectShapeToIfc rawGeometry,
-            string Bauteilname,
-            string NameRepräsentation)
-        {
-            using (var txn = model.BeginTransaction("Füge ein Fundament ein"))
-            {
-                var buildingElementProxy = model.Instances.New<IfcBuildingElementProxy>();
-                buildingElementProxy.Name = Bauteilname;
-                buildingElementProxy.ObjectPlacement = addMyLocalPlacement(ref model,
-                    rawGeometry.location.Position);
-                buildingElementProxy.Representation =
-                    ProdGeometryService.ConvertMyMeshToIfcFacetedBRep(ref model,
-                        NameRepräsentation,
-                        rawGeometry);
-                //ToDo: If-Loops für 3 Structuretypen, die auf Bauteiltypen referenzieren
-
-                AddToSuperstructure(ref model,
-                    buildingElementProxy);
-
-                txn.Commit();
-            }
-        }
-
 
         /// <summary>
         /// 
@@ -484,53 +229,55 @@ namespace IfcBridgeToolKit
         /// <summary>
         /// LocalPlacement plaziert Komponenten absolut in Bezug auf die geometrischen Representaion
         /// </summary>
-        /// <param name="model"></param>
-        /// <param name="Point">
+        /// <param name="model">Current model, already in transaction</param>
+        /// <param name="point">xyz placement</param>
         /// <returns></returns>
-        private IfcLocalPlacement addMyLocalPlacement(ref IfcStore model,
-            Point3D Point)
+        private IfcLocalPlacement addLocalPlacement(ref IfcStore model, Point3D point)
         {
+            // localPlacement instance
             var localPlacement = model.Instances.New<IfcLocalPlacement>();
-            //Axis3D
+            //Orientation
             var axis2Placement3D = model.Instances.New<IfcAxis2Placement3D>();
 
-            // CartesianPoint has get the coordinates for the choosen Placement 
+            // CartesianPoint
             var locationPoint = model.Instances.New<IfcCartesianPoint>();
             locationPoint.X = 0;
             locationPoint.Y = 0;
             locationPoint.Z = 0;
 
-            //Grundlegende definition der Achsen und der referenzierten Richtung    
+            // Directions  
             var directionAxis = model.Instances.New<IfcDirection>(dA => dA.SetXYZ(0,
                 0,
-                1));
-            var directionRefDirection = model.Instances.New<IfcDirection>(dRD => dRD.SetXYZ(1,
-                0,
-                0));
+                1)
+            );
+            var directionRefDirection = model.Instances.New<IfcDirection>(
+                dRd => dRd.SetXYZ(
+                    1,
+                    0,
+                    0)
+                );
 
-            //Fülle den Hauptoperatoren mit den benötigten Inputs 
+            
             axis2Placement3D.Location = locationPoint;
             axis2Placement3D.Axis = directionAxis;
             axis2Placement3D.RefDirection = directionRefDirection;
 
-            //Erstelle LocalPlacement 
+            //Link with parent placement 
             localPlacement.RelativePlacement = axis2Placement3D;
 
             return localPlacement;
         }
 
         /// <summary>
-        /// LinearPlacement wird verwendet, wenn ein Alignment verwendet wird 
-        /// Aktueller Status: AlignmentCurve wird nicht verwendet, da IW diese nicht nach Revit exportiert 
+        /// 
         /// </summary>
         /// <param name="model"></param>
         /// <param name="UseModelAlignmentCurve"> Die benötigte AlignmentCurve soll verwendet werden, um die Komponenten an die richtige Stelle zu platzieren </param>
         /// <param name="distancealong">Abstand Start zu Plazierungspunkt muss angegeben werden</param>
         /// <returns></returns>
-        private IfcLinearPlacement addMyLinearPlacement(ref IfcStore model,
-            IfcCurve UseModelAlignmentCurve,
-            IfcLengthMeasure distancealong)
+        private IfcLinearPlacement AddLinearPlacement(ref IfcStore model, IfcCurve UseModelAlignmentCurve, double distancealong)
         {
+            // ToDo: Identify chosen alignment by its GUID
             var linearPlacement = model.Instances.New<IfcLinearPlacement>();
 
             // Füge DistanceExpression hinzu 
@@ -563,43 +310,36 @@ namespace IfcBridgeToolKit
             return linearPlacement;
         }
 
-        private IfcBridgePart AddToSuperstructure(ref IfcStore model,
-            IfcProduct addElement)
+        /// <summary>
+        /// Builds the objectified relationship between a product and the desired spatial structure container
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="product"></param>
+        /// <param name="structure"></param>
+        /// <returns></returns>
+        private void AddToSpatialStructure(ref IfcStore model, IfcProduct product, string structure)
         {
-            var superstructure = model.Instances.OfType<IfcBridgePart>()
-                .FirstOrDefault(type => type.PredefinedType == IfcBridgePartTypeEnum.SUPERSTRUCTURE);
-            model.Instances.New<IfcRelAggregates>(E2S =>
-            {
-                E2S.RelatingObject = superstructure;
-                E2S.RelatedObjects.Add(addElement);
-            });
-            return superstructure;
-        }
+            structure = structure.ToUpper();
 
-        private IfcBridgePart AddToSubstructure(ref IfcStore model,
-            IfcElement addElement)
-        {
-            var substructure = model.Instances.OfType<IfcBridgePart>()
-                .FirstOrDefault(type => type.PredefinedType == IfcBridgePartTypeEnum.SUBSTRUCTURE);
-            model.Instances.New<IfcRelAggregates>(E2S =>
-            {
-                E2S.RelatingObject = substructure;
-                E2S.RelatedObjects.Add(addElement);
-            });
-            return substructure;
-        }
+            IfcSpatialStructureElement spatialStructure;
 
-        private IfcBridgePart AddToSurfacestructure(ref IfcStore model,
-            IfcElement addElement)
-        {
-            var surfacestructure = model.Instances.OfType<IfcBridgePart>()
-                .FirstOrDefault(type => type.PredefinedType == IfcBridgePartTypeEnum.SURFACESTRUCTURE);
+            // bridge parts were already added to the model
+            spatialStructure = model.Instances.OfType<IfcBridgePart>().FirstOrDefault(type => type.PredefinedType.ToString() == structure);
+
+            // if desired bridge part doesnt exist, add the component to the bridge itself
+            if (spatialStructure == null)
+            {
+                spatialStructure = model.Instances.OfType<IfcBridge>().FirstOrDefault();
+            }
+
+            // add new relationship between desired spatial structure container and current product
             model.Instances.New<IfcRelAggregates>(E2S =>
             {
-                E2S.RelatingObject = surfacestructure;
-                E2S.RelatedObjects.Add(addElement);
+                E2S.RelatingObject = spatialStructure;
+                E2S.RelatedObjects.Add(product);
             });
-            return surfacestructure;
+            
         }
+        
     }
 }
