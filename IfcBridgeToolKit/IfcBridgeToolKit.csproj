@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlignmentService.cs" />
+    <Compile Include="Enums\BridgePartEnum.cs" />
     <Compile Include="ProdGeometryService.cs" />
     <Compile Include="ProductService.cs" />
     <Compile Include="CreateandInitModel.cs" />
@@ -163,5 +164,6 @@
       <Name>IfcBridgeToolKit_DataLayer</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
