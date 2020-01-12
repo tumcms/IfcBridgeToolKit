@@ -19,7 +19,7 @@ namespace IfcBridgeToolKit
         /// <param name="model"></param>
         /// <param name="name"></param>
         /// <param name="description"></param>
-        public void AddIfcBridge(ref IfcStore model, string name, string description)
+        public void CreateIfcBridgeEntity(ref IfcStore model, string name, string description)
         {
             using (var txn = model.BeginTransaction("Add IfcBridge to Instances"))
             {
@@ -35,44 +35,16 @@ namespace IfcBridgeToolKit
                 spatial2Bridge.RelatedObjects.Add(bridge);
                 
                 txn.Commit();
-             
-
             }
         }
+       
         /// <summary>
-        /// Fügt IfcBridgepart in die Hierachie ein 
+        /// 
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="name"></param>
-        /// <param name="description"></param>
-        /// <param name="Element"></param>
-        /// <param name="NameOfElement"></param>
-        public void AddIfcBridgepart(ref IfcStore model, string name, string description, IfcBridgePartTypeEnum NameOfElement)
+        public void CreateIfcBridgePartEntities(ref IfcStore model)
         {
-            using (var txn = model.BeginTransaction("Add IfcBridgepart to Instances"))
-            {
-                var bridgePart = model.Instances.New<IfcBridgePart>();
-                bridgePart.Name = name;
-                bridgePart.Description = description;
-                bridgePart.ObjectPlacement = GetIfcLocalPlacement(ref model);
-                bridgePart.CompositionType = IfcElementCompositionEnum.ELEMENT;
-                bridgePart.PredefinedType = NameOfElement;
-                
-
-                var myBridge = model.Instances.OfType<IfcBridge>().FirstOrDefault();
-                            
-                var spatial2Bridge = model.Instances.New<IfcRelAggregates>();
-                spatial2Bridge.RelatingObject = myBridge;
-                spatial2Bridge.RelatedObjects.Add(bridgePart);
-                
-                txn.Commit();
-            }
-                                          
-        }
-
-        public void AddIfcBridgepartSuperstructure(ref IfcStore model)
-        {
-            using (var txn = model.BeginTransaction("Add Superstructure"))
+            using (var txn = model.BeginTransaction("Add Bridge Part structure"))
             {
                 var superstructure = model.Instances.New<IfcBridgePart>();
                 superstructure.Name = "Superstructure";
@@ -95,40 +67,22 @@ namespace IfcBridgeToolKit
 
                 var myBridge = model.Instances.OfType<IfcBridge>().FirstOrDefault();
                 var spatial2Bridge = model.Instances.New<IfcRelAggregates>();
+
                 spatial2Bridge.RelatingObject = myBridge;
+
                 spatial2Bridge.RelatedObjects.Add(superstructure);
                 spatial2Bridge.RelatedObjects.Add(substructure); 
                 spatial2Bridge.RelatedObjects.Add(surfacestructure);
-
-              
+                
                 txn.Commit();
             }
         }
 
-        /// <summary>
-        /// Verlinkt Element zu den zugehörigen IfcBrigeparts 
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="BuildingElement"></param>
-        // eventuell zugriffs modifizierung 
-        public void AddIfcRelContainedInSpartialStructure( ref IfcStore model, IfcBuildingElement BuildingElement)
-            {
-            using (var txn = model.BeginTransaction("Add IfcRelContainedInSpartialStructure"))
-            {
-                var RelContainedInSpartialStructure = model.Instances.New<IfcRelContainedInSpatialStructure>();
-                var myBridgePart = model.Instances.OfType<IfcBridgePart>().FirstOrDefault();
-                RelContainedInSpartialStructure.RelatingStructure = myBridgePart;
-
-                RelContainedInSpartialStructure.RelatedElements.Add(BuildingElement);
-
-                txn.Commit();
-            }
-        }
-
+        
         /// <summary>
         /// Jede Klasse der Spatial Structure benötigt das selbe Local Placement, die Optional miteinander verknüpft werden können
         /// </summary>
-        internal static IfcLocalPlacement GetIfcLocalPlacement(ref IfcStore model)
+        private static IfcLocalPlacement GetIfcLocalPlacement(ref IfcStore model)
         {
             var localPlacement = model.Instances.New<IfcLocalPlacement>();
             var axis2Placement3D = model.Instances.New<IfcAxis2Placement3D>();

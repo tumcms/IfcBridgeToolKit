@@ -79,7 +79,9 @@ namespace IfcBridge_DynPackage
         #endregion
 
         #region Classifiable Items
-
+        ///<summary>
+        /// Main Method to add a component to the IFC model
+        /// </summary>
         /// <param name="model">Ifc model - already opened</param>
         /// <param name="credentials">Editor credits from Credentials Node</param>
         /// <param name="elements">List of DirectShape geometries</param>
@@ -119,10 +121,14 @@ namespace IfcBridge_DynPackage
                 productService.AddBuildingElement(
                     ref model,                 // the Ifc Model
                     transporter,               // the container for all geometry-related content
-                    "BuildingElement",    // the bldElement's name
+                    "BuildingElement " + counter.ToString(),    // the bldElement's name
                     ifcElementType,            // desired IfcBuildingElement subclass
                     "local",       // placement method
                     ifcSpatialStructure);     // spatial structure element the component should belong to
+
+
+                // increase counter
+                counter++;
             }
             return model;
         }
@@ -140,9 +146,8 @@ namespace IfcBridge_DynPackage
             try
             {
                 var bridgeCreator = new InitSpatialStructure();
-                bridgeCreator.AddIfcBridge(ref model, bridgeName, bridgeDescription);
-                bridgeCreator.AddIfcBridgepartSuperstructure(ref model);
-              
+                bridgeCreator.CreateIfcBridgeEntity(ref model, bridgeName, bridgeDescription);
+                bridgeCreator.CreateIfcBridgePartEntities(ref model);
             }
             catch (Exception e)
             {
