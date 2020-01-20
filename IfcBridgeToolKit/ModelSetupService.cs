@@ -240,8 +240,7 @@ namespace IfcBridgeToolKit
         /// <returns></returns>
         private void CreateGeometricPresentationContext(ref IfcStore model)
         {
-            using (var txn = model.BeginTransaction("add geomContext"))
-            {
+           
                 // new context 
                 var geometricRepresentationContext = model.Instances.New<IfcGeometricRepresentationContext>();
                 // set attributes
@@ -270,9 +269,7 @@ namespace IfcBridgeToolKit
 
                 geometricRepresentationContext.TrueNorth = direction;
 
-                txn.Commit();
                
-            }
         }
     }
 }
