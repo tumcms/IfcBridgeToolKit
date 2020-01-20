@@ -13,7 +13,7 @@ namespace IfcBridgeToolKit
         /// <summary>
         /// Creates a local placement at a given position and default directions. Running transaction is required
         /// </summary>
-        public static IfcLocalPlacement AddLocalPlacement(ref IfcStore model, Point3D point)
+        public IfcLocalPlacement AddLocalPlacement(ref IfcStore model, Point3D point)
         {
             return AddLocalPlacement(ref model, point.X, point.Y,point.Z);
         }
@@ -21,7 +21,7 @@ namespace IfcBridgeToolKit
         /// <summary>
         /// Creates a local placement at a given position and default directions. Running transaction is required
         /// </summary>
-        public static IfcLocalPlacement AddLocalPlacement(ref IfcStore model, double? xIn, double? yIn, double? zIn)
+        public IfcLocalPlacement AddLocalPlacement(ref IfcStore model, double? xIn, double? yIn, double? zIn)
         {
             double x, y, z; 
             // check input
@@ -71,7 +71,7 @@ namespace IfcBridgeToolKit
         /// <param name="AlignmentCurve"> Die benötigte AlignmentCurve soll verwendet werden, um die Komponenten an die richtige Stelle zu platzieren </param>
         /// <param name="distancealong">Abstand Start zu Plazierungspunkt muss angegeben werden</param>
         /// <returns></returns>
-        public static IfcLinearPlacement AddLinearPlacement(ref IfcStore model, IfcCurve AlignmentCurve, double distancealong)
+        public IfcLinearPlacement AddLinearPlacement(ref IfcStore model, IfcCurve AlignmentCurve, double distancealong)
         {
             // ToDo: Identify chosen alignment by its GUID
             var linearPlacement = model.Instances.New<IfcLinearPlacement>();

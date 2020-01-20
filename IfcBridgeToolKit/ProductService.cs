@@ -40,7 +40,11 @@ namespace IfcBridgeToolKit
             {
                 placementType = "localPlacement";
             }
-            
+
+
+            // other services needed for this method:
+            var placementService = new PlacementService();
+
             using (var txn = model.BeginTransaction("insert a product"))
             {
                 IfcBuildingElement buildingElement;
@@ -183,13 +187,13 @@ namespace IfcBridgeToolKit
                 switch (placementType)
                 {
                     case "local":
-                        buildingElement.ObjectPlacement = PlacementService.AddLocalPlacement(ref model, rawGeometry.location.Position);
+                        buildingElement.ObjectPlacement = placementService.AddLocalPlacement(ref model, rawGeometry.location.Position);
                         break;
 
                     case "linear":
                     {
                       
-                        buildingElement.ObjectPlacement = PlacementService.AddLinearPlacement(ref model, null, 0);
+                        buildingElement.ObjectPlacement = placementService.AddLinearPlacement(ref model, null, 0);
                         break;
                     }
 

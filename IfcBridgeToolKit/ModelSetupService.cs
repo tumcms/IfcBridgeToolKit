@@ -32,9 +32,13 @@ namespace IfcBridgeToolKit
                 var bridge = model.Instances.New<IfcBridge>();
                 bridge.Name = name;
                 bridge.Description = description;
-                bridge.ObjectPlacement = PlacementService.AddLocalPlacement(ref model, 0,0,0);
-                var mySite = model.Instances.OfType<IfcSite>().FirstOrDefault();
 
+                // placement 
+                var placementService = new PlacementService();
+                bridge.ObjectPlacement = placementService.AddLocalPlacement(ref model, 0,0,0);
+               
+                // build relationship between bridge and Site
+                var mySite = model.Instances.OfType<IfcSite>().FirstOrDefault();
                 var spatial2Bridge = model.Instances.New<IfcRelAggregates>();
 
                 spatial2Bridge.RelatingObject = mySite;
@@ -43,30 +47,35 @@ namespace IfcBridgeToolKit
                 txn.Commit();
             }
         }
-       
+
         /// <summary>
         /// Create BridgePart Entities
         /// </summary>
         /// <param name="model"></param>
+        /// <exception cref="Exception"></exception>
         public void CreateIfcBridgePartEntities(ref IfcStore model)
         {
+            // other services needed for this method:
+            var placementService = new PlacementService();
+
             using (var txn = model.BeginTransaction("Add Bridge Part structure"))
             {
                 var superStructure = model.Instances.New<IfcBridgePart>();
                 superStructure.Name = "Superstructure";
-                superStructure.ObjectPlacement = PlacementService.AddLocalPlacement(ref model, 0,0,0);
+
+                superStructure.ObjectPlacement = placementService.AddLocalPlacement(ref model, 0,0,0);
                 superStructure.CompositionType = IfcElementCompositionEnum.ELEMENT;
                 superStructure.PredefinedType = IfcBridgePartTypeEnum.SUPERSTRUCTURE;
                 
                 var subStructure = model.Instances.New<IfcBridgePart>();
                 subStructure.Name = "Substructure";
-                subStructure.ObjectPlacement = PlacementService.AddLocalPlacement(ref model, 0,0,0);
+                subStructure.ObjectPlacement = placementService.AddLocalPlacement(ref model, 0,0,0);
                 subStructure.CompositionType = IfcElementCompositionEnum.ELEMENT;
                 subStructure.PredefinedType = IfcBridgePartTypeEnum.SUBSTRUCTURE;
 
                 var surfaceStructure = model.Instances.New<IfcBridgePart>();
                 surfaceStructure.Name = "Surfacestructure";
-                surfaceStructure.ObjectPlacement = PlacementService.AddLocalPlacement(ref model,0,0,0);
+                surfaceStructure.ObjectPlacement = placementService.AddLocalPlacement(ref model,0,0,0);
                 surfaceStructure.CompositionType = IfcElementCompositionEnum.ELEMENT;
                 surfaceStructure.PredefinedType = IfcBridgePartTypeEnum.SURFACESTRUCTURE;
 
