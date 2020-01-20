@@ -148,10 +148,10 @@
   <ItemGroup>
     <Compile Include="AlignmentService.cs" />
     <Compile Include="Enums\BridgePartEnum.cs" />
+    <Compile Include="PlacementService.cs" />
     <Compile Include="ProdGeometryService.cs" />
     <Compile Include="ProductService.cs" />
-    <Compile Include="CreateandInitModel.cs" />
-    <Compile Include="InitSpatialStructure.cs" />
+    <Compile Include="ModelSetupService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

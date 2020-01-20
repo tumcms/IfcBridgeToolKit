@@ -60,9 +60,9 @@ namespace IfcBridge_DynPackage
 
             try
             {
-                var modelCreator = new CreateAndInitModel(); //ToDo: Correct Header -> IfcVersion 
+                var modelCreator = new ModelSetupService(); //ToDo: Correct Header -> IfcVersion 
                 model = modelCreator.CreateModel(projectName, credentials);
-                modelCreator.CreateRequiredInstances(ref model, "BridgeSite");
+                modelCreator.CreateIfcSite(ref model, "BridgeSite");
 
 
                 model.SaveAs(storeFilePath);
@@ -145,7 +145,7 @@ namespace IfcBridge_DynPackage
         {
             try
             {
-                var bridgeCreator = new InitSpatialStructure();
+                var bridgeCreator = new ModelSetupService();
                 bridgeCreator.CreateIfcBridgeEntity(ref model, bridgeName, bridgeDescription);
                 bridgeCreator.CreateIfcBridgePartEntities(ref model);
             }

@@ -183,12 +183,13 @@ namespace IfcBridgeToolKit
                 switch (placementType)
                 {
                     case "local":
-                        buildingElement.ObjectPlacement = addLocalPlacement(ref model, rawGeometry.location.Position);
+                        buildingElement.ObjectPlacement = PlacementService.AddLocalPlacement(ref model, rawGeometry.location.Position);
                         break;
 
                     case "linear":
                     {
-                        buildingElement.ObjectPlacement = AddLinearPlacement(ref model, null, 0);
+                      
+                        buildingElement.ObjectPlacement = PlacementService.AddLinearPlacement(ref model, null, 0);
                         break;
                     }
 
@@ -228,84 +229,7 @@ namespace IfcBridgeToolKit
         /// <param name="model">Current model, already in transaction</param>
         /// <param name="point">xyz placement</param>
         /// <returns></returns>
-        private IfcLocalPlacement addLocalPlacement(ref IfcStore model, Point3D point)
-        {
-            // localPlacement instance
-            var localPlacement = model.Instances.New<IfcLocalPlacement>();
-            //Orientation
-            var axis2Placement3D = model.Instances.New<IfcAxis2Placement3D>();
-
-            // CartesianPoint
-            var locationPoint = model.Instances.New<IfcCartesianPoint>();
-            locationPoint.X = 0;
-            locationPoint.Y = 0;
-            locationPoint.Z = 0;
-
-            // Directions  
-            var directionAxis = model.Instances.New<IfcDirection>(dA => dA.SetXYZ(0,
-                0,
-                1)
-            );
-            var directionRefDirection = model.Instances.New<IfcDirection>(
-                dRd => dRd.SetXYZ(
-                    1,
-                    0,
-                    0)
-                );
-
-            
-            axis2Placement3D.Location = locationPoint;
-            axis2Placement3D.Axis = directionAxis;
-            axis2Placement3D.RefDirection = directionRefDirection;
-
-            //Link with parent placement 
-            localPlacement.RelativePlacement = axis2Placement3D;
-
-            return localPlacement;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="AlignmentCurve"> Die benötigte AlignmentCurve soll verwendet werden, um die Komponenten an die richtige Stelle zu platzieren </param>
-        /// <param name="distancealong">Abstand Start zu Plazierungspunkt muss angegeben werden</param>
-        /// <returns></returns>
-        private IfcLinearPlacement AddLinearPlacement(ref IfcStore model, IfcCurve AlignmentCurve, double distancealong)
-        {
-            // ToDo: Identify chosen alignment by its GUID
-            var linearPlacement = model.Instances.New<IfcLinearPlacement>();
-
-            // Füge DistanceExpression hinzu 
-            var distanceExpression = model.Instances.New<IfcDistanceExpression>();
-            distanceExpression.DistanceAlong = distancealong;
-            distanceExpression.OffsetLateral = 1;
-            distanceExpression.OffsetVertical = 0;
-            distanceExpression.OffsetLongitudinal = 0;
-            distanceExpression.AlongHorizontal = true;
-
-            var orientationExpression = model.Instances.New<IfcOrientationExpression>();
-
-            // Füge Informationen für OrientationExpression hinzu 
-            var lateralAxisDirection = model.Instances.New<IfcDirection>(lAD => lAD.SetXYZ(1,
-                0,
-                0));
-            var verticalAxisDirection = model.Instances.New<IfcDirection>(vAD => vAD.SetXYZ(0,
-                0,
-                1));
-
-            //Fülle OrientationExpression 
-            orientationExpression.LateralAxisDirection = lateralAxisDirection;
-            orientationExpression.VerticalAxisDirection = verticalAxisDirection;
-
-            //Fülle den Hauptoperator mit den benötigten Inputs
-            linearPlacement.PlacementMeasuredAlong = AlignmentCurve;
-            linearPlacement.Distance = distanceExpression;
-            linearPlacement.Orientation = orientationExpression;
-
-            return linearPlacement;
-        }
-
+       
         /// <summary>
         /// Builds the objectified relationship between a product and the desired spatial structure container
         /// </summary>
