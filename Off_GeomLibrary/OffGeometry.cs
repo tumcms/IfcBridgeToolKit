@@ -7,8 +7,7 @@ namespace Off_GeomLibrary
     public class OffGeometry
     {
         public List<Point3D> Vertices { get; set; }
-
-        List<Face> Faces { get; set; }
+        public List<Face> Faces { get; set; }
 
         /// <summary>
         /// Constructor

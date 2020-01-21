@@ -7,6 +7,7 @@ using Xbim.IfcRail.RepresentationResource;
 using Xbim.Ifc;
 using QuantumConcepts.Formats.StereoLithography;
 using Xbim.IfcRail.MeasureResource;
+using Off_GeomLibrary;
 
 namespace IfcBridgeToolKit
 {
@@ -172,6 +173,50 @@ namespace IfcBridgeToolKit
 
             return tfs;
         }
-              
+            
+        /// <summary>
+        /// Maps a given Off-Geometry into an IFC Representation
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="offGeometry"></param>
+        /// <returns></returns>
+        public static IfcTriangulatedFaceSet OffToIfc_TFS(ref IfcStore model, OffGeometry offGeometry)
+        {
+            var pointList = model.Instances.New<IfcCartesianPointList3D>();
+           
+            
+            int i = 0;
+            // map off geom points into Ifc point list
+            foreach (var vertex in offGeometry.Vertices)
+            {
+                pointList.CoordList.GetAt(i).AddRange(new IfcLengthMeasure[]
+                {
+                        vertex.X,
+                        vertex.Y,
+                        vertex.Z
+                });
+            }
+            
+            // create TFS
+            var tfs = model.Instances.New<IfcTriangulatedFaceSet>(fs =>
+            {
+                fs.Closed = false;
+                fs.Coordinates = pointList;
+            });
+
+            // map off faces to IFC
+            int j = 0; 
+            foreach (var face in offGeometry.Faces)
+            {
+                // var indices = face.
+                var indices = face.VertexIds;
+                tfs.CoordIndex.GetAt(j).AddRange(indices.Select(k => new IfcPositiveInteger(k)));
+                j++;
+            }
+            // https://github.com/xBimTeam/XbimEssentials/issues/182 
+            // https://github.com/xBimTeam/XbimEssentials/issues/70
+
+            return tfs;
+        }
     }
 }

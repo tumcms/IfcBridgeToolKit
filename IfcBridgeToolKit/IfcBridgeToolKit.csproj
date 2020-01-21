@@ -166,6 +166,10 @@
       <Project>{15FDAF29-DFE3-40A4-83E3-3B3E4FED5064}</Project>
       <Name>IfcBridgeToolKit_DataLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Off_GeomLibrary\Off_GeomLibrary.csproj">
+      <Project>{E1FD9144-EEBD-4F77-B47D-1A51873806E6}</Project>
+      <Name>Off_GeomLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

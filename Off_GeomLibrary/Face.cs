@@ -2,10 +2,10 @@
 
 namespace Off_GeomLibrary
 {
-    internal class Face
+    public class Face
     {
-        int NumVertices { get; set; }
-        List<int> VertexIds { get; set; }
+        public int NumVertices { get; set; }
+        public List<int> VertexIds { get; set; }
 
         /// <summary>
         /// Constructor
