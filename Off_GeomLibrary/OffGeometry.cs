@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace Off_GeomLibrary
@@ -23,6 +24,12 @@ namespace Off_GeomLibrary
         /// </summary>
         public OffGeometry(string offFile)
         {
+            // Create a NumberFormatInfo object and set some of its properties.
+            NumberFormatInfo provider = new NumberFormatInfo();
+            provider.NumberDecimalSeparator = ".";
+            provider.NumberGroupSeparator = ",";
+            provider.NumberGroupSizes = new int[] { 3 };
+
             // read off file
             string[] rawTxt = File.ReadAllLines(offFile);
 
@@ -44,9 +51,9 @@ namespace Off_GeomLibrary
                 var rawPt = rawTxt[i].Split(' ');
 
                 // cast to double
-                var x = Convert.ToDouble(rawPt[0]);
-                var y = Convert.ToDouble(rawPt[1]);
-                var z = Convert.ToDouble(rawPt[2]);
+                var x = Convert.ToDouble(rawPt[0], provider);
+                var y = Convert.ToDouble(rawPt[1], provider);
+                var z = Convert.ToDouble(rawPt[2], provider);
 
                 // add to list
                 Vertices.Add(new Point3D(x, y, z));                

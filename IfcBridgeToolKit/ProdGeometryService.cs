@@ -207,6 +207,7 @@ namespace IfcBridgeToolKit
                         vertex.Y,
                         vertex.Z
                 });
+                i++;
             }
             
             // create TFS
