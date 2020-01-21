@@ -27,8 +27,17 @@ namespace PT2IfcBridge
             // create Bridge Parts
             toolkit.CreateIfcBridgePartEntities(ref model);
 
-            Console.WriteLine("Save Model... ");
-            model.SaveAs("PT2IFC_bridge_v01.ifc");
+            Console.WriteLine("Save Model... \n");
+
+            // set time stamp in file name
+            var date = DateTime.Now;
+            var dateStr = date.ToString("yy-mm-dd"); 
+            var timeStr = date.ToString("hh-mm");
+            var fileName = dateStr + "_" + timeStr + "_" + "PT2IFC_bridge_v01.ifc";
+            Console.WriteLine("Filename is: " + fileName); 
+
+            // save model
+            model.SaveAs(fileName);
 
             Console.WriteLine("Done.");
 
