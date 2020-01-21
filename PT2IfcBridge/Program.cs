@@ -30,6 +30,8 @@ namespace PT2IfcBridge
             // load geometry
             var offGeom = new OffGeometry("geometryFiles/pier_2.off");
 
+            var productService = new ProductService();
+            productService.AddBuildingElement(ref model, offGeom, "test", "IfcBuildingElementProxy", "local", "Superstructure");
 
             Console.WriteLine("Save Model... \n");
 

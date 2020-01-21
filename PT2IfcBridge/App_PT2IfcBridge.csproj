@@ -153,6 +153,10 @@
       <Project>{E5744FF2-EA36-4381-BAE3-8308D443814F}</Project>
       <Name>IfcBridgeToolKit</Name>
     </ProjectReference>
+    <ProjectReference Include="..\IfcBridgeToolKit_DataLayer\IfcBridgeToolKit_DataLayer.csproj">
+      <Project>{15FDAF29-DFE3-40A4-83E3-3B3E4FED5064}</Project>
+      <Name>IfcBridgeToolKit_DataLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Off_GeomLibrary\Off_GeomLibrary.csproj">
       <Project>{E1FD9144-EEBD-4F77-B47D-1A51873806E6}</Project>
       <Name>Off_GeomLibrary</Name>

@@ -128,7 +128,7 @@ namespace IfcBridgeToolKit
         /// <param name="model"></param>
         /// <param name="stlDocument"></param>
         /// <returns></returns>
-        public static IfcTriangulatedFaceSet StlToIfc_TFS(ref IfcStore model, STLDocument stlDocument, double? scaling)
+        public static IfcProductDefinitionShape StlToIfc_TFS(ref IfcStore model, STLDocument stlDocument, double? scaling)
         {
             double scalingFactor = 0.001;
             if (scaling != null)
@@ -171,7 +171,19 @@ namespace IfcBridgeToolKit
 
             // https://github.com/xBimTeam/XbimEssentials/issues/182 
 
-            return tfs;
+            var ifcShapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
+            var context = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
+            ifcShapeRepresentation.ContextOfItems = context;
+            ifcShapeRepresentation.RepresentationIdentifier = "Tesselation";
+            ifcShapeRepresentation.RepresentationType = "Tesselation";
+            ifcShapeRepresentation.Items.Add(tfs);
+
+
+            //Erstellt IfcProductDefinitionShape 
+            var ifcProductDefinitonShape = model.Instances.New<IfcProductDefinitionShape>();
+            ifcProductDefinitonShape.Representations.Add(ifcShapeRepresentation);
+
+            return ifcProductDefinitonShape;
         }
             
         /// <summary>
@@ -180,7 +192,7 @@ namespace IfcBridgeToolKit
         /// <param name="model"></param>
         /// <param name="offGeometry"></param>
         /// <returns></returns>
-        public static IfcTriangulatedFaceSet OffToIfc_TFS(ref IfcStore model, OffGeometry offGeometry)
+        public static IfcProductDefinitionShape OffToIfc_TFS(ref IfcStore model, OffGeometry offGeometry)
         {
             var pointList = model.Instances.New<IfcCartesianPointList3D>();
            
@@ -216,7 +228,21 @@ namespace IfcBridgeToolKit
             // https://github.com/xBimTeam/XbimEssentials/issues/182 
             // https://github.com/xBimTeam/XbimEssentials/issues/70
 
-            return tfs;
+            // https://github.com/xBimTeam/XbimEssentials/issues/182 
+
+            var ifcShapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
+            var context = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
+            ifcShapeRepresentation.ContextOfItems = context;
+            ifcShapeRepresentation.RepresentationIdentifier = "Tessellation";
+            ifcShapeRepresentation.RepresentationType = "Tessellation";
+            ifcShapeRepresentation.Items.Add(tfs);
+
+
+            //Erstellt IfcProductDefinitionShape 
+            var ifcProductDefinitonShape = model.Instances.New<IfcProductDefinitionShape>();
+            ifcProductDefinitonShape.Representations.Add(ifcShapeRepresentation);
+
+            return ifcProductDefinitonShape;
         }
     }
 }
