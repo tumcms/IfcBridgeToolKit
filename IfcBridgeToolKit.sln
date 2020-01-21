@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IfcBridgeToolKit_DataLayer"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App_PT2IfcBridge", "PT2IfcBridge\App_PT2IfcBridge.csproj", "{E21541AF-03CD-4F18-9A0C-7F96D4444F87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Off_GeomLibrary", "Off_GeomLibrary\Off_GeomLibrary.csproj", "{E1FD9144-EEBD-4F77-B47D-1A51873806E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{E21541AF-03CD-4F18-9A0C-7F96D4444F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E21541AF-03CD-4F18-9A0C-7F96D4444F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E21541AF-03CD-4F18-9A0C-7F96D4444F87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1FD9144-EEBD-4F77-B47D-1A51873806E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1FD9144-EEBD-4F77-B47D-1A51873806E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1FD9144-EEBD-4F77-B47D-1A51873806E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1FD9144-EEBD-4F77-B47D-1A51873806E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

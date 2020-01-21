@@ -27,6 +27,10 @@ namespace PT2IfcBridge
             // create Bridge Parts
             toolkit.CreateIfcBridgePartEntities(ref model);
 
+            // load geometry
+
+
+
             Console.WriteLine("Save Model... \n");
 
             // set time stamp in file name
