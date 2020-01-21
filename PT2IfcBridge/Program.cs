@@ -1,6 +1,6 @@
 ﻿using System;
 using IfcBridgeToolKit;
-
+using Off_GeomLibrary;
 
 namespace PT2IfcBridge
 {
@@ -28,7 +28,7 @@ namespace PT2IfcBridge
             toolkit.CreateIfcBridgePartEntities(ref model);
 
             // load geometry
-
+            var offGeom = new OffGeometry("geometryFiles/pier_2.off");
 
 
             Console.WriteLine("Save Model... \n");
