@@ -66,6 +66,9 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=3.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.3.0.0-preview6.19304.6\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
+    <Reference Include="QuantumConcepts.Formats.StereoLithography, Version=1.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QuantumConcepts.Formats.STL.1.3.1\lib\net451\QuantumConcepts.Formats.StereoLithography.dll</HintPath>
+    </Reference>
     <Reference Include="RevitAPI">
       <HintPath>..\IfcBridge_DynPackage\externalLibs_preCompiled\RevitAPI.dll</HintPath>
     </Reference>
