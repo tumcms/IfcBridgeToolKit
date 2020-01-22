@@ -32,12 +32,23 @@ namespace PT2IfcBridge
             // create Bridge Parts
             toolkit.CreateIfcBridgePartEntities(ref model);
 
-            // load geometry
-            var offGeom = new OffGeometry("geometryFiles/pier_2.off");
+            // get all files in the geometry folder
+            var path = "geometryFiles/";
+            var files = System.IO.Directory.GetFiles(path, "*.off").ToList();
 
+            // init product service
             var productService = new ProductService();
-            productService.AddBuildingElement(ref model, offGeom, "test", "IfcBuildingElementProxy", "local", "Superstructure");
 
+            foreach (var file in files)
+            {
+                Console.WriteLine("add new product: " + file);
+                // load geometry
+                var offGeom = new OffGeometry(file);
+                
+                // add product to model
+                productService.AddBuildingElement(ref model, offGeom, file, "IfcBuildingElementProxy", "local", "Superstructure");
+            }
+            
             Console.WriteLine("Save Model... \n");
 
             // set time stamp in file name
