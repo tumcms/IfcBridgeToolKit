@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Xbim.Common.Step21;
 using Xbim.Ifc;
@@ -270,6 +272,19 @@ namespace IfcBridgeToolKit
                 geometricRepresentationContext.TrueNorth = direction;
 
                
+        }
+
+        /// <summary>
+        /// Updates "IFC_Rail_Pilot" to "IFC4X2"
+        /// </summary>
+        /// <param name="filePath"></param>
+        public void ModifyHeader(string fileName)
+        {
+            Console.WriteLine("Correcting Header ... ");
+            string[] file = File.ReadAllLines(fileName);
+            file[4] = "FILE_SCHEMA (('IFC4X2'));";
+            File.WriteAllLines(fileName, file);
+            Console.WriteLine("IFC Version set to IFC 4X2. ");
         }
     }
 }

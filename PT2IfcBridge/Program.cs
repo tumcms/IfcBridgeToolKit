@@ -53,7 +53,7 @@ namespace PT2IfcBridge
 
             // set time stamp in file name
             var date = DateTime.Now;
-            var dateStr = date.ToString("yy-mm-dd"); 
+            var dateStr = date.ToString("yy-MM-dd", CultureInfo.CreateSpecificCulture("en-US")); 
             var timeStr = date.ToString("hh-mm", CultureInfo.CreateSpecificCulture("de-DE"));
             var fileName = dateStr + "_" + timeStr + "_" + "PT2IFC_bridge_v01.ifc";
             Console.WriteLine("Filename is: " + fileName); 
@@ -61,7 +61,10 @@ namespace PT2IfcBridge
             // save model
             model.SaveAs(fileName);
 
-            Console.WriteLine("Done.");
+            // modify header
+            toolkit.ModifyHeader(fileName);
+
+            Console.WriteLine("Finished. Press button to exit. \n");
 
             var input = Console.ReadKey();
         }

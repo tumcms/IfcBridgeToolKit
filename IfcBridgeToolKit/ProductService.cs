@@ -417,21 +417,6 @@ namespace IfcBridgeToolKit
             }
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="name">Name of ifcProductDefinitionShape</param>
-        /// <param name="ifcCartesianPoints"></param>
-        /// <returns></returns>
-        /// <summary>
-        /// LocalPlacement plaziert Komponenten absolut in Bezug auf die geometrischen Representaion
-        /// </summary>
-        /// <param name="model">Current model, already in transaction</param>
-        /// <param name="point">xyz placement</param>
-        /// <returns></returns>
-
         /// <summary>
         /// Builds the objectified relationship between a product and the desired spatial structure container
         /// </summary>
