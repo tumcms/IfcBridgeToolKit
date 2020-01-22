@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Globalization;
+using System.Linq;
 using IfcBridgeToolKit;
 using Off_GeomLibrary;
+using Xbim.IfcRail.GeometricConstraintResource;
+using Xbim.IfcRail.GeometryResource;
+using Xbim.IfcRail.ProductExtension;
 
 namespace PT2IfcBridge
 {
@@ -38,7 +43,7 @@ namespace PT2IfcBridge
             // set time stamp in file name
             var date = DateTime.Now;
             var dateStr = date.ToString("yy-mm-dd"); 
-            var timeStr = date.ToString("hh-mm");
+            var timeStr = date.ToString("hh-mm", CultureInfo.CreateSpecificCulture("de-DE"));
             var fileName = dateStr + "_" + timeStr + "_" + "PT2IFC_bridge_v01.ifc";
             Console.WriteLine("Filename is: " + fileName); 
 
@@ -48,7 +53,6 @@ namespace PT2IfcBridge
             Console.WriteLine("Done.");
 
             var input = Console.ReadKey();
-
         }
     }
 }
