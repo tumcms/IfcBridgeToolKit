@@ -1,3 +1,8 @@
+**Prerequisits**
+
+Revit and InfraWorks up and running. Revit Infraworks Updater up and running. 
+
+**Compiling the Code**
 Comile project and integration into Dynamo: 
 
 1. Clone git
