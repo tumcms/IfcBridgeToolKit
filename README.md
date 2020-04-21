@@ -1,4 +1,6 @@
-Comile project and integration into Dynamo: 
+# IfcBridgeToolKit for Dynamo
+
+## Comile project and integration into Dynamo: 
 
 1. Clone git
 2. open sln 
@@ -10,7 +12,9 @@ Comile project and integration into Dynamo:
 * IfcBridgeToolKit
 * DynIntegration
 
-Getting Started Sample
+4. Open Dynamo and add the compiled library "IfcBridge_DynInteraction.dll". Leave the file in your debug/release folder to avoid reference errors (or be sure what you are doing!)
+
+## Getting Started Sample
 
 Use the following example to test if your Dynamo accepts the IfcBridgeToolKit dll: 
 
@@ -18,7 +22,7 @@ Use the following example to test if your Dynamo accepts the IfcBridgeToolKit dl
 
 These nodes should result in something like: 
 
-'''
+```
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION ((''), '2;1');
@@ -50,4 +54,4 @@ DATA;
 #22=IFCRELAGGREGATES('2r4uy0NDz4iwuT4xzZHxIC',#2,$,$,#1,(#21));
 ENDSEC;
 END-ISO-10303-21;
-'''
+```
