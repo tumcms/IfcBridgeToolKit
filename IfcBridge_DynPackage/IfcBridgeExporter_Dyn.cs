@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.DesignScript.Runtime;
 using IfcBridgeToolKit;
 using IfcBridgeToolKit_DataLayer.GeometryConnector;
 using Revit.Elements;
@@ -22,7 +23,8 @@ namespace IfcBridge_DynPackage
         /// <param name="FirstName">First Name of the Editor</param>
         /// <param name="organization">Organization</param>
         /// <returns>credentials in an XBIM-based DataType</returns>
-        public static XbimEditorCredentials Credentials(string FamilyName, string FirstName, string organization)
+        [MultiReturn(new[] { "credentials" })]
+        public static  Dictionary<string, object> Credentials(string FamilyName, string FirstName, string organization)
         {
             var credentials = new XbimEditorCredentials
             {
@@ -34,7 +36,10 @@ namespace IfcBridge_DynPackage
                 EditorsOrganisationName = organization
             };
 
-            return credentials;
+            return new Dictionary<string, object>
+            {
+                {"credentials", credentials }
+            };
         }
 
         /// <summary>
@@ -50,7 +55,8 @@ namespace IfcBridge_DynPackage
         /// <search>
         ///     init, IfcBridge
         /// </search>
-        public static IfcStore InitIfcModel(string projectName, XbimEditorCredentials credentials)
+        [MultiReturn(new[] { "IfcModel" })]
+        public static Dictionary<string, object> InitIfcModel(string projectName, XbimEditorCredentials credentials)
         {
            IfcStore model; 
 
@@ -66,7 +72,11 @@ namespace IfcBridge_DynPackage
                 throw;
             }
 
-            return model; // return Ifc Model
+            // return model; // return Ifc Model
+            return new Dictionary<string, object>
+            {
+                {"IfcModel", model }
+            };
         }
 
         #endregion
@@ -84,7 +94,8 @@ namespace IfcBridge_DynPackage
         /// <search>
         ///     girder, beam, IfcBridge
         /// </search>
-        public static IfcStore AddDirectShapeComponents(
+        [MultiReturn(new[] { "IfcModel" })]
+        public static Dictionary<string, object> AddDirectShapeComponents(
             IfcStore model,
             XbimEditorCredentials credentials,
             List<Element> elements,
@@ -123,7 +134,11 @@ namespace IfcBridge_DynPackage
                 // increase counter
                 counter++;
             }
-            return model;
+          //  return model;
+            return new Dictionary<string, object>
+            {
+                {"IfcModel", model }
+            };
         }
 
         /// <summary>
@@ -134,7 +149,8 @@ namespace IfcBridge_DynPackage
         /// <param name="bridgeName"></param>
         /// <param name="bridgeDescription"></param>
         /// <returns></returns>
-        public static IfcStore AddBridgeStructure(IfcStore model, XbimEditorCredentials credentials, string bridgeName, string bridgeDescription)
+        [MultiReturn(new[] { "IfcModel" })]
+        public static Dictionary<string, object> AddBridgeStructure(IfcStore model, XbimEditorCredentials credentials, string bridgeName, string bridgeDescription)
         {
             try
             {
@@ -148,7 +164,11 @@ namespace IfcBridge_DynPackage
                 throw;
             }
 
-            return model; // return directory to Ifc Model
+            // return model; // return directory to Ifc Model
+            return new Dictionary<string, object>
+            {
+                {"IfcModel", model }
+            };
         }
 
         /// <summary>
