@@ -3,7 +3,7 @@
     /// <summary>
     /// Stellt Funktionalitäten bereit, um ein neues IfcAlignment in ein IfcModel hinzuzugfügen und Segmente in ein bestehendes IfcAlignment hinzufügen
     /// </summary>
-    class AddAlignment
+    class AlignmentService
     {
         /// <summary>
         /// 

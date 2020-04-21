@@ -18,10 +18,10 @@ namespace App_IBTK_Example
         private static void Main(string[] args)
         {
             //Erstellt Variabele, die CreateAndInitModel abruft 
-            var ModelCreator = new CreateAndInitModel();
+            var ModelCreator = new ModelSetupService();
             //Fügt Grundstrucktur der Ifc-Datei hinzu 
             var model = ModelCreator.CreateModel("IfcBridgeTest_01", "Aicher", "Korbinian");
-            ModelCreator.CreateRequiredInstances(ref model, "project Site");
+            ModelCreator.CreateIfcSite(ref model, "project Site");
 
 
             using (var txn = model.BeginTransaction("add an IfcAlignment"))

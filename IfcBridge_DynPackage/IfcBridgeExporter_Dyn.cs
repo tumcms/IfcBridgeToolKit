@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.DesignScript.Runtime;
 using IfcBridgeToolKit;
 using IfcBridgeToolKit_DataLayer.GeometryConnector;
 using Revit.Elements;
@@ -22,19 +23,23 @@ namespace IfcBridge_DynPackage
         /// <param name="FirstName">First Name of the Editor</param>
         /// <param name="organization">Organization</param>
         /// <returns>credentials in an XBIM-based DataType</returns>
-        public static XbimEditorCredentials Credentials(string FamilyName, string FirstName, string organization)
+        [MultiReturn(new[] { "credentials" })]
+        public static  Dictionary<string, object> Credentials(string FamilyName, string FirstName, string organization)
         {
             var credentials = new XbimEditorCredentials
             {
                 ApplicationDevelopersName = "IfcBridgeToolKit",
                 ApplicationFullName = "TUM_CMS_IfcBridgeToolkit",
-                ApplicationVersion = "1.0",
+                ApplicationVersion = "1.1",
                 EditorsFamilyName = FamilyName,
                 EditorsGivenName = FirstName,
                 EditorsOrganisationName = organization
             };
 
-            return credentials;
+            return new Dictionary<string, object>
+            {
+                {"credentials", credentials }
+            };
         }
 
         /// <summary>
@@ -50,22 +55,16 @@ namespace IfcBridge_DynPackage
         /// <search>
         ///     init, IfcBridge
         /// </search>
-        public static IfcStore InitIfcModel(string projectName, XbimEditorCredentials credentials, string directory,
-            string fileName, string bridgeName = "unknown", string bridgeDescription = "unknown")
+        [MultiReturn(new[] { "IfcModel" })]
+        public static Dictionary<string, object> InitIfcModel(string projectName, XbimEditorCredentials credentials)
         {
-            // build storage path of the model
-            var storeFilePath = directory + "/" + fileName;
-
-            IfcStore model; 
+           IfcStore model; 
 
             try
             {
-                var modelCreator = new CreateAndInitModel(); //ToDo: Correct Header -> IfcVersion 
+                var modelCreator = new ModelSetupService(); 
                 model = modelCreator.CreateModel(projectName, credentials);
-                modelCreator.CreateRequiredInstances(ref model, "BridgeSite");
-
-
-                model.SaveAs(storeFilePath);
+                modelCreator.CreateIfcSite(ref model, "BridgeSite");
             }
             catch (Exception e)
             {
@@ -73,134 +72,91 @@ namespace IfcBridge_DynPackage
                 throw;
             }
 
-            return model; // return Ifc Model
+            // return model; // return Ifc Model
+            return new Dictionary<string, object>
+            {
+                {"IfcModel", model }
+            };
         }
 
         #endregion
 
         #region Classifiable Items
-
+        ///<summary>
+        /// Main Method to add a component to the IFC model
+        /// </summary>
         /// <param name="model">Ifc model - already opened</param>
         /// <param name="credentials">Editor credits from Credentials Node</param>
         /// <param name="elements">List of DirectShape geometries</param>
         /// <param name="ifcElementType">Defines the target IfcClass -> use dropdown menu</param>
+        /// <param name="ifcSpatialStructure">Choose desired spatial structure container</param>
         /// <returns>File Path to the IfcModel</returns>
         /// <search>
         ///     girder, beam, IfcBridge
         /// </search>
-        public static IfcStore AddDirectShapeComponents(
+        [MultiReturn(new[] { "IfcModel" })]
+        public static Dictionary<string, object> AddDirectShapeComponents(
             IfcStore model,
             XbimEditorCredentials credentials,
             List<Element> elements,
-            string ifcElementType)
+            string ifcElementType, 
+            string ifcSpatialStructure)
         {
             var counter = 0;
 
             // Note: no transaction is required -> will be opened in the toolkit function
-
             foreach (var element in elements)
             {
                 // init transporter for each element geometry
                 var transporter = new DirectShapeToIfc();
 
-                // --- GEOMETRIC REPRESENTATION ---
+                // --- add geometry to transporter ---
                 InsertShape(element, ref transporter);
 
-                // --- PLACEMENT --- 
+                // --- add placement to transporter --- 
                 var location = element.Solids?.FirstOrDefault()?.Centroid();
                 if (location != null)
-                    transporter.location.Position =
-                        new Point3D(location.X, location.Y, location.Z); // insert Revit coordinates into transporter
+                    transporter.location.Position =new Point3D(location.X, location.Y, location.Z); // insert Revit coordinates into transporter
                 else
                     transporter.location.Position = new Point3D(0, 0, 0);
 
-                // -- Control: serialize to JSON to check the contained data
-                //var myPath = @"C:\Users\Sebastian Esser\Desktop\tmpBridge\" + "meshJSON_girder_0" + counter +
-                //             ".json";
-                //transporter.SerializeToJson(myPath);
+                // use IfcBridgeToolKit to generate a new IfcBuildingElement instance in the current model
+                var productService = new ProductService();
+                productService.AddBuildingElement(
+                    ref model,                 // the Ifc Model
+                    transporter,               // the container for all geometry-related content
+                    "BuildingElement " + counter.ToString(),    // the bldElement's name
+                    ifcElementType,            // desired IfcBuildingElement subclass
+                    "local",       // placement method
+                    ifcSpatialStructure);     // spatial structure element the component should belong to
 
-                //counter++;
 
-                // init class for interactions with IfcModel
-                var toolkit = new AddComponents();
-
-
-                switch (ifcElementType) // ToDo: make use of enum
-                {
-                    case "IfcBearing":
-                    {
-                        // call the bearing function in the toolkit
-                        toolkit.addBearingToIfc(ref model, transporter, "Bearing" + counter, "BearingRepresentation");
-                        break;
-                    }
-                    case "IfcBeam":
-                    {
-                        // call the girder function in the toolkit
-                        toolkit.AddGirderToIfc(ref model, transporter, "Girder" + counter, "GirderRepresentation");
-                        break;
-                    }
-                    case "IfcColumn":
-                    {
-                        // call the bearing function in the toolkit
-
-                        break;
-                    }
-                    case "IfcPile":
-                    {
-                        // call the bearing function in the toolkit
-                        toolkit.AddPileToIfc(ref model, transporter, "Pile" + counter, "PileRepresentation");
-                        break;
-                    }
-                    case "IfcFoundation":
-                    {
-                        // call the foundation function in the toolkit
-                        toolkit.addFoundationToIfc(ref model, transporter, "Foundation" + counter,
-                            "FoundationRepresentation");
-                        break;
-                    }
-
-                    case "IfcSlab":
-                    {
-                        // call the Slab function in the toolkit
-                        toolkit.addSlabToIfc(ref model, transporter, "Slab" + counter, "SlabRepresentation");
-                        break;
-                    }
-
-                    case "IfcAbutment":
-                    {
-                        // call the Abutment function in the toolkit
-                        toolkit.AddAbutment(ref model, transporter, "Wall" + counter, "WallRepresentation");
-                        break;
-                    }
-                    
-                    // if nothing fits, make an IfcBuildingElementProxy out of it
-                    default:
-                        toolkit.addProxyElement(ref model, transporter, "Proxy" + counter, "ProxyRepresentation");
-                        break;
-                }
-                // simple counter for testing purposes -> 
+                // increase counter
                 counter++;
             }
-
-            return model;
+          //  return model;
+            return new Dictionary<string, object>
+            {
+                {"IfcModel", model }
+            };
         }
 
         /// <summary>
-        /// 
+        /// Creates an IfcBridge instance and IfcBridgeParts
         /// </summary>
         /// <param name="model">open Ifc Model</param>
         /// <param name="credentials"></param>
         /// <param name="bridgeName"></param>
         /// <param name="bridgeDescription"></param>
         /// <returns></returns>
-        public static IfcStore AddBridgeStructure(IfcStore model, XbimEditorCredentials credentials, string bridgeName, string bridgeDescription)
+        [MultiReturn(new[] { "IfcModel" })]
+        public static Dictionary<string, object> AddBridgeStructure(IfcStore model, XbimEditorCredentials credentials, string bridgeName, string bridgeDescription)
         {
             try
             {
-                var bridgeCreator = new InitSpatialStructure();
-                bridgeCreator.AddIfcBridge(ref model, bridgeName, bridgeDescription);
-                bridgeCreator.AddIfcBridgepartSuperstructure(ref model);
-              
+                var bridgeCreator = new ModelSetupService();
+                bridgeCreator.CreateIfcBridgeEntity(ref model, bridgeName, bridgeDescription);
+                bridgeCreator.CreateIfcBridgePartEntities(ref model);
             }
             catch (Exception e)
             {
@@ -208,7 +164,31 @@ namespace IfcBridge_DynPackage
                 throw;
             }
 
-            return model; // return directory to Ifc Model
+            // return model; // return directory to Ifc Model
+            return new Dictionary<string, object>
+            {
+                {"IfcModel", model }
+            };
+        }
+
+        /// <summary>
+        /// Stores the IfcModel to a specified directory
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="directory">Use Directory node</param>
+        /// <param name="fileName">The name of the model as a string (including .ifc)</param>
+        public static void FinalizeModel(IfcStore model, string directory, string fileName)
+        {
+            // build storage path of the model
+            var storeFilePath = directory + "/" + fileName;
+
+            // save model
+            model.SaveAs(storeFilePath);
+            model.Close();
+
+            // update IFC version
+            var setupService = new ModelSetupService(); 
+            setupService.ModifyHeader(storeFilePath); 
         }
 
         /// <summary>
