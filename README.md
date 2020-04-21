@@ -18,7 +18,8 @@ Use the following example to test if your Dynamo accepts the IfcBridgeToolKit dl
 
 These nodes should result in something like: 
 
-'ISO-10303-21;
+'''
+ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION ((''), '2;1');
 FILE_NAME ('', '2020-04-21T20:44:10', (''), (''), 'Processor version 5.9999.0.0', 'Xbim.IO.MemoryModel', '');
@@ -49,4 +50,4 @@ DATA;
 #22=IFCRELAGGREGATES('2r4uy0NDz4iwuT4xzZHxIC',#2,$,$,#1,(#21));
 ENDSEC;
 END-ISO-10303-21;
-'
+'''
