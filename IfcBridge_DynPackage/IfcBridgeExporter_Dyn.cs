@@ -28,7 +28,7 @@ namespace IfcBridge_DynPackage
             {
                 ApplicationDevelopersName = "IfcBridgeToolKit",
                 ApplicationFullName = "TUM_CMS_IfcBridgeToolkit",
-                ApplicationVersion = "1.0",
+                ApplicationVersion = "1.1",
                 EditorsFamilyName = FamilyName,
                 EditorsGivenName = FirstName,
                 EditorsOrganisationName = organization
@@ -50,22 +50,15 @@ namespace IfcBridge_DynPackage
         /// <search>
         ///     init, IfcBridge
         /// </search>
-        public static IfcStore InitIfcModel(string projectName, XbimEditorCredentials credentials, string directory,
-            string fileName, string bridgeName = "unknown", string bridgeDescription = "unknown")
+        public static IfcStore InitIfcModel(string projectName, XbimEditorCredentials credentials)
         {
-            // build storage path of the model
-            var storeFilePath = directory + "/" + fileName;
-
-            IfcStore model; 
+           IfcStore model; 
 
             try
             {
-                var modelCreator = new ModelSetupService(); //ToDo: Correct Header -> IfcVersion 
+                var modelCreator = new ModelSetupService(); 
                 model = modelCreator.CreateModel(projectName, credentials);
                 modelCreator.CreateIfcSite(ref model, "BridgeSite");
-
-
-                model.SaveAs(storeFilePath);
             }
             catch (Exception e)
             {
@@ -134,7 +127,7 @@ namespace IfcBridge_DynPackage
         }
 
         /// <summary>
-        /// 
+        /// Creates an IfcBridge instance and IfcBridgeParts
         /// </summary>
         /// <param name="model">open Ifc Model</param>
         /// <param name="credentials"></param>
@@ -156,6 +149,26 @@ namespace IfcBridge_DynPackage
             }
 
             return model; // return directory to Ifc Model
+        }
+
+        /// <summary>
+        /// Stores the IfcModel to a specified directory
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="directory">Use Directory node</param>
+        /// <param name="fileName">The name of the model as a string (including .ifc)</param>
+        public static void FinalizeModel(IfcStore model, string directory, string fileName)
+        {
+            // build storage path of the model
+            var storeFilePath = directory + "/" + fileName;
+
+            // save model
+            model.SaveAs(storeFilePath);
+            model.Close();
+
+            // update IFC version
+            var setupService = new ModelSetupService(); 
+            setupService.ModifyHeader(storeFilePath); 
         }
 
         /// <summary>
