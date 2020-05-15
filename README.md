@@ -16,9 +16,7 @@
 
 ## Getting Started Sample
 
-Use the following example to test if your Dynamo accepts the IfcBridgeToolKit dll: 
-
-![DynSmallSample](https://gitlab.lrz.de/sebastian.esser/tumcms_ifcbridgetoolkit/-/blob/7fe40df296320d99235f2e087b40de36eb6a63be/GitFigures/SmallSample.png)
+Use the example to test if your Dynamo accepts the IfcBridgeToolKit dll: see Github-figs folder.  
 
 These nodes should result in something like: 
 
